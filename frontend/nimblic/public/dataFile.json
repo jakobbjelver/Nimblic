@@ -1,0 +1,979 @@
+{
+    "change_point": [],
+    "correlation_network": "{\"directed\": false, \"multigraph\": false, \"graph\": {}, \"nodes\": [{\"degree\": 1, \"influence\": 0.4056451533211876, \"id\": \"Person ID\"}, {\"degree\": 1, \"influence\": 0.4056451533211876, \"id\": \"Age\"}, {\"degree\": 3, \"influence\": 0.9053419206836252, \"id\": \"Sleep Duration\"}, {\"degree\": 3, \"influence\": 1.0, \"id\": \"Quality of Sleep\"}, {\"degree\": 3, \"influence\": 0.9745976382923035, \"id\": \"Stress Level\"}, {\"degree\": 1, \"influence\": 0.31645246794451726, \"id\": \"Physical Activity Level\"}, {\"degree\": 3, \"influence\": 0.756132172622618, \"id\": \"Heart Rate\"}, {\"degree\": 1, \"influence\": 0.31645246794451726, \"id\": \"Daily Steps\"}], \"links\": [{\"weight\": 0.9905164030218659, \"source\": \"Person ID\", \"target\": \"Age\"}, {\"weight\": 0.8832129851056232, \"source\": \"Sleep Duration\", \"target\": \"Quality of Sleep\"}, {\"weight\": -0.8110230127356848, \"source\": \"Sleep Duration\", \"target\": \"Stress Level\"}, {\"weight\": -0.5164548373340486, \"source\": \"Sleep Duration\", \"target\": \"Heart Rate\"}, {\"weight\": -0.8987520310040412, \"source\": \"Quality of Sleep\", \"target\": \"Stress Level\"}, {\"weight\": -0.6598647331480086, \"source\": \"Quality of Sleep\", \"target\": \"Heart Rate\"}, {\"weight\": 0.6700264629986896, \"source\": \"Stress Level\", \"target\": \"Heart Rate\"}, {\"weight\": 0.7727230504529323, \"source\": \"Physical Activity Level\", \"target\": \"Daily Steps\"}]}",
+    "data_quality": {
+        "constant_columns": [],
+        "duplicate_rows": 0,
+        "missing_values": {
+            "Age": 0,
+            "BMI Category": 0,
+            "Blood Pressure": 0,
+            "Daily Steps": 0,
+            "Gender": 0,
+            "Heart Rate": 0,
+            "Occupation": 0,
+            "Person ID": 0,
+            "Physical Activity Level": 0,
+            "Quality of Sleep": 0,
+            "Sleep Disorder": 219,
+            "Sleep Duration": 0,
+            "Stress Level": 0
+        },
+        "overall_quality_score": 78.19827231591938,
+        "potential_outliers": {
+            "Age": {
+                "lower_bound": 13.125,
+                "outliers": [],
+                "upper_bound": 72.125
+            },
+            "Daily Steps": {
+                "lower_bound": 2000.0,
+                "outliers": [],
+                "upper_bound": 11600.0
+            },
+            "Heart Rate": {
+                "lower_bound": 62.0,
+                "outliers": [
+                    85,
+                    85,
+                    85,
+                    82,
+                    80,
+                    80,
+                    81,
+                    81,
+                    84,
+                    84,
+                    80,
+                    83,
+                    83,
+                    86,
+                    86
+                ],
+                "upper_bound": 78.0
+            },
+            "Person ID": {
+                "lower_bound": -185.5,
+                "outliers": [],
+                "upper_bound": 560.5
+            },
+            "Physical Activity Level": {
+                "lower_bound": 0.0,
+                "outliers": [],
+                "upper_bound": 120.0
+            },
+            "Quality of Sleep": {
+                "lower_bound": 3.0,
+                "outliers": [],
+                "upper_bound": 11.0
+            },
+            "Sleep Duration": {
+                "lower_bound": 4.299999952316284,
+                "outliers": [],
+                "upper_bound": 9.90000033378601
+            },
+            "Stress Level": {
+                "lower_bound": -0.5,
+                "outliers": [],
+                "upper_bound": 11.5
+            }
+        }
+    },
+    "graph_recommendations": {
+        "BMI Category": {
+            "data": {
+                "data": [
+                    195,
+                    148,
+                    21,
+                    10
+                ],
+                "labels": [
+                    "Normal",
+                    "Overweight",
+                    "Normal Weight",
+                    "Obese"
+                ]
+            },
+            "type": "pie"
+        },
+        "Blood Pressure": {
+            "data": {
+                "data": [
+                    99,
+                    65,
+                    65,
+                    45,
+                    32,
+                    68
+                ],
+                "labels": [
+                    "130/85",
+                    "140/95",
+                    "125/80",
+                    "120/80",
+                    "115/75",
+                    "Other"
+                ]
+            },
+            "type": "bar"
+        },
+        "Gender": {
+            "data": {
+                "data": [
+                    189,
+                    185
+                ],
+                "labels": [
+                    "Male",
+                    "Female"
+                ]
+            },
+            "type": "pie"
+        },
+        "Occupation": {
+            "data": {
+                "data": [
+                    73,
+                    71,
+                    63,
+                    47,
+                    40,
+                    80
+                ],
+                "labels": [
+                    "Nurse",
+                    "Doctor",
+                    "Engineer",
+                    "Lawyer",
+                    "Teacher",
+                    "Other"
+                ]
+            },
+            "type": "polarArea"
+        },
+        "Sleep Disorder": {
+            "data": {
+                "data": [
+                    78,
+                    77
+                ],
+                "labels": [
+                    "Sleep Apnea",
+                    "Insomnia"
+                ]
+            },
+            "type": "pie"
+        }
+    },
+    "statistical_summary": {
+        "anova_test": "ANOVA test failed: invalid syntax (<unknown>, line 1)",
+        "categorical_analysis": {
+            "BMI Category": {
+                "Contingency Table": [
+                    {
+                        "count": 195
+                    },
+                    {
+                        "count": 21
+                    },
+                    {
+                        "count": 10
+                    },
+                    {
+                        "count": 148
+                    }
+                ],
+                "Frequency": [
+                    195,
+                    148,
+                    21,
+                    10
+                ]
+            },
+            "Blood Pressure": {
+                "Contingency Table": [
+                    {
+                        "count": 32
+                    },
+                    {
+                        "count": 2
+                    },
+                    {
+                        "count": 2
+                    },
+                    {
+                        "count": 2
+                    },
+                    {
+                        "count": 1
+                    },
+                    {
+                        "count": 2
+                    },
+                    {
+                        "count": 45
+                    },
+                    {
+                        "count": 1
+                    },
+                    {
+                        "count": 1
+                    },
+                    {
+                        "count": 65
+                    },
+                    {
+                        "count": 4
+                    },
+                    {
+                        "count": 2
+                    },
+                    {
+                        "count": 2
+                    },
+                    {
+                        "count": 3
+                    },
+                    {
+                        "count": 2
+                    },
+                    {
+                        "count": 99
+                    },
+                    {
+                        "count": 2
+                    },
+                    {
+                        "count": 2
+                    },
+                    {
+                        "count": 3
+                    },
+                    {
+                        "count": 2
+                    },
+                    {
+                        "count": 27
+                    },
+                    {
+                        "count": 2
+                    },
+                    {
+                        "count": 4
+                    },
+                    {
+                        "count": 65
+                    },
+                    {
+                        "count": 2
+                    }
+                ],
+                "Frequency": [
+                    99,
+                    65,
+                    65,
+                    45,
+                    32,
+                    27,
+                    4,
+                    4,
+                    3,
+                    3,
+                    2,
+                    2,
+                    2,
+                    2,
+                    2,
+                    2,
+                    2,
+                    2,
+                    2,
+                    2,
+                    2,
+                    2,
+                    1,
+                    1,
+                    1
+                ]
+            },
+            "Gender": {
+                "Contingency Table": [
+                    {
+                        "count": 185
+                    },
+                    {
+                        "count": 189
+                    }
+                ],
+                "Frequency": [
+                    189,
+                    185
+                ]
+            },
+            "Occupation": {
+                "Contingency Table": [
+                    {
+                        "count": 37
+                    },
+                    {
+                        "count": 71
+                    },
+                    {
+                        "count": 63
+                    },
+                    {
+                        "count": 47
+                    },
+                    {
+                        "count": 1
+                    },
+                    {
+                        "count": 73
+                    },
+                    {
+                        "count": 2
+                    },
+                    {
+                        "count": 32
+                    },
+                    {
+                        "count": 4
+                    },
+                    {
+                        "count": 4
+                    },
+                    {
+                        "count": 40
+                    }
+                ],
+                "Frequency": [
+                    73,
+                    71,
+                    63,
+                    47,
+                    40,
+                    37,
+                    32,
+                    4,
+                    4,
+                    2,
+                    1
+                ]
+            },
+            "Sleep Disorder": {
+                "Contingency Table": [
+                    {
+                        "count": 77
+                    },
+                    {
+                        "count": 78
+                    }
+                ],
+                "Frequency": [
+                    78,
+                    77
+                ]
+            }
+        },
+        "chi_square_test": {
+            "chi2_statistic": 85.3640901482707,
+            "p_value": 6.314315931960022e-17
+        },
+        "linear_regression": {
+            "AIC": 3082.6473325305296,
+            "Adj. R-squared": 0.9810719993453088,
+            "BIC": 3090.495844125359,
+            "Coefficients": {
+                "Age": {
+                    "0.025": 12.17197298333739,
+                    "0.975": 12.521174480120301,
+                    "P>|t|": 9e-323,
+                    "coef": 12.346573731728846,
+                    "std_err": 0.08879381948401638,
+                    "t": 139.04767024861826
+                },
+                "const": {
+                    "0.025": -340.8530391728897,
+                    "0.975": -325.8148419259662,
+                    "P>|t|": 1.1659875709350095e-249,
+                    "coef": -333.33394054942795,
+                    "std_err": 3.8238638265015115,
+                    "t": -87.17202172295929
+                }
+            },
+            "Covariance Type": "nonrobust",
+            "Dependent_Variable": "Person ID",
+            "Df Model": 1.0,
+            "Df Residuals": 372.0,
+            "F-statistic": 19334.25460156852,
+            "Log-Likelihood": -1539.3236662652648,
+            "No. Observations": 374.0,
+            "Prob(F-statistic)": 9e-323,
+            "R-squared": 0.981122744655375
+        },
+        "normality_test": {
+            "Age": {
+                "p_value": 7.4213430956149296e-09,
+                "statistic": 0.9580035209655762
+            },
+            "Daily Steps": {
+                "p_value": 1.6545596490114e-11,
+                "statistic": 0.9368199110031128
+            },
+            "Heart Rate": {
+                "p_value": 2.684890096097607e-16,
+                "statistic": 0.882550060749054
+            },
+            "Person ID": {
+                "p_value": 2.548942834579293e-09,
+                "statistic": 0.9546816945075989
+            },
+            "Physical Activity Level": {
+                "p_value": 5.178644243031966e-15,
+                "statistic": 0.8994297385215759
+            },
+            "Quality of Sleep": {
+                "p_value": 1.882131560996289e-15,
+                "statistic": 0.8938649892807007
+            },
+            "Sleep Duration": {
+                "p_value": 1.2668722841613356e-11,
+                "statistic": 0.9357648491859436
+            },
+            "Stress Level": {
+                "p_value": 1.1121582831513958e-15,
+                "statistic": 0.8908881545066833
+            }
+        },
+        "outliers": {
+            "Age": [],
+            "Daily Steps": [],
+            "Heart Rate": [
+                3,
+                4,
+                5,
+                6,
+                16,
+                18,
+                80,
+                81,
+                93,
+                145,
+                147,
+                264,
+                266,
+                276,
+                277
+            ],
+            "Person ID": [],
+            "Physical Activity Level": [],
+            "Quality of Sleep": [],
+            "Sleep Duration": [],
+            "Stress Level": []
+        },
+        "pearson_correlation": {
+            "Age": {
+                "Age": 1.0,
+                "Daily Steps": 0.0579734029456786,
+                "Heart Rate": -0.2256061902985921,
+                "Person ID": 0.9905164030218659,
+                "Physical Activity Level": 0.17899272043316286,
+                "Quality of Sleep": 0.4737338761619895,
+                "Sleep Duration": 0.3447093733395822,
+                "Stress Level": -0.42234448262025065
+            },
+            "Daily Steps": {
+                "Age": 0.0579734029456786,
+                "Daily Steps": 1.0,
+                "Heart Rate": -0.030308575297108724,
+                "Person ID": 0.04384386514739116,
+                "Physical Activity Level": 0.7727230504529323,
+                "Quality of Sleep": 0.01679141492471703,
+                "Sleep Duration": -0.03953255712045324,
+                "Stress Level": 0.18682895445881678
+            },
+            "Heart Rate": {
+                "Age": -0.2256061902985921,
+                "Daily Steps": -0.030308575297108724,
+                "Heart Rate": 1.0,
+                "Person ID": -0.22546715903704553,
+                "Physical Activity Level": 0.13697098321363213,
+                "Quality of Sleep": -0.6598647331480086,
+                "Sleep Duration": -0.5164548373340486,
+                "Stress Level": 0.6700264629986896
+            },
+            "Person ID": {
+                "Age": 0.9905164030218659,
+                "Daily Steps": 0.04384386514739116,
+                "Heart Rate": -0.22546715903704553,
+                "Person ID": 1.0,
+                "Physical Activity Level": 0.14988220060792123,
+                "Quality of Sleep": 0.4316120785527803,
+                "Sleep Duration": 0.2963050106037161,
+                "Stress Level": -0.3942870766190161
+            },
+            "Physical Activity Level": {
+                "Age": 0.17899272043316286,
+                "Daily Steps": 0.7727230504529323,
+                "Heart Rate": 0.13697098321363213,
+                "Person ID": 0.14988220060792123,
+                "Physical Activity Level": 1.0,
+                "Quality of Sleep": 0.19289645493975385,
+                "Sleep Duration": 0.21236033993440778,
+                "Stress Level": -0.034134463516743103
+            },
+            "Quality of Sleep": {
+                "Age": 0.4737338761619895,
+                "Daily Steps": 0.01679141492471703,
+                "Heart Rate": -0.6598647331480086,
+                "Person ID": 0.4316120785527803,
+                "Physical Activity Level": 0.19289645493975385,
+                "Quality of Sleep": 1.0,
+                "Sleep Duration": 0.8832129851056232,
+                "Stress Level": -0.8987520310040412
+            },
+            "Sleep Duration": {
+                "Age": 0.3447093733395822,
+                "Daily Steps": -0.03953255712045324,
+                "Heart Rate": -0.5164548373340486,
+                "Person ID": 0.2963050106037161,
+                "Physical Activity Level": 0.21236033993440778,
+                "Quality of Sleep": 0.8832129851056232,
+                "Sleep Duration": 1.0,
+                "Stress Level": -0.8110230127356848
+            },
+            "Stress Level": {
+                "Age": -0.42234448262025065,
+                "Daily Steps": 0.18682895445881678,
+                "Heart Rate": 0.6700264629986896,
+                "Person ID": -0.3942870766190161,
+                "Physical Activity Level": -0.034134463516743103,
+                "Quality of Sleep": -0.8987520310040412,
+                "Sleep Duration": -0.8110230127356848,
+                "Stress Level": 1.0
+            }
+        },
+        "profile": {
+            "Data Type": {
+                "Age": "int8",
+                "BMI Category": "category",
+                "Blood Pressure": "category",
+                "Daily Steps": "int16",
+                "Gender": "category",
+                "Heart Rate": "int8",
+                "Occupation": "category",
+                "Person ID": "int16",
+                "Physical Activity Level": "int8",
+                "Quality of Sleep": "int8",
+                "Sleep Disorder": "object",
+                "Sleep Duration": "float32",
+                "Stress Level": "int8"
+            },
+            "Max": {
+                "Age": 59,
+                "BMI Category": "None",
+                "Blood Pressure": "None",
+                "Daily Steps": 10000,
+                "Gender": "None",
+                "Heart Rate": 86,
+                "Occupation": "None",
+                "Person ID": 374,
+                "Physical Activity Level": 90,
+                "Quality of Sleep": 9,
+                "Sleep Disorder": "None",
+                "Sleep Duration": 8.5,
+                "Stress Level": 8
+            },
+            "Mean/Most Frequent": {
+                "Age": 42.18449197860963,
+                "BMI Category": "Normal",
+                "Blood Pressure": "130/85",
+                "Daily Steps": 6816.844919786096,
+                "Gender": "Male",
+                "Heart Rate": 70.16577540106952,
+                "Occupation": "Nurse",
+                "Person ID": 187.5,
+                "Physical Activity Level": 59.17112299465241,
+                "Quality of Sleep": 7.31283422459893,
+                "Sleep Disorder": "Sleep Apnea",
+                "Sleep Duration": 7.13208532333374,
+                "Stress Level": 5.385026737967914
+            },
+            "Median/Earliest": {
+                "Age": 43.0,
+                "BMI Category": "None",
+                "Blood Pressure": "None",
+                "Daily Steps": 7000.0,
+                "Gender": "None",
+                "Heart Rate": 70.0,
+                "Occupation": "None",
+                "Person ID": 187.5,
+                "Physical Activity Level": 60.0,
+                "Quality of Sleep": 7.0,
+                "Sleep Disorder": "None",
+                "Sleep Duration": 7.199999809265137,
+                "Stress Level": 5.0
+            },
+            "Min": {
+                "Age": 27,
+                "BMI Category": "None",
+                "Blood Pressure": "None",
+                "Daily Steps": 3000,
+                "Gender": "None",
+                "Heart Rate": 65,
+                "Occupation": "None",
+                "Person ID": 1,
+                "Physical Activity Level": 30,
+                "Quality of Sleep": 4,
+                "Sleep Disorder": "None",
+                "Sleep Duration": 5.800000190734863,
+                "Stress Level": 3
+            },
+            "Missing Values": {
+                "Age": 0,
+                "BMI Category": 0,
+                "Blood Pressure": 0,
+                "Daily Steps": 0,
+                "Gender": 0,
+                "Heart Rate": 0,
+                "Occupation": 0,
+                "Person ID": 0,
+                "Physical Activity Level": 0,
+                "Quality of Sleep": 0,
+                "Sleep Disorder": 219,
+                "Sleep Duration": 0,
+                "Stress Level": 0
+            },
+            "Std Dev/Latest": {
+                "Age": 8.673133465547243,
+                "BMI Category": "None",
+                "Blood Pressure": "None",
+                "Daily Steps": 1617.915679133636,
+                "Gender": "None",
+                "Heart Rate": 4.135675535112215,
+                "Occupation": "None",
+                "Person ID": 108.10874155219827,
+                "Physical Activity Level": 20.83080365807167,
+                "Quality of Sleep": 1.196955919733606,
+                "Sleep Disorder": "None",
+                "Sleep Duration": 0.7956567406654358,
+                "Stress Level": 1.774526444198519
+            },
+            "Unique Values": {
+                "Age": 31,
+                "BMI Category": 4,
+                "Blood Pressure": 25,
+                "Daily Steps": 20,
+                "Gender": 2,
+                "Heart Rate": 19,
+                "Occupation": 11,
+                "Person ID": 374,
+                "Physical Activity Level": 16,
+                "Quality of Sleep": 6,
+                "Sleep Disorder": 2,
+                "Sleep Duration": 27,
+                "Stress Level": 6
+            }
+        },
+        "skewness_kurtosis": {
+            "Age": {
+                "kurtosis": -0.9097795476259583,
+                "skewness": 0.2572221422742844
+            },
+            "Daily Steps": {
+                "kurtosis": -0.3940306018221511,
+                "skewness": 0.17827733092832274
+            },
+            "Heart Rate": {
+                "kurtosis": 2.28645466720358,
+                "skewness": 1.2248235470533522
+            },
+            "Person ID": {
+                "kurtosis": -1.1999999999999997,
+                "skewness": 0.0
+            },
+            "Physical Activity Level": {
+                "kurtosis": -1.2660677718961595,
+                "skewness": 0.07448690272010197
+            },
+            "Quality of Sleep": {
+                "kurtosis": -0.7482755418548042,
+                "skewness": -0.20744763173836073
+            },
+            "Sleep Duration": {
+                "kurtosis": -1.2865062952041626,
+                "skewness": 0.03755521774291992
+            },
+            "Stress Level": {
+                "kurtosis": -1.3273065644578361,
+                "skewness": 0.15432958161578225
+            }
+        },
+        "spearman_correlation": {
+            "Age": {
+                "Age": 1.0,
+                "BMI Category": 0.5268377497906888,
+                "Blood Pressure": 0.6071940838057451,
+                "Daily Steps": -0.04187248230445785,
+                "Gender": -0.5871523385818173,
+                "Heart Rate": -0.25436412282802134,
+                "Occupation": 0.3713566950880523,
+                "Person ID": 0.9987336679582861,
+                "Physical Activity Level": 0.1356800470606636,
+                "Quality of Sleep": 0.41781021530674456,
+                "Sleep Disorder": -0.3951298385824729,
+                "Sleep Duration": 0.3123688794838318,
+                "Stress Level": -0.4256218208903453
+            },
+            "BMI Category": {
+                "Age": 0.5268377497906888,
+                "BMI Category": 1.0,
+                "Blood Pressure": 0.7109457677530107,
+                "Daily Steps": -0.07585608051925352,
+                "Gender": -0.3632422036794491,
+                "Heart Rate": 0.2886352790620214,
+                "Occupation": 0.7040316013691899,
+                "Person ID": 0.5186985356339344,
+                "Physical Activity Level": 0.0796521222827205,
+                "Quality of Sleep": -0.310764493452813,
+                "Sleep Disorder": -0.7538358591565492,
+                "Sleep Duration": -0.330254201864938,
+                "Stress Level": 0.13540825015832886
+            },
+            "Blood Pressure": {
+                "Age": 0.6071940838057451,
+                "BMI Category": 0.7109457677530107,
+                "Blood Pressure": 1.0,
+                "Daily Steps": 0.0866040457354989,
+                "Gender": -0.22567722722850464,
+                "Heart Rate": 0.22360428050894884,
+                "Occupation": 0.6606929202584381,
+                "Person ID": 0.6062108763553727,
+                "Physical Activity Level": 0.2810220389891949,
+                "Quality of Sleep": -0.12166864024310069,
+                "Sleep Disorder": -0.6366523507468421,
+                "Sleep Duration": -0.1667599159137805,
+                "Stress Level": 0.08257888948483266
+            },
+            "Daily Steps": {
+                "Age": -0.04187248230445785,
+                "BMI Category": -0.07585608051925352,
+                "Blood Pressure": 0.0866040457354989,
+                "Daily Steps": 1.0,
+                "Gender": 0.08045533543998255,
+                "Heart Rate": 0.09358166677733865,
+                "Occupation": -0.07560505118277831,
+                "Person ID": -0.038325781008081795,
+                "Physical Activity Level": 0.7939755100186755,
+                "Quality of Sleep": 0.022779213378418182,
+                "Sleep Disorder": 0.15334087862475454,
+                "Sleep Duration": 0.010086583810612582,
+                "Stress Level": 0.17174383565097645
+            },
+            "Gender": {
+                "Age": -0.5871523385818173,
+                "BMI Category": -0.3632422036794491,
+                "Blood Pressure": -0.22567722722850464,
+                "Daily Steps": 0.08045533543998255,
+                "Gender": 1.0,
+                "Heart Rate": 0.3056658965329648,
+                "Occupation": -0.18254398580520137,
+                "Person ID": -0.5842293107188101,
+                "Physical Activity Level": -0.00045266677796294857,
+                "Quality of Sleep": -0.30113743889077343,
+                "Sleep Disorder": 0.21001904698135068,
+                "Sleep Duration": -0.1266800266478964,
+                "Stress Level": 0.42489902186862
+            },
+            "Heart Rate": {
+                "Age": -0.25436412282802134,
+                "BMI Category": 0.2886352790620214,
+                "Blood Pressure": 0.22360428050894884,
+                "Daily Steps": 0.09358166677733865,
+                "Gender": 0.3056658965329648,
+                "Heart Rate": 1.0,
+                "Occupation": 0.05453441079778456,
+                "Person ID": -0.2508730142045709,
+                "Physical Activity Level": 0.16094211484611287,
+                "Quality of Sleep": -0.7346233355853599,
+                "Sleep Disorder": -0.22903308129054056,
+                "Sleep Duration": -0.6089199331428127,
+                "Stress Level": 0.8202966147022066
+            },
+            "Occupation": {
+                "Age": 0.3713566950880523,
+                "BMI Category": 0.7040316013691899,
+                "Blood Pressure": 0.6606929202584381,
+                "Daily Steps": -0.07560505118277831,
+                "Gender": -0.18254398580520137,
+                "Heart Rate": 0.05453441079778456,
+                "Occupation": 1.0,
+                "Person ID": 0.3646853130651341,
+                "Physical Activity Level": -0.009977137213289692,
+                "Quality of Sleep": -0.2172999427700406,
+                "Sleep Disorder": -0.5908209111335349,
+                "Sleep Duration": -0.2286430816428268,
+                "Stress Level": 0.014228192885601124
+            },
+            "Person ID": {
+                "Age": 0.9987336679582861,
+                "BMI Category": 0.5186985356339344,
+                "Blood Pressure": 0.6062108763553727,
+                "Daily Steps": -0.038325781008081795,
+                "Gender": -0.5842293107188101,
+                "Heart Rate": -0.2508730142045709,
+                "Occupation": 0.3646853130651341,
+                "Person ID": 1.0,
+                "Physical Activity Level": 0.14274223651514806,
+                "Quality of Sleep": 0.42056675759078593,
+                "Sleep Disorder": -0.38656937593753743,
+                "Sleep Duration": 0.31568194366899,
+                "Stress Level": -0.42472493131131467
+            },
+            "Physical Activity Level": {
+                "Age": 0.1356800470606636,
+                "BMI Category": 0.0796521222827205,
+                "Blood Pressure": 0.2810220389891949,
+                "Daily Steps": 0.7939755100186755,
+                "Gender": -0.00045266677796294857,
+                "Heart Rate": 0.16094211484611287,
+                "Occupation": -0.009977137213289692,
+                "Person ID": 0.14274223651514806,
+                "Physical Activity Level": 1.0,
+                "Quality of Sleep": 0.17846632741434998,
+                "Sleep Disorder": 0.04321159829702532,
+                "Sleep Duration": 0.2092349676100594,
+                "Stress Level": -0.01749742974202558
+            },
+            "Quality of Sleep": {
+                "Age": 0.41781021530674456,
+                "BMI Category": -0.310764493452813,
+                "Blood Pressure": -0.12166864024310069,
+                "Daily Steps": 0.022779213378418182,
+                "Gender": -0.30113743889077343,
+                "Heart Rate": -0.7346233355853599,
+                "Occupation": -0.2172999427700406,
+                "Person ID": 0.42056675759078593,
+                "Physical Activity Level": 0.17846632741434998,
+                "Quality of Sleep": 1.0,
+                "Sleep Disorder": 0.3439532907007794,
+                "Sleep Duration": 0.887398370888376,
+                "Stress Level": -0.9081470385599755
+            },
+            "Sleep Disorder": {
+                "Age": -0.3951298385824729,
+                "BMI Category": -0.7538358591565492,
+                "Blood Pressure": -0.6366523507468421,
+                "Daily Steps": 0.15334087862475454,
+                "Gender": 0.21001904698135068,
+                "Heart Rate": -0.22903308129054056,
+                "Occupation": -0.5908209111335349,
+                "Person ID": -0.38656937593753743,
+                "Physical Activity Level": 0.04321159829702532,
+                "Quality of Sleep": 0.3439532907007794,
+                "Sleep Disorder": 1.0,
+                "Sleep Duration": 0.33567991495754584,
+                "Stress Level": -0.16398063045803868
+            },
+            "Sleep Duration": {
+                "Age": 0.3123688794838318,
+                "BMI Category": -0.330254201864938,
+                "Blood Pressure": -0.1667599159137805,
+                "Daily Steps": 0.010086583810612582,
+                "Gender": -0.1266800266478964,
+                "Heart Rate": -0.6089199331428127,
+                "Occupation": -0.2286430816428268,
+                "Person ID": 0.31568194366899,
+                "Physical Activity Level": 0.2092349676100594,
+                "Quality of Sleep": 0.887398370888376,
+                "Sleep Disorder": 0.33567991495754584,
+                "Sleep Duration": 1.0,
+                "Stress Level": -0.8106325605674042
+            },
+            "Stress Level": {
+                "Age": -0.4256218208903453,
+                "BMI Category": 0.13540825015832886,
+                "Blood Pressure": 0.08257888948483266,
+                "Daily Steps": 0.17174383565097645,
+                "Gender": 0.42489902186862,
+                "Heart Rate": 0.8202966147022066,
+                "Occupation": 0.014228192885601124,
+                "Person ID": -0.42472493131131467,
+                "Physical Activity Level": -0.01749742974202558,
+                "Quality of Sleep": -0.9081470385599755,
+                "Sleep Disorder": -0.16398063045803868,
+                "Sleep Duration": -0.8106325605674042,
+                "Stress Level": 1.0
+            }
+        }
+    },
+    "summary": {
+        "basic_info": {
+            "missing_values": {
+                "Age": 0,
+                "BMI Category": 0,
+                "Blood Pressure": 0,
+                "Daily Steps": 0,
+                "Gender": 0,
+                "Heart Rate": 0,
+                "Occupation": 0,
+                "Person ID": 0,
+                "Physical Activity Level": 0,
+                "Quality of Sleep": 0,
+                "Sleep Disorder": 219,
+                "Sleep Duration": 0,
+                "Stress Level": 0
+            },
+            "number_of_columns": 13,
+            "number_of_rows": 374
+        },
+        "column_types": {
+            "Age": "int8",
+            "BMI Category": "category",
+            "Blood Pressure": "category",
+            "Daily Steps": "int16",
+            "Gender": "category",
+            "Heart Rate": "int8",
+            "Occupation": "category",
+            "Person ID": "int16",
+            "Physical Activity Level": "int8",
+            "Quality of Sleep": "int8",
+            "Sleep Disorder": "object",
+            "Sleep Duration": "float32",
+            "Stress Level": "int8"
+        },
+        "memory_usage": {
+            "Age": 374,
+            "BMI Category": 808,
+            "Blood Pressure": 2505,
+            "Daily Steps": 748,
+            "Gender": 606,
+            "Heart Rate": 374,
+            "Index": 132,
+            "Occupation": 1407,
+            "Person ID": 748,
+            "Physical Activity Level": 374,
+            "Quality of Sleep": 374,
+            "Sleep Disorder": 15565,
+            "Sleep Duration": 1496,
+            "Stress Level": 374,
+            "total": 25885
+        },
+        "unique_values": {
+            "Age": 31,
+            "BMI Category": 4,
+            "Blood Pressure": 25,
+            "Daily Steps": 20,
+            "Gender": 2,
+            "Heart Rate": 19,
+            "Occupation": 11,
+            "Person ID": 374,
+            "Physical Activity Level": 16,
+            "Quality of Sleep": 6,
+            "Sleep Disorder": 2,
+            "Sleep Duration": 27,
+            "Stress Level": 6
+        }
+    }
+}

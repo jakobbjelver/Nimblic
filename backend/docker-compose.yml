@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  web:
+    build: .
+    command: flask run --host=0.0.0.0
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/app
+    environment:
+      - FLASK_ENV=development #Disable in production
+      - FLASK_DEBUG=1 #Disable in production
+    depends_on:
+      - redis
+
+  worker:
+    build: .
+    command: celery -A app.celery worker --loglevel=info
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
