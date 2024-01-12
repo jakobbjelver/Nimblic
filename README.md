@@ -5,7 +5,9 @@
 
 ## Introduction
 
-Welcome to Nimblic, the innovative web application that transforms the way you approach Exploratory Data Analysis (EDA). Crafted for both novices and experts in data science, Nimblic offers an intuitive yet powerful platform to explore, analyze, and visualize data. It specializes in the very complicated field of **making it easy and straightforward**. In all its simplicity, its used by uploading your files and let the app handle the rest. No need to make skill-requiring and time consuming decicions, as the app does all that for the user.
+Welcome to Nimblic, the innovative web application that transforms the way you approach Exploratory Data Analysis (EDA). Crafted for both novices and experts in data science, Nimblic offers an intuitive yet powerful platform to explore, analyze, and visualize data. 
+
+It specializes in the very complicated field of **making it easy and straightforward**. In all its simplicity, its used by uploading your files and let the app handle the rest. No need to make skill-requiring and time consuming decicions, as the app does all that for the user.
 
 ## What is Nimblic?
 
