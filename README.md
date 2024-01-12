@@ -38,3 +38,5 @@ Everything you need to know is on the homepage of the website ([Nimblic.app](htt
 We look forward to embarking on this data exploration journey with you! 📊🔍
 
 ---
+
+***Note**: Nimblic is looking for investors! At the moment, the server shuts down during low activity, but with sponsors we kan keep it running at all times! Contact us to know more and explore our flexible pricing options.*
