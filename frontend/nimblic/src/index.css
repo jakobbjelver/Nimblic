@@ -1,0 +1,359 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+html {
+  @apply font-sans;
+  scrollbar-gutter: stable;
+}
+
+.prevent-layout-shift {
+  scrollbar-gutter: stable;
+}
+
+.info-explanation h3 {
+  font-size: 1.175em;
+  margin-top: 1.2rem; /* Equivalent to Tailwind's my-4 */
+  margin-bottom: 0.5rem;
+  font-weight: 400;
+}
+
+
+/* Light theme */
+[data-theme='light'] .homepage {
+  background-image: linear-gradient(151deg, #d3d3ee 0%, rgba(223, 220, 237, 0.86) 14.29%, rgba(226, 222, 240, 0.71) 28.57%, rgba(214, 207, 240, 0.57) 42.86%, rgba(171, 162, 227, 0.43) 57.14%, rgba(136, 124, 209, 0.29) 71.43%, rgba(188, 181, 234, 0) 100%), linear-gradient(261deg, #e2e2f6 1%, rgba(222, 220, 246, 0.86) 15%, rgba(215, 214, 243, 0.71) 29%, rgba(216, 215, 229, 0.57) 43%, rgba(191, 187, 223, 0.43) 57%, rgba(171, 163, 228, 0.29) 71%, rgba(182, 176, 230, 0) 99%)
+    /* Other light theme styles for HomePage */
+}
+
+/* Dark theme */
+[data-theme='dark'] .homepage {
+  background-image: linear-gradient(151deg, #111114 0%, rgba(31, 29, 40, 0.86) 14.29%, rgba(29, 26, 41, 0.71) 28.57%, rgba(29, 26, 39, 0.57) 42.86%, rgba(33, 30, 49, 0.43) 57.14%, rgba(40, 35, 66, 0.29) 71.43%, rgba(42, 36, 81, 0) 100%), linear-gradient(261deg, #111114 1%, rgba(28, 27, 39, 0.86) 15%, rgba(36, 35, 53, 0.71) 29%, rgba(38, 37, 58, 0.57) 43%, rgba(21, 19, 35, 0.43) 57%, rgba(30, 27, 54, 0.29) 71%, rgba(104, 85, 246, 0) 99%)
+    /* Other dark theme styles for HomePage */
+}
+
+
+
+.bg-custom-gradient-dark {
+  background-image: linear-gradient(151deg, #111114 0%, rgba(31, 29, 40, 0.86) 14.29%, rgba(29, 26, 41, 0.71) 28.57%, rgba(29, 26, 39, 0.57) 42.86%, rgba(33, 30, 49, 0.43) 57.14%, rgba(40, 35, 66, 0.29) 71.43%, rgba(42, 36, 81, 0) 100%), linear-gradient(261deg, #111114 1%, rgba(28, 27, 39, 0.86) 15%, rgba(36, 35, 53, 0.71) 29%, rgba(38, 37, 58, 0.57) 43%, rgba(21, 19, 35, 0.43) 57%, rgba(30, 27, 54, 0.29) 71%, rgba(104, 85, 246, 0) 99%)
+}
+
+.bg-custom-gradient {
+  background-image: linear-gradient(151deg, #c9c9e9 0%, rgba(205, 198, 234, 0.86) 14.29%, rgba(198, 189, 235, 0.71) 28.57%, rgba(222, 216, 242, 0.57) 42.86%, rgba(197, 191, 231, 0.43) 57.14%, rgba(205, 202, 220, 0.29) 71.43%, rgba(188, 181, 234, 0) 100%), linear-gradient(261deg, #e2e2f6 1%, rgba(222, 220, 246, 0.86) 15%, rgba(215, 214, 243, 0.71) 29%, rgba(216, 215, 229, 0.57) 43%, rgba(191, 187, 223, 0.43) 57%, rgba(171, 163, 228, 0.29) 71%, rgba(192, 184, 255, 0) 99%)
+}
+
+.bg-home-drop-shape {
+  background-image: url('/svg/drop_shape.svg');
+  background-size: contain; 
+  background-repeat: no-repeat;
+  background-position: center;
+  height: 500px;
+}
+
+.settings-beginner {
+  background-image: url('/svg/settings_beginner.svg');
+  background-size: contain; 
+  height: 70px;
+  width: 100px;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.settings-intermediate {
+  background-image: url('/svg/settings_intermediate.svg');
+  background-size: contain; 
+  height: 70px;
+  width: 100px;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.settings-expert {
+  background-image: url('/svg/settings_expert.svg');
+  background-size: contain; 
+  height: 70px;
+  width: 100px;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.not-found {
+  background-image: url('/svg/not_found.svg');
+  background-size: contain; 
+  height: 250px;
+  width: 400px;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+
+.logo-sm {
+  z-index: 100;
+  background-image: url('/svg/nimblic_icon.svg');
+  background-repeat: no-repeat no-repeat;
+  background-position: center center;
+  background-size: contain;
+  height: 30px;
+  width: 40px;
+  margin-bottom: 5px;
+}
+
+.text-dark-theme {
+  fill: #b1b7bc; /* Light color for dark theme */
+}
+
+.text-light-theme {
+  fill: #374151; /* Dark color for light theme */
+}
+
+/* Light theme scrollbar styles */
+[data-theme="light"] * {
+  scrollbar-width: thin;
+  scrollbar-color: darkgray lightgray; /* thumb and track color */
+}
+
+[data-theme="light"] *::-webkit-scrollbar {
+  width: 5px; /* width of the entire scrollbar */
+  height: 5px;
+}
+
+[data-theme="light"] *::-webkit-scrollbar-track {
+  background: transparent; /* color of the tracking area */
+}
+
+[data-theme="light"] *::-webkit-scrollbar-thumb {
+  background-color: darkgray; /* color of the scroll thumb */
+  border-radius: 20px; /* roundness of the scroll thumb */
+}
+
+/* Dark theme scrollbar styles */
+[data-theme="dark"] * {
+  scrollbar-width: thin;
+  scrollbar-color: darkgray lightgray; /* thumb and track color */
+}
+
+[data-theme="dark"] *::-webkit-scrollbar {
+  width: 5px; /* width of the entire scrollbar */
+  height: 5px;
+}
+
+[data-theme="dark"] *::-webkit-scrollbar-track {
+  background: transparent; /* color of the tracking area */
+}
+
+[data-theme="dark"] *::-webkit-scrollbar-thumb {
+  background-color: darkgray; /* color of the scroll thumb */
+  border-radius: 20px; /* roundness of the scroll thumb */
+}
+
+#chart ::-webkit-scrollbar {
+  width: 10px !important; /* width of the entire scrollbar */
+  height: 10px !important;
+}
+
+[data-theme="light"] *::-webkit-scrollbar-track {
+  background: #ededed; /* color of the tracking area */
+  border-radius: 18px; /* roundness of the scroll thumb */
+}
+
+[data-theme="dark"] *::-webkit-scrollbar-track {
+  background: #151924; /* color of the tracking area */
+  border-radius: 18px; /* roundness of the scroll thumb */
+}
+
+[data-theme="dark"] *::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(207, 207, 207); /* color of the scroll thumb */
+  border-radius: 18px; /* roundness of the scroll thumb */
+}
+
+[data-theme="light"] *::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(161, 161, 161); /* color of the scroll thumb */
+  border-radius: 18px; /* roundness of the scroll thumb */
+}
+
+/* This will target autofilled inputs */
+[data-theme="light"] input:-webkit-autofill {
+  -webkit-text-fill-color: rgb(16, 16, 16) !important; 
+  -webkit-box-shadow: 0 0 0 1000px white inset !important; /* Change the background color */
+}
+
+[data-theme="dark"] input:-webkit-autofill {
+  -webkit-text-fill-color: rgb(230, 230, 230) !important; 
+  -webkit-box-shadow: 0 0 0 1000px rgb(18, 18, 20) inset !important; /* Change the background color */
+}
+
+/* This will target autofilled inputs */
+[data-theme="light"] select:-webkit-autofill {
+  -webkit-text-fill-color: rgb(16, 16, 16) !important; 
+  -webkit-box-shadow: 0 0 0 1000px white inset !important; /* Change the background color */
+}
+
+[data-theme="dark"] select:-webkit-autofill {
+  -webkit-text-fill-color: rgb(230, 230, 230) !important; 
+  -webkit-box-shadow: 0 0 0 1000px rgb(18, 18, 20) inset !important; /* Change the background color */
+}
+
+/* Default Light Theme */
+.tippy-box[data-theme~='light'] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #e3e3e3;
+  color: #333333;
+  border-color: #d1d1d1;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-radius: 12px;
+  font-family: sans-serif;
+}
+
+/* Dark Theme */
+.tippy-box[data-theme~='dark'] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #333333;
+  color: #ffffff;
+  border-color: #4a4a4a;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-radius: 12px;
+  font-family: sans-serif;
+}
+
+@keyframes jump {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.animate-bounce-dropzone {
+  animation: jump 0.5s ease-in-out;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee {
+  display: flex;
+  animation: marquee 10s linear infinite;
+  white-space: nowrap;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fadeInUp {
+  animation: fadeInUp 0.5s ease forwards;
+}
+
+
+blockquote {
+  margin: 20px 0;
+  padding: 20px;
+  background-color: #57575710;
+  border-left: 5px solid #0000003d;
+  font-style: italic;
+  line-height: 1.6;
+}
+
+blockquote p {
+  margin: 0;
+  padding: 0;
+  font-size: 1em;
+}
+
+/* General Markdown Content Styling */
+.markdown-content {
+  line-height: 1.6;
+}
+
+/* Header Styles */
+.markdown-content h1 {
+  font-size: 2.2em;
+  margin-top: 0.75em;
+  margin-bottom: 0.25em;
+  font-weight: bolder;
+  letter-spacing: -0.025em;
+}
+
+.markdown-content h2 {
+  font-size: 1.75em;
+  margin-top: 0.75em;
+  margin-bottom: 0.25em;
+}
+
+.markdown-content h3 {
+  font-size: 1.5em;
+  color: #2e2e2e;
+  margin-top: 0.75em;
+  margin-bottom: 0.25em;
+}
+
+.markdown-content h4 {
+  font-size: 1.25em;
+  color: #2e2e2e;
+  margin-top: 0.5em;
+  margin-bottom: 0.15em;
+}
+
+.markdown-content h5 {
+  font-size: 1.1em;
+  color: #2e2e2e;
+  margin-top: 0.2em;
+  margin-bottom: 0.1em;
+}
+
+.markdown-content h6 {
+  font-size: 1em;
+  color: #2e2e2e;
+  margin-top: 0.2em;
+  margin-bottom: 0.1em;
+}
+
+/* Paragraph Style */
+.markdown-content p {
+  margin-bottom: 1em;
+}
+
+/* Link Style */
+.markdown-content a {
+  color: #808080a8;
+  text-decoration: underline;
+}
+
+/* Link Style */
+.markdown-content hr {
+  padding-bottom: 30px;
+}
+
+
+
+
+
+
+
+
+
