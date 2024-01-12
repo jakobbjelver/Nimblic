@@ -1,7 +1,7 @@
 # Nimblic: The easiest Exploratory Data Analysis for your data 🚀
 
 > "In exploratory data analysis, I feel like a detective finding puzzle pieces in the data..."
-> - Noemi Derzsy
+> Noemi Derzsy
 
 ## Introduction
 
