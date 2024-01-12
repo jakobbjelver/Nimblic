@@ -1,4 +1,7 @@
-# Nimblic: Your Innovative EDA Companion
+# Nimblic: The easiest Exploratory Data Analysis for your data 🚀
+
+> "In exploratory data analysis, I feel like a detective finding puzzle pieces in the data..."
+> - Noemi Derzsy
 
 ## Introduction
 
@@ -28,12 +31,6 @@ Nimblic thrives on community contributions. Whether it's through reporting bugs,
 - **Feature Suggestions**: Have ideas for new features? Share them with us.
 - **Code Contributions**: Contributions via pull requests are always welcome.
 
-## Connect with Us
-
-Stay updated and join our community:
-- [Twitter](https://twitter.com/nimblic)
-- [Discord](#)
-
-We look forward to embarking on this data exploration journey with you!
+We look forward to embarking on this data exploration journey with you! 📊🔍
 
 ---
