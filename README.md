@@ -5,17 +5,17 @@
 
 ## Introduction
 
-Welcome to Nimblic, the innovative web application that transforms the way you approach Exploratory Data Analysis (EDA). Crafted for both novices and experts in data science, Nimblic offers an intuitive yet powerful platform to explore, analyze, and visualize data.
+Welcome to Nimblic, the innovative web application that transforms the way you approach Exploratory Data Analysis (EDA). Crafted for both novices and experts in data science, Nimblic offers an intuitive yet powerful platform to explore, analyze, and visualize data. It specializes in the very complicated field of **making it easy and straightforward**. In all its simplicity, its used by uploading your files and let the app handle the rest. No need to make skill-requiring and time consuming decicions, as the app does all that for the user.
 
 ## What is Nimblic?
 
-Nimblic is not just another data analysis tool. It's a thoughtfully designed EDA environment that simplifies complex data exploration tasks. Our application provides a comprehensive suite of tools to help you uncover insights and patterns in your data.
+Nimblic is not just another data analysis tool. It's a thoughtfully designed EDA environment that simplifies complex data exploration tasks. Our application provides a comprehensive suite of analyses to help you uncover insights and patterns in your data through an interactive UI.
 
 ## Key Features
 
 - **Intuitive Interface**: Nimblic's user interface is designed to be accessible to users of all skill levels, making data analysis more approachable.
 - **Advanced Analytical Tools**: Equipped with a range of analytical functionalities, Nimblic helps you dive deep into your datasets.
-- **Cloud-Based Flexibility**: Access your data analyses from anywhere, at any time. Nimblic's cloud infrastructure ensures your projects are always within reach.
+- **Quick start-up**: Simply log in and upload your file(s). Your data is safe and never at rest on the server.
 
 ## Getting Started with Nimblic
 
@@ -30,6 +30,10 @@ Nimblic thrives on community contributions. Whether it's through reporting bugs,
 - **Bug Reporting**: Encounter an issue? Report it on our issues tracker.
 - **Feature Suggestions**: Have ideas for new features? Share them with us.
 - **Code Contributions**: Contributions via pull requests are always welcome.
+
+## Questions or inquiries?
+
+Everything you need to know is on the homepage of the website ([Nimblic.app](https://nimblic.app/)), but if you want to contact us directly, use the contact form [here](https://nimblic.app/contact).
 
 We look forward to embarking on this data exploration journey with you! 📊🔍
 
