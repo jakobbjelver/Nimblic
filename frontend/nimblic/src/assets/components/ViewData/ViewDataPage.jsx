@@ -97,26 +97,20 @@ const GradientTable = ({ data, isLoading }) => {
   const [showRightGradient, setShowRightGradient] = useState(true);
   const scrollAmount = 200;
 
-  const handleScroll = () => {
-    const { scrollLeft, scrollWidth, clientWidth } = tableContainerRef.current;
-    setShowLeftGradient(scrollLeft > 10);
-    setShowRightGradient(scrollLeft <= scrollWidth - clientWidth - 10);
-  };
-
   useEffect(() => {
+    const handleScroll = () => {
+      const { scrollLeft, scrollWidth, clientWidth } = tableContainerRef.current;
+      setShowLeftGradient(scrollLeft > 0);
+      setShowRightGradient(scrollLeft <= scrollWidth - clientWidth - 1);
+    };
+
     const tableContainer = tableContainerRef.current;
+
     if (tableContainer) {
       tableContainer.addEventListener('scroll', handleScroll);
       return () => tableContainer.removeEventListener('scroll', handleScroll);
     }
-  }, []);
-
-  if (!data || data.length === 0 || isLoading) {
-    return (
-      <div className="skeleton bg-base-300 w-full h-[250px]">
-      </div>
-    );
-  }
+  }, []); // Empty dependency array to run only on mount
 
   const prevTableSlide = () => {
     if (tableContainerRef.current) {
@@ -135,6 +129,9 @@ const GradientTable = ({ data, isLoading }) => {
       <div className="relative w-full">
         <div className={`${showLeftGradient ? 'opacity-50' : 'opacity-0'} transition-all duration-700 absolute top-0 left-0 h-full bg-gradient-to-r from-base-300 to-transparent w-40 z-[10]`}></div>
         <div ref={tableContainerRef} className="overflow-auto scroll-smooth">
+        {(!data || data.length === 0 || isLoading) ? (
+            <div className="skeleton bg-base-300 w-full h-[250px]"></div>
+          ) : (
           <table className="table table-xs table-zebra table-pin-rows">
             <thead>
               <tr>
@@ -153,6 +150,7 @@ const GradientTable = ({ data, isLoading }) => {
               ))}
             </tbody>
           </table>
+          )}
         </div>
         <div className={`${showRightGradient ? 'opacity-50' : 'opacity-0'} transition-all duration-700 absolute top-0 right-0 h-full bg-gradient-to-l from-base-300 to-transparent w-40 z-[10]`}></div>
       </div>

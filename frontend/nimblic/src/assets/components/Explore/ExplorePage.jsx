@@ -38,13 +38,13 @@ const ExplorePage = () => {
       }
 
     } else if (!uploadData || Object.keys(uploadData).length <= 0 && !isUploading) {
-      navigate('/')
+      //navigate('/')
     }
   }, [uploadData, isUploading, activeIndex]);
 
   useEffect(() => {
     if (!uploadData || Object.keys(uploadData).length <= 0 && !isUploading) {
-      navigate('/')
+      //navigate('/')
     }
   }, []);
 

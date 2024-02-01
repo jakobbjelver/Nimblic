@@ -5,11 +5,24 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+  overflow-x: hidden;
+}
+
+.banner {
+  height: 100dvh;
+}
 
 html {
   @apply font-sans;
   scrollbar-gutter: stable;
 }
+
+details[disabled] summary,
+  details.disabled summary {
+    pointer-events: none; /* prevents click events */
+    user-select: none; /* prevents text selection */
+  }
 
 .prevent-layout-shift {
   scrollbar-gutter: stable;
@@ -56,26 +69,34 @@ html {
 .settings-beginner {
   background-image: url('/svg/settings_beginner.svg');
   background-size: contain; 
-  height: 70px;
-  width: 100px;
+  height: 100%;
+  width: 100%;
   background-repeat: no-repeat;
   background-position: center;
 }
 .settings-intermediate {
   background-image: url('/svg/settings_intermediate.svg');
   background-size: contain; 
-  height: 70px;
-  width: 100px;
+  height: 100%;
+  width: 100%;
   background-repeat: no-repeat;
   background-position: center;
 }
 .settings-expert {
   background-image: url('/svg/settings_expert.svg');
   background-size: contain; 
-  height: 70px;
-  width: 100px;
+  height: 100%;
+  width: 100%;
   background-repeat: no-repeat;
   background-position: center;
+}
+
+[data-theme="dark"] .step::before {
+  @apply bg-[#242c40] !important;
+}
+
+[data-theme="dark"] .step::after {
+  @apply bg-[#242c40] !important;
 }
 
 .not-found {

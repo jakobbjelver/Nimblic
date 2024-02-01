@@ -177,28 +177,28 @@ const DataQualityVisualization = ({ qualityData, selectedColumn }) => {
     };
 
     return (
-        <div className="flex flex-row items-top max-w-screen-xl justify-center">
-        <div className="card shadow-sm p-6 bg-base-200 w-1/2 max-w-lg h-[500px] mr-4">
+        <div className="card shadow-md bg-base-200 flex flex-row items-top w-[850px] justify-center">
+        <div className=" p-6 w-1/2 max-w-4xl h-[500px] mr-4">
                 <div className="flex justify-between items-center mb-6 mt-4 px-4">
                     <h3 className="card-title">PII Distribution</h3>
                     <CardMenu cardId={'dqp_piid'}/>
                 </div>
-                {stackedSeries ?
-                    <Suspense fallback={ <div className="skeleton w-[400px] h-[300px] bg-base-200"></div>}>
+                {stackedSeries && stackedSeries.series ?
+                    <Suspense fallback={ <div className="skeleton w-[385] h-[400px] bg-base-300"></div>}>
                         <ApexCharts
                             options={stackedOptions}
                             series={stackedSeries.series}
                             type="bar"
                             height="365"
-                            width="390"
+                            width="385"
                         />
 
                     </Suspense>
                     :
-                    <div className="skeleton w-[400px] h-[300px] bg-base-200"></div>
+                    <div className="skeleton w-[385px] h-[400px] bg-base-300"></div>
                 }
             </div>
-            <div className="card shadow-sm p-6 bg-base-200 w-1/2 max-w-lg h-[500px]">
+            <div className="p-6 w-1/2 max-w-lg h-[500px]">
                 <div className="w-full flex flex-row items-center justify-between mb-2">
                     <h3 className="card-title">Redundancy Rate</h3>
                     <CardMenu />
@@ -208,17 +208,17 @@ const DataQualityVisualization = ({ qualityData, selectedColumn }) => {
                     {selectedColumn}                    
                     </div>
                 </div>
-                <Suspense fallback={ <div className="skeleton w-[300px] h-[300px] bg-base-200"></div>}>
-                {radialSeries ?
+                <Suspense fallback={ <div className="skeleton w-[385px] h-[300px] bg-base-300"></div>}>
+                {radialSeries && radialSeries.series ?
                         <ApexCharts
                             options={radialOptions}
                             series={radialSeries.series}
                             type="radialBar"
                             height="350"
-                            width="360"
+                            width="385"
                             className="left-0 right-0 mx-auto my-auto"
                         />
-                        : <div className="skeleton w-[300px] h-[300px] bg-base-200"></div>
+                        : <div className="skeleton w-[300px] h-[385px] bg-base-300"></div>
                     }
                 </Suspense>
             </div>

@@ -11,6 +11,7 @@ import { coy as lightTheme } from 'react-syntax-highlighter/dist/esm/styles/pris
 import { dracula as darkTheme } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import ThemeContext from '../general/Theme/ThemeContext';
 import { useNavigate } from 'react-router-dom';
+import CopyButton from './CopyButton';
 
 const CardMenu = ({ cardId, codeFile, cardRef }) => {
   const { settings } = useContext(SettingsContext);
@@ -24,7 +25,7 @@ const CardMenu = ({ cardId, codeFile, cardRef }) => {
     if (state == 'loading') {
 
       modalContent = (
-        <div className="flex items-center justify-center w-[455px] mt-60 h-max">
+        <div className="flex items-center justify-center w-full mt-60 h-max">
           <div className="loading loading-spinner loading-lg text-neutral-content/70"></div>
         </div>
       );
@@ -41,7 +42,7 @@ const CardMenu = ({ cardId, codeFile, cardRef }) => {
       }
 
       modalContent = (
-        <div className="flex flex-col items-center justify-center w-[455px] mt-60 h-max">
+        <div className="flex flex-col items-center justify-center w-full mt-60 h-max">
           <div className="flex flex-row items-center justify-center gap-1 mr-5">
             <ExclamationCircleIcon className="h-5 w-5 text-error" aria-hidden="true" />
             <p className="text-lg font-semibold">{text}</p>
@@ -52,11 +53,23 @@ const CardMenu = ({ cardId, codeFile, cardRef }) => {
       );
     } else {
       modalContent = contentType === 'info' ?
-        <ReactMarkdown>{content}</ReactMarkdown>
+        <>
+          <div className="mt-4 flex flex-row gap-1.5 items-center">
+            <p className="font-bold text-xs">SKILL LEVEL</p>
+            <div className="badge badge-primary badge-outline">{settings?.skillLevel[0].toUpperCase() + settings?.skillLevel.substring(1)}</div>
+          </div>
+          <ReactMarkdown>{content}</ReactMarkdown>
+        </>
         :
-        <div className="text-sm bg-transparent">
-          <SyntaxHighlighter wrapLongLines={true} language="python" style={theme === 'dark' ? darkTheme : lightTheme}>{content}</SyntaxHighlighter>
-        </div>
+        <>
+          <div className="absolute right-12 top-20 z-[10]">
+            <CopyButton copyText={JSON.stringify(modalContent)} color={'neutral'} />
+          </div>
+          <div className="text-sm bg-transparent">
+            <SyntaxHighlighter wrapLongLines={true} language="python" style={theme === 'dark' ? darkTheme : lightTheme}>{content}</SyntaxHighlighter>
+          </div>
+        </>
+
     }
 
     openModal(

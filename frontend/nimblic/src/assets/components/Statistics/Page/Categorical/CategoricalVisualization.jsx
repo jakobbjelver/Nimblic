@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect, useContext, Suspense } from 'react';
 import Dropdown from '../../../general/Dropdown';
-import { truncateLabel } from 'src/utils/textFormat';
 import ThemeContext from '../../../general/Theme/ThemeContext';
 import CardMenu from '../../../general/CardMenu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -9,8 +8,6 @@ import { faArrowRight, faArrowLeft, faArrowUp, faArrowDown } from '@fortawesome/
 const CategoricalVisualization = ({ categoricalData, selectedCategory, isLoading }) => {
     const [numericalCategories, setNumericalCategories] = useState(null);
     const [selectedNumericalColumn, setSelectedNumericalColumn] = useState(null);
-    const dropdownNumericalRef = useRef(null);
-    const dropdownSortRef = useRef(null);
     const boxPlotContainerRef = useRef(null);
     const barChartContainerRef = useRef(null);
     const [boxPlotWidth, setBoxPlotWidth] = useState(500);
@@ -52,6 +49,11 @@ const CategoricalVisualization = ({ categoricalData, selectedCategory, isLoading
                 setNumericalCategories(Object.keys(categoryData));
 
                 const numKeys = Object.values(categoryData)[0]
+
+                if(!numKeys) {
+                    setNull(true);
+                    return
+                }
                 const numItems = Object.keys(numKeys).length
                 setMaxNumItems(numItems)
             }
@@ -221,21 +223,6 @@ const CategoricalVisualization = ({ categoricalData, selectedCategory, isLoading
             setPagination(newPage);
         }
     }
-
-    const handleNumericalColumnChange = (numColumn) => {
-        setSelectedNumericalColumn(numColumn);
-        if (dropdownNumericalRef.current) {
-            dropdownNumericalRef.current.open = false;
-        }
-    };
-
-    const handleSortOrderChange = (order) => {
-        setSortOrder(order);
-        if (dropdownSortRef.current) {
-            dropdownSortRef.current.open = false;
-        }
-    };
-
     const prevBoxSlide = () => {
         if (boxPlotContainerRef.current) {
             boxPlotContainerRef.current.scrollLeft -= scrollAmount;
@@ -534,9 +521,8 @@ const CategoricalVisualization = ({ categoricalData, selectedCategory, isLoading
                 <div className="flex flex-row w-full my-3">
                     <div className="card flex flex-row items-center justify-center shadow-sm pt-4 px-6 bg-base-300 w-fit h-fit">
                         <div className="flex items-center h-fit w-fit ml-6">
-                            <h3 className="text-xs mr-1 mb-4 font-bold">SORT BY</h3>
                             <Dropdown
-                                ref={dropdownSortRef}
+                                label={"sort by"}
                                 items={[
                                     'Median: Low to High',
                                     'Median: High to Low',
@@ -549,7 +535,7 @@ const CategoricalVisualization = ({ categoricalData, selectedCategory, isLoading
                                     'Alphabetical'
                                 ]}
                                 selectedItem={sortOrder}
-                                onChange={handleSortOrderChange}
+                                onChange={setSortOrder}
                                 height={600}
                                 textLength={30}
                             />
@@ -588,12 +574,11 @@ const CategoricalVisualization = ({ categoricalData, selectedCategory, isLoading
                                     <CardMenu cardId={'sp_ca_d'}/>
                                 </div>
                                 <div className="flex items-center h-fit w-fit ml-6">
-                                    <h3 className="text-xs mr-1 mb-4 font-bold">NUMERICAL COLUMN</h3>
                                     <Dropdown
-                                        ref={dropdownNumericalRef}
+                                        label={"numerical column"}
                                         items={numericalCategories}
                                         selectedItem={selectedNumericalColumn}
-                                        onChange={handleNumericalColumnChange}
+                                        onChange={setSelectedNumericalColumn}
                                     />
                                 </div>
 

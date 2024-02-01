@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext, useRef, Suspense } from 'react';
+import React, { useEffect, useState, useContext, Suspense } from 'react';
 import Tabs from '../general/Tabs/Tabs';
 import { TabsContext } from '../general/Tabs/TabsContext';
 import Dropdown from '../general/Dropdown';
@@ -20,7 +20,6 @@ const DataQualityPage = () => {
   const navigate = useNavigate();
 
   const [columns, setColumns] = useState(null);
-  const dropdownRef = useRef(null);
   const [selectedColumn, setSelectedColumn] = useState(null);
 
   const currentData = uploadData[activeIndex];
@@ -57,13 +56,6 @@ const DataQualityPage = () => {
     }
   }, []);
 
-  const handleColumnChange = (column) => {
-    setSelectedColumn(column);
-    if (dropdownRef.current) {
-      dropdownRef.current.open = false;
-    }
-  };
-
   if (isLoading) {
     return PageSkeleton()
   }
@@ -75,17 +67,16 @@ const DataQualityPage = () => {
           <Tabs />
         </div>
         <div className="w-full flex flex-row gap-8 items-top justify-center my-10 fadeInUp">
-          <div className="flex flex-col xl:w-4/5 lg:w-3/5">
+          <div className="flex flex-col xl:w-4/5 lg:w-3/5 2xl:w-fit">
             <div className="flex flex-wrap items-top rounded-xl shadow-md py-8 px-8 bg-base-200 max-w-screen-xl h-fit">
               <div className="flex flex-row items-center justify-between w-4/5 gap-3 px-4 h-fit">
                 <h1 className="font-bold text-3xl mb-5">Data Quality</h1>
                 <div className="flex items-center h-fit w-fit">
-                  <h3 className="text-xs mr-1 mb-4 font-bold">COLUMN</h3>
                   <Dropdown
-                    ref={dropdownRef}
+                    label={"column"}
                     items={columns}
                     selectedItem={selectedColumn}
-                    onChange={handleColumnChange}
+                    onChange={setSelectedColumn}
                   />
 
                 </div>
@@ -97,7 +88,7 @@ const DataQualityPage = () => {
               <PotentialOutliersCard data={currentData.data_quality.potential_outliers} selectedColumn={selectedColumn} />
               <TimeCard timeData={currentData.data_quality.completeness_over_time} selectedColumn={selectedColumn} />
             </div>
-            <div className="w-full flex flex-row gap-8 items-top justify-center my-10 fadeInUp">
+            <div className="w-max flex flex-col gap-8 items-top justify-center my-10 fadeInUp">
               <Suspense fallback={
                 VisualizationSkeleton()
               }>
@@ -119,13 +110,13 @@ export default DataQualityPage;
 
 const VisualizationSkeleton = () => {
   return (
-    <div className="flex flex-row items-top xl:w-4/5 lg:w-3/5 max-w-screen-xl justify-center">
-      <div className="card shadow-sm p-6 bg-base-200 w-1/2 max-w-lg h-[500px] mr-4">
+    <div className="flex flex-row items-top w-[850px] justify-center">
+      <div className="card shadow-sm p-6 bg-base-200 w-[430px] h-[500px] mr-4">
         <div className="flex justify-between items-center mb-6 mt-4 px-4">
           <h3 className="card-title">PII Distribution</h3>
           <CardMenu />
         </div>
-        <div className="skeleton w-[400px] h-[300px] bg-base-200"></div>
+        <div className="skeleton w-[380px] h-[300px] bg-base-300"></div>
       </div>
       <div className="card shadow-sm p-6 bg-base-200 w-1/2 max-w-lg h-[500px]">
         <div className="w-full flex flex-row items-center justify-between mb-2">
@@ -135,7 +126,7 @@ const VisualizationSkeleton = () => {
         <div className="flex flex-row items-center justify-start mb-6 w-full">
           <div className="badge text-lg px-4 py-4 mb-1 w-32"></div>
         </div>
-        <div className="skeleton w-[300px] h-[300px] bg-base-200"></div>
+        <div className="skeleton w-[390px] h-[300px] bg-base-300"></div>
       </div>
     </div>
   )

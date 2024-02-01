@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useContext, useLayoutEffect, Suspense } from 'react';
+import React, { useState, useEffect, useContext, useLayoutEffect, Suspense } from 'react';
 import Dropdown from '../../../general/Dropdown';
 import { truncateLabel } from 'src/utils/textFormat';
 import CardMenu from '../../../general/CardMenu';
@@ -8,7 +8,6 @@ import CategoricalVisualizationSkeleton from '../../../general/Skeletons/Categor
 const CategoricalAnalysis = ({ categoricalData, profileData, isLoading }) => {
     const [categories, setCategories] = useState(null);
     const [selectedCategory, setSelectedCategory] = useState(null);
-    const dropdownRef = useRef(null);
     const [isNull, setNull] = useState(true);
     const CategoricalVisualization = React.lazy(() => import('./CategoricalVisualization'));
 
@@ -25,15 +24,6 @@ const CategoricalAnalysis = ({ categoricalData, profileData, isLoading }) => {
             setNull(true);
         }
     }, [categoricalData, profileData, isLoading]); // Depend on currentData
-
-
-    const handleCategoryChange = (category) => {
-        setSelectedCategory(category);
-        // Manually close the 'details' element
-        if (dropdownRef.current) {
-            dropdownRef.current.open = false;
-        }
-    };
 
     const renderSimilarCategoriesTable = () => {
         if (!categoricalData[selectedCategory]) return
@@ -91,7 +81,10 @@ const CategoricalAnalysis = ({ categoricalData, profileData, isLoading }) => {
         if (isNull) {
             return (
                 <>
-                    <div className="w-full h-[400px] flex items-center justify-center text-xl">No categorical data</div>
+                    <div className="flex flex-col items-center justify-center h-fit w-full gap-12 my-40">
+                        <img src="/svg/not_found.svg" alt="Data not found" width="100" />
+                        <p className="text-lg">Looks like we couldn't process any data for this analysis</p>
+                    </div>
                 </>
             )
         }
@@ -100,12 +93,11 @@ const CategoricalAnalysis = ({ categoricalData, profileData, isLoading }) => {
                 <div className="flex flex-row items-center justify-start w-full gap-3 px-10">
                     <h1 className="font-bold text-2xl mb-5">Categorical Analysis</h1>
                     <div className="flex items-center h-fit w-fit ml-60">
-                        <h3 className="text-xs mr-1 mb-4 font-bold">COLUMN</h3>
                         <Dropdown
-                            ref={dropdownRef}
+                            label={"column"}
                             items={categories}
                             selectedItem={selectedCategory}
-                            onChange={handleCategoryChange}
+                            onChange={setSelectedCategory}
                         />
 
                     </div>
@@ -115,7 +107,7 @@ const CategoricalAnalysis = ({ categoricalData, profileData, isLoading }) => {
                         <div className="card w-[350px] h-max overflow-auto shadow-sm p-6 bg-base-300">
                             <div className="flex flex-row justify-between items-center mb-4">
                                 <h2 className="card-title">Profile</h2>
-                                <CardMenu cardId={'sp_ca_pr'}/>
+                                <CardMenu cardId={'sp_ca_pr'} />
                             </div>
                             <div className="overflow-auto max-h-[310px]">
                                 {renderProfileCard()}
@@ -126,7 +118,7 @@ const CategoricalAnalysis = ({ categoricalData, profileData, isLoading }) => {
                         <div className="card shadow-sm p-6 bg-base-300 w-full h-full ml-12">
                             <div className="flex flex-row justify-between items-center mb-4">
                                 <h2 className="card-title">Similar Categories</h2>
-                                <CardMenu cardId={'sp_ca_sc'}/>
+                                <CardMenu cardId={'sp_ca_sc'} />
                             </div>
                             <div className="overflow-auto max-h-[300px]">
                                 {renderSimilarCategoriesTable()}

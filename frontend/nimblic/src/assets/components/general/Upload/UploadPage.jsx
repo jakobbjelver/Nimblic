@@ -27,7 +27,7 @@ const UploadPage = () => {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     if (!uploadData || Object.keys(uploadData).length <= 0 && !isUploading) {
-      //navigate('/')
+      navigate('/')
     }
   }, []);
 

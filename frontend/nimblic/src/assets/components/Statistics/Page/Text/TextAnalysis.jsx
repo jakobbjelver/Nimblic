@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useContext, Suspense } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import Dropdown from '../../../general/Dropdown';
 import { truncateLabel } from 'src/utils/textFormat';
 import { fromCamelToText } from 'src/utils/textFormat';
@@ -10,7 +10,6 @@ import CardMenu from '../../../general/CardMenu';
 const TextAnalysis = ({ textData, profileData, isLoading }) => {
     const [columns, setColumns] = useState(null);
 
-    const dropdownRef = useRef(null);
     const [selectedColumn, setSelectedColumn] = useState(null);
     const TextVisualization = React.lazy(() => import('./TextVisualization'));
 
@@ -20,13 +19,6 @@ const TextAnalysis = ({ textData, profileData, isLoading }) => {
             setSelectedColumn(Object.keys(textData)[0])
         } 
     }, [textData, profileData, isLoading]); // Depend on currentData
-
-    const handleColumnChange = (column) => {
-        setSelectedColumn(column);
-        if (dropdownRef.current) {
-            dropdownRef.current.open = false;
-        }
-    };
 
     const renderSentimentAnalysis = () => {
         if (!textData[selectedColumn]) return (
@@ -204,12 +196,11 @@ const TextAnalysis = ({ textData, profileData, isLoading }) => {
                 <div className="flex flex-row items-center justify-start w-full gap-3 px-10">
                     <h1 className="font-bold text-2xl mb-5">Text Analysis</h1>
                     <div className="flex items-center h-fit w-fit ml-80">
-                        <h3 className="text-xs mr-1 mb-4 font-bold">COLUMN</h3>
                         <Dropdown
-                            ref={dropdownRef}
+                            label={"column"}
                             items={columns}
                             selectedItem={selectedColumn}
-                            onChange={handleColumnChange}
+                            onChange={setSelectedColumn}
                         />
 
                     </div>

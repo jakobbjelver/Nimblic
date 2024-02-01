@@ -9,6 +9,7 @@ const GraphRecommendationsCard = ({ graphRecommendations, isLoading }) => {
     const [currentSlide, setCurrentSlide] = useState(0);
     const [itemWidths, setItemWidths] = useState([]);
     const [totalSlides, setTotalSlides] = useState([]);
+    
 
     const nextSlide = () => {
         setCurrentSlide((prevIndex) => (prevIndex + 1) % totalSlides);
@@ -20,7 +21,10 @@ const GraphRecommendationsCard = ({ graphRecommendations, isLoading }) => {
 
 
     useEffect(() => {
-        if (isLoading || !graphRecommendations) return;
+        if (isLoading || !graphRecommendations || graphRecommendations == 'None') return;
+
+        // Dynamically import Chart.js
+        import('chart.js/auto').then(({ default: Chart }) => {
 
         const totalSlides = Object.keys(graphRecommendations).length;
         setTotalSlides(totalSlides);
@@ -101,6 +105,8 @@ const GraphRecommendationsCard = ({ graphRecommendations, isLoading }) => {
             chartInstances.current.forEach(chart => chart.destroy());
             window.removeEventListener('resize', updateItemWidths);
         };
+
+    });
     }, [graphRecommendations, isLoading]);
 
     const totalTranslateX = itemWidths.slice(0, currentSlide).reduce((acc, width) => acc + width, 0);
@@ -198,6 +204,20 @@ const GraphRecommendationsCard = ({ graphRecommendations, isLoading }) => {
         }
     }
 
+    if (graphRecommendations == 'None') {
+        return (
+            <div className="card bg-base-200 shadow-sm w-full h-fit">
+                <div className="card-body flex">
+                    <h1 className="text-2xl font-bold mb-5">Recommended Graphs</h1>
+                    <div className="flex flex-col items-center justify-center h-fit w-full gap-12 my-10">
+                        <img src="/svg/not_found.svg" alt="Data not found" width="100" />
+                        <p className="text-lg">Looks like we couldn't process any data for this analysis</p>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
 
     if (isLoading) {
         return (
@@ -254,7 +274,7 @@ const GraphRecommendationsCard = ({ graphRecommendations, isLoading }) => {
         <div className="card bg-base-200 shadow-sm w-full h-fit">
             <div className="flex flex-row justify-between items-center p-8">
                 <h1 className="card-title text-2xl font-bold ml-10">Recommended graphs</h1>
-                <CardMenu cardId={"ep_gr"}/>
+                <CardMenu cardId={"ep_gr"} />
             </div>
             <div className="card-body flex">
                 {!isLoading && graphRecommendations?.length <= 0 ?

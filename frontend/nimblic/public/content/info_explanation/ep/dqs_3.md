@@ -2,7 +2,6 @@ Data Quality Summary
 
 > **NOTE** This is just a summary, head over to the Data Quality page to see the full analysis.
  
-&nbsp;  
 ### **Data Quality Profiling**
 
 The Data Quality Summary employs techniques to assess the integrity and usefulness of the dataset, providing a comprehensive quality profile.

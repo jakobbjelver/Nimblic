@@ -109,7 +109,7 @@ const Tabs = () => {
 
     if (uploadData.length === 0) {
         <>
-            <div className="skeleton w-40 h-20"></div>
+            <div className="skeleton w-40 ml-1 rounded-full bg-base-200 h-10"></div>
         </>
     }
     // Add a loading tab when a new file is being uploaded
@@ -136,7 +136,7 @@ const Tabs = () => {
                 : '' : ''}
             <div role="tablist" className="tabs tabs-md rounded-s-3xl ps-0 tabs-boxed bg-base-300 w-fit flex items-center justify-center">
                 <div className="flex flex-row overflow-x-auto overflow-y-hidden items-center justify-center">
-                    {tabs.length > 0 ? tabs : <div className="skeleton w-40 h-10"></div>}
+                    {tabs.length > 0 ? tabs : <div className="skeleton w-40 ml-1 rounded-full bg-base-200 h-10"></div>}
                 </div>
                 <button className="btn btn-sm btn-ghost ml-2 w-fit h-fit p-0" onClick={handleNewUpload}>
                     <a role="tab" className={`tab text-xs font-semibold ${activeIndex === -1 ? 'tab-active [--tab-bg:secondary]' : ''}`}><FontAwesomeIcon icon={faPlus} className="mr-1" />ADD ANALYSIS</a>

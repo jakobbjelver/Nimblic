@@ -1,22 +1,13 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import Dropdown from '../../general/Dropdown';
 import { truncateLabel } from 'src/utils/textFormat'; 
 
 const Correlation = ({ spearmanData, pearsonData }) => {
-    const dropdownRef = useRef(null);
 
     const [selectedCorrelation, setSelectedCorrelation] = useState('Spearman');
     const correlationItems = [];
     if (spearmanData) correlationItems.push('Spearman');
     if (pearsonData) correlationItems.push('Pearson');
-    
-
-    const handleCorrelationChange = (correlation) => {
-        setSelectedCorrelation(correlation);
-        if (dropdownRef.current) {
-            dropdownRef.current.open = false;
-          }
-    };
 
     const getCorrelationData = () => {
         return selectedCorrelation === 'Spearman' ? spearmanData : pearsonData;
@@ -30,10 +21,9 @@ const Correlation = ({ spearmanData, pearsonData }) => {
         <div className="card w-full shadow-sm p-4 bg-base-300 mx-1">
             <h2 className="card-title mb-4">Correlation</h2>
             <Dropdown
-            ref={dropdownRef}
                 items={correlationItems}
                 selectedItem={selectedCorrelation}
-                onChange={handleCorrelationChange}
+                onChange={setSelectedCorrelation}
             />
             <div className="overflow-y-auto overflow-x-hidden h-52">
                 <table className="table table-sm table-pin-rows">

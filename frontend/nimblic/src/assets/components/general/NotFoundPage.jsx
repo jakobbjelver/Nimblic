@@ -1,23 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faGithub } from '@fortawesome/free-brands-svg-icons';
-import ThemeToggle from './Theme/ThemeToggle';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const NotFound = () => {
     const navigate = useNavigate();
-    const [isScrolled, setIsScrolled] = useState(false);
-    // Handle scroll event
-    const handleScroll = () => {
-        const offset = window.scrollY;
-        setIsScrolled(offset > 0);
-    };
-
-    // Add event listener for scroll
-    useEffect(() => {
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
 
     return (
         <>

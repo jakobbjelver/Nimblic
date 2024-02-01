@@ -2,7 +2,6 @@ Data Quality Summary
 
 > **NOTE** This is just a summary, head over to the Data Quality page to see the full analysis.
  
-&nbsp;  
 ### **In-Depth Data Quality Analysis**
 
 The Data Quality Summary card in the app conducts a thorough analysis of your data, highlighting key quality issues.

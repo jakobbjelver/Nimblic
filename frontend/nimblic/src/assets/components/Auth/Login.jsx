@@ -1,19 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import userManager from '../../services/user/userManager';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faGithub } from '@fortawesome/free-brands-svg-icons';
+import { getFirebaseErrorMessage } from '../../../utils/errorUtil';
+import { AlertContext } from '../general/Alert/AlertContext';
 
-const Login = ({ onLoginSuccess }) => {
+const Login = ({ onLoginSuccess, verifyEmail = false }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [recoveryEmail, setRecoveryEmail] = useState('');
   const [userAuth, setUserAuth] = useState('');
   const [isSignUp, setIsSignUp] = useState(false);
   const [isRecoveryMode, setIsRecoveryMode] = useState(false);
-  const [isVerificationMode, setIsVerificationMode] = useState(false);
+  const [isVerificationMode, setIsVerificationMode] = useState(verifyEmail);
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [message, setMessage] = useState(null);
   const [timer, setTimer] = useState(0);
-
+  const { setSuccessMessage, setErrorMessage } = useContext(AlertContext);
 
   useEffect(() => {
     let interval = null
@@ -30,6 +34,7 @@ const Login = ({ onLoginSuccess }) => {
   }, [timer]);
 
   useEffect(() => {
+
     const handleUserAuthChange = (newUserAuth) => {
       setUserAuth(newUserAuth);
     };
@@ -39,6 +44,14 @@ const Login = ({ onLoginSuccess }) => {
       userManager.unsubscribeFromUserAuth(handleUserAuthChange);
     };
   }, []);
+
+  useEffect(() => {
+
+    if(isVerificationMode) {
+      sendVerificationEmail()
+    }
+
+  }, [isVerificationMode]);
 
 
 
@@ -50,7 +63,7 @@ const Login = ({ onLoginSuccess }) => {
       await operation();
       onLoginSuccess();
     } catch (err) {
-      const userFriendlyError = getErrorMessage(err);
+      const userFriendlyError = getFirebaseErrorMessage(err);
       setError(userFriendlyError);
       setLoading(false)
       const timer = setTimeout(() => {
@@ -63,7 +76,7 @@ const Login = ({ onLoginSuccess }) => {
 
   const handleSignInWithEmailPassword = (e) => {
     e.preventDefault();
-    handleAuthOperation(() => userManager.signInWithEmailAndPassword(userManager.getAuth(), email, password));
+    handleAuthOperation(() => userManager.signInWithEmailAndPassword(email, password));
   };
 
   const handleSignUpWithEmailPassword = async (e) => {
@@ -71,13 +84,13 @@ const Login = ({ onLoginSuccess }) => {
     try {
       setLoading(true);
       const thisUserCredential = await userManager.signUpWithEmailPassword(email, password);
-      await sendVerificationEmail(thisUserCredential);
+      //await sendVerificationEmail(thisUserCredential);
       setMessage("Please check your email for the verification link.");
       setIsVerificationMode(true)
-      checkEmailVerification(thisUserCredential.user);
+      //checkEmailVerification(thisUserCredential.user);
     } catch (error) {
       setMessage(null);
-      const userFriendlyError = getErrorMessage(error);
+      const userFriendlyError = getFirebaseErrorMessage(error);
       setError(userFriendlyError);
     } finally {
       setLoading(false);
@@ -86,43 +99,51 @@ const Login = ({ onLoginSuccess }) => {
 
 
   const sendVerificationEmail = async () => {
+    if(timer > 0) return 
+
     setTimer(60); // Start the countdown from 60 seconds
     try {
+      setMessage("Please check your email for the verification link.");
       setLoading(true);
       await userManager.sendEmailVerification(userAuth);
       setIsVerificationMode(true);
-      setMessage("Please check your email for the verification link.");
     } catch (error) {
       setMessage(null);
-      const userFriendlyError = getErrorMessage(error);
-      //setError(userFriendlyError); //Something is not right but it's working
+      const userFriendlyError = getFirebaseErrorMessage(error);
+      setError(userFriendlyError);
     } finally {
       setLoading(false);
     }
   };
 
 
-  const checkEmailVerification = () => {
-    console.log("CHECKING VERIFY", userAuth)
-    if (!userAuth) return
+  const checkEmailVerification = async () => {
     setLoading(true)
 
     try {
-      if (userAuth)
-      userAuth.reload();
-      if (userAuth.emailVerified) {
-        onLoginSuccess(); // Proceed with the login process
-      }
-
+      if (userAuth) {
+        await userAuth.reload();
+        const updatedUser = userManager.getAuth().currentUser
+        if (updatedUser.emailVerified) {
+          onLoginSuccess(); // Proceed with the login process
+          setSuccessMessage({
+            type: "success",
+            short: `Email verified`,
+            long: `Your email has been verified successfully.`
+        });
+        } else {
+          setMessage(null)
+          setError("Email not verified yet. Please try again.")
+        }
+      } 
     } catch (error) {
       setMessage(null)
+      console.error("Error checking verify", error)
       setError("Email not verified yet. Please try again.")
     } finally {
       setLoading(false)
     }
-
   };
-
 
 
   const handlePasswordRecovery = async (e) => {
@@ -144,7 +165,17 @@ const Login = ({ onLoginSuccess }) => {
 
   const handleSignInWithGoogle = (e) => {
     e.preventDefault();
-    handleAuthOperation(() => userManager.signInWithGoogle(recoveryEmail));
+    handleAuthOperation(() => userManager.signInWithGoogle());
+  };
+
+  const handleSignInWithGitHub = (e) => {
+    e.preventDefault();
+    handleAuthOperation(() => userManager.signInWithGitHub());
+  };
+
+  const handleSignInWithMicrosoft = (e) => {
+    e.preventDefault();
+    handleAuthOperation(() => userManager.signInWithMicrosoft());
   };
 
 
@@ -222,14 +253,14 @@ const Login = ({ onLoginSuccess }) => {
   const verificationComponent = (
     <div className="flex flex-col items-center justify-center gap-4">
       <button className="relative flex btn h-10 btn-sm btn-primary w-full max-w-[250px] text-base-200" onClick={() => checkEmailVerification()}>
-        {isLoading ? <div className="loading loading-spinner loading-sm"></div> : 'Verify email'}
+        {isLoading ? <div className="loading loading-spinner loading-sm">Sending email</div> : 'Verify email'}
       </button>
       <div className="text-sm">
         <button onClick={() => sendVerificationEmail()} className={`font-medium text-primary hover:text-primary/90 ${timer > 0 ? 'opacity-50 cursor-not-allowed' : ''}`}>
           Resend verification email {timer > 0 ? `in ${timer}` : ''}
         </button>
       </div>
-      <p className="text-xs text-center text-neutral-content/60">When you have clicked the link in the email to {email}, head back to this page and click "Verify email" to log in.</p>
+      <p className="text-xs text-center text-neutral-content/60">When you have clicked the link in the email to {email || userAuth?.email}, head back to this page and click "Verify email" to log in.</p>
     </div>
   );
 
@@ -241,8 +272,7 @@ const Login = ({ onLoginSuccess }) => {
           <div className="logo-sm"></div>
         </div>
         <h2 className="mt-2 text-center text-3xl font-extrabold text-neutral-content/90">
-          {isRecoveryMode ? "Recover your account" : isSignUp ? "Create an account" : "Sign in to your account"}
-
+          {isVerificationMode ? 'Verify your email' : isRecoveryMode ? "Recover your account" : isSignUp ? "Create an account" : "Sign in to your account"}
         </h2>
         <div className="mt-8 w-full">
           <p className={`mb-6 text-center ${error && !message ? 'text-error' : 'text-neutral-content'}`}>{message || error}</p>
@@ -269,14 +299,32 @@ const Login = ({ onLoginSuccess }) => {
                     <span className="bg-base-300 px-2 text-neutral-content/60">Or continue with</span>
                   </div>
                 </div>
-                <div className="mt-6 grid grid-cols-1 gap-3">
+                <div className="mt-6 grid grid-cols-3 gap-3">
                   <div>
                     <button
                       onClick={handleSignInWithGoogle}
                       className="inline-flex w-full btn border-neutral-content/30 shadow-sm h-10 btn-sm btn-ghost"
                     >
                       <span className="sr-only">Sign in with Google</span>
-                      <img src="https://img.icons8.com/color/48/000000/google-logo.png" className="h-5 w-5" alt="Google" />
+                      <img src="https://asset.brandfetch.io/id6O2oGzv-/idvNIQR3p7.svg" className="h-5 w-5" alt="Google" />
+                    </button>
+                  </div>
+                  <div>
+                    <button
+                      onClick={handleSignInWithGitHub}
+                      className="inline-flex w-full btn border-neutral-content/30 shadow-sm h-10 btn-sm btn-ghost"
+                    >
+                      <span className="sr-only">Sign in with GitHub</span>
+                      <FontAwesomeIcon icon={faGithub} size="xl" />
+                    </button>
+                  </div>
+                  <div>
+                    <button
+                      onClick={handleSignInWithMicrosoft}
+                      className="inline-flex w-full btn border-neutral-content/30 shadow-sm h-10 btn-sm btn-ghost"
+                    >
+                      <span className="sr-only">Sign in with Microsoft</span>
+                      <img src="https://asset.brandfetch.io/idchmboHEZ/iduap5ndHF.svg" className="h-5 w-5" alt="Microsoft" />
                     </button>
                   </div>
                 </div>
@@ -305,20 +353,4 @@ const Login = ({ onLoginSuccess }) => {
 };
 
 export default Login;
-
-const getErrorMessage = (error) => {
-  const errorMappings = {
-    "auth/email-already-in-use": "This email is already in use. Please try another email.",
-    "auth/missing-email": "There is no account connected to that email.",
-    "auth/invalid-email": "The email address is badly formatted.",
-    "auth/weak-password": "The password is too weak. Please choose a stronger password.",
-    "auth/user-disabled": "This account has been disabled. Please contact support.",
-    "auth/user-not-found": "No account found with this email. Please sign up.",
-    "auth/wrong-password": "Incorrect password. Please try again.",
-    "auth/invalid-credential": "Incorrect credientials. Please try again."
-  };
-
-  const defaultErrorMessage = "An unexpected error occurred. Please try again later.";
-  return errorMappings[error.code] || defaultErrorMessage;
-};
 

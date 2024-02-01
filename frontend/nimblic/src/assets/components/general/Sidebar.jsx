@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUpload, faCompass, faDatabase, faCog, faCircleQuestion, faChartSimple, faMedal } from '@fortawesome/free-solid-svg-icons';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import ThemeToggle from './Theme/ThemeToggle';
-import { ChatBubbleOvalLeftEllipsisIcon} from '@heroicons/react/24/outline'
+import { ChatBubbleOvalLeftEllipsisIcon } from '@heroicons/react/24/outline'
 import { HashLink } from 'react-router-hash-link';
 
 
@@ -47,17 +47,22 @@ const Sidebar = () => {
               className={`btn md:w-fit lg:w-fit xl:w-full flex space-x-3 xl:pr-0 shadow-none border-none rounded-lg text-lg justify-start transition-all ${selected === item.href ? 'text-white bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90' : 'bg-base-300 hover:bg-base-100'}`}
               onClick={() => handleItemClick(item)} // Pass the item object
             >
-              <FontAwesomeIcon icon={item.icon} />            
-                <span className="md:hidden lg:hidden xl:flex 2xl:flex">{item.name}</span>
+              <FontAwesomeIcon icon={item.icon} />
+              <span className="md:hidden lg:hidden xl:flex 2xl:flex">{item.name}</span>
             </button>
           ))}
 
           <div className="flex-grow"></div>
           <div className="flex xl:flex-row lg:flex-col md:flex-col md:gap-4 lg:px-2 lg:gap-4 xl:px-12 items-center justify-between py-8">
-            <ThemeToggle />
-            <HashLink to="/settings/#feedback">
-            <ChatBubbleOvalLeftEllipsisIcon className="h-9 w-9" aria-hidden="true" />
-            </HashLink>
+
+            <div className="tooltip" data-tip="Change theme">
+              <ThemeToggle />
+            </div>
+            <div className="tooltip mb-2" data-tip="Give feedback">
+              <HashLink to="/settings#feedback">
+                <ChatBubbleOvalLeftEllipsisIcon className="h-9 w-9" aria-hidden="true" />
+              </HashLink>
+            </div>
           </div>
         </nav>
       </div>

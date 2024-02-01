@@ -23,7 +23,7 @@ const features = [
   },
   {
     name: 'Transparent Learning and Understanding.',
-    description: 'Experience an unprecedented level of transparency and learning. For every analysis performed, the app provides clear explanations and displays the underlying code. This feature empowers users to understand the rationale behind the results and fosters a deeper learning experience.',
+    description: 'Experience an unprecedented level of transparency and learning. For every analysis performed, the app provides clear explanations and displays the underlying code.',
     icon: LightBulbIcon,
   },
 ]

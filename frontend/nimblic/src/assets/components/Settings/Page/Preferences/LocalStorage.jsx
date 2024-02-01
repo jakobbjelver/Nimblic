@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import ApexCharts from 'react-apexcharts';
-import ThemeContext from '../../general/Theme/ThemeContext';
-import CardMenu from '../../general/CardMenu'
+import ThemeContext from '../../../general/Theme/ThemeContext';
+import CardMenu from '../../../general/CardMenu'
 
 const LocalStorage = () => {
     const [storageUsage, setStorageUsage] = useState(getLocalStorageSize());
@@ -86,7 +86,7 @@ const LocalStorage = () => {
     };
 
     return (
-        <div className="card bg-base-200 w-fit">
+        <div className="card bg-base-200 w-fit md:block hidden">
             <div className="card-body">
             <div className="flex flex-row justify-between items-center gap-2">
                 <h2 className="card-title text-md text-neutral-content/90 font-bold font-nunito">LOCAL STORAGE USAGE</h2>

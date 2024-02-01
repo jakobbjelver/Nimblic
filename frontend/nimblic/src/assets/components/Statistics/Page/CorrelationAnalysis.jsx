@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext, useEffect, Suspense } from 'react';
+import React, { useState, useContext, useEffect, Suspense } from 'react';
 import Dropdown from '../../general/Dropdown';
 import ThemeContext from '../../general/Theme/ThemeContext';
 import CardMenu from '../../general/CardMenu';
@@ -9,8 +9,6 @@ import { truncateLabel } from 'src/utils/textFormat';
 const CorrelationAnalysis = ({ correlationData }) => {
     const [selectedCorrelationType, setSelectedCorrelationType] = useState('Pearson');
     const [selectedColumn, setSelectedColumn] = useState(Object.keys(correlationData?.Pearson)[0]);
-    const dropdownTypeRef = useRef(null);
-    const dropdownColumnRef = useRef(null);
     const { theme } = useContext(ThemeContext); // Use the context
     const [isLoading, setLoading] = useState(true);
 
@@ -134,9 +132,9 @@ const CorrelationAnalysis = ({ correlationData }) => {
 
     const transformDataForHeatmap = (type) => {
         if (!correlationData[type]) return;
-    
+
         const maxLabelLength = 30; // Adjust this value as needed
-    
+
         return Object.entries(correlationData[type]).map(([name, values]) => {
             return {
                 name: truncateLabel(name, maxLabelLength),
@@ -149,7 +147,7 @@ const CorrelationAnalysis = ({ correlationData }) => {
             };
         });
     };
-    
+
 
     const series = transformDataForHeatmap(selectedCorrelationType);
 
@@ -208,60 +206,67 @@ const CorrelationAnalysis = ({ correlationData }) => {
                 <div className="flex flex-row items-center justify-between w-full gap-3 px-10">
                     <h1 className="font-bold text-2xl mb-5">Correlation Analysis</h1>
                     <div className="flex items-center h-fit w-fit ml-7">
-                        <h3 className="text-xs mr-1 mb-4 font-bold">CORRELATION</h3>
                         <Dropdown
-                            ref={dropdownTypeRef}
+                            label={"correlation"}
                             items={['Pearson', 'Spearman']}
                             selectedItem={selectedCorrelationType}
-                            onChange={handleCorrelationTypeChange}
+                            onChange={setSelectedCorrelationType}
                         />
                     </div>
                     <div className="flex items-center h-fit w-fit ml-1">
-                        <h3 className="text-xs mr-1 mb-4 font-bold">COLUMN</h3>
                         <Dropdown
-                            ref={dropdownColumnRef}
+                            label={"column"}
                             items={Object.keys(correlationData[selectedCorrelationType])}
                             selectedItem={selectedColumn}
-                            onChange={handleColumnChange}
+                            onChange={setSelectedColumn}
                         />
                     </div>
                     <div className="flex items-left justify-center mb-4">
-                        <CardMenu cardId={'sp_co_ca'}/>
+                        <CardMenu cardId={'sp_co_ca'} />
                     </div>
                 </div>
                 <div className="flex flex-row w-full items-center justify-center gap-6 pl-10 py-6">
-                    <div className="flex w-1/3">
-                        <div className="flex w-full h-72 overflow-auto ml-6">
-                            {renderCorrelationTable()}
+                    {Object.keys(correlationData[selectedCorrelationType]).length <= 0 ?
+                        <div className="flex flex-col items-center justify-center h-fit w-full gap-12 my-40">
+                            <img src="/svg/not_found.svg" alt="Data not found" width="100" />
+                            <p className="text-lg">Looks like we couldn't process any data for this analysis</p>
                         </div>
-                    </div>
-                    <div className="flex flex-col gap-6 items-center justify-center w-[800px] h-[400px] group" id="chart">
-                        <div className="flex flex-row gap-6 items-center justify-center">
-                        <div
-                            className={`w-[550px] h-[400px] overflow-auto flex flex-row gap-6`}
-                            onWheel={handleWheel}
-                        >
-                            <Suspense fallback={
-                                <div className="skeleton h-[400px] w-[560px] bg-base-300 flex items-center justify-center">
-                                    <div className="loading loading-dots text-xl text-secondary"></div>
-                                </div>}>
-                                <ReactApexChart options={options} series={series} type="heatmap" width={heatmapSize.width} height={heatmapSize.height} />
-                            </Suspense>
-                        </div>
-                        <div className="flex flex-col gap-4">
-                                <button className="btn btn-neutral w-12 h-8 text-3xl" onClick={handleZoomIn}>
-                                <FontAwesomeIcon icon={faMagnifyingGlassPlus} size="1x" className="text-secondary/80"/>
-                                </button>
-                                <button className="btn btn-neutral w-12 h-8 text-3xl" onClick={handleZoomOut}>
-                                <FontAwesomeIcon icon={faMagnifyingGlassMinus} size="1x" className="text-secondary/80"/>
-                                </button>
+                        :
+                        <>
+                            <div className="flex w-1/3">
+                                <div className="flex w-full h-72 overflow-auto ml-6">
+                                    {renderCorrelationTable()}
+                                </div>
                             </div>
+                            <div className="flex flex-col gap-6 items-center justify-center w-[800px] h-[400px] group" id="chart">
+                                <div className="flex flex-row gap-6 items-center justify-center">
+                                    <div
+                                        className={`w-[550px] h-[400px] overflow-auto flex flex-row gap-6`}
+                                        onWheel={handleWheel}
+                                    >
+                                        <Suspense fallback={
+                                            <div className="skeleton h-[400px] w-[560px] bg-base-300 flex items-center justify-center">
+                                                <div className="loading loading-dots text-xl text-secondary"></div>
+                                            </div>}>
+                                            <ReactApexChart options={options} series={series} type="heatmap" width={heatmapSize.width} height={heatmapSize.height} />
+                                        </Suspense>
+                                    </div>
+                                    <div className="flex flex-col gap-4">
+                                        <button className="btn btn-neutral w-12 h-8 text-3xl" onClick={handleZoomIn}>
+                                            <FontAwesomeIcon icon={faMagnifyingGlassPlus} size="1x" className="text-secondary/80" />
+                                        </button>
+                                        <button className="btn btn-neutral w-12 h-8 text-3xl" onClick={handleZoomOut}>
+                                            <FontAwesomeIcon icon={faMagnifyingGlassMinus} size="1x" className="text-secondary/80" />
+                                        </button>
+                                    </div>
+                                </div>
+                                <div className="flex flex-row items-center gap-2 opacity-0 group-hover:opacity-100 transition-all mr-20">
+                                    <p className="font-bold text-xs">ZOOM IN</p><kbd className="kbd">Ctrl</kbd><kbd className="kbd mr-20">+</kbd>
+                                    <p className="font-bold text-xs">ZOOM OUT</p><kbd className="kbd">Ctrl</kbd><kbd className="kbd">-</kbd>
+                                </div>
                             </div>
-                        <div className="flex flex-row items-center gap-2 opacity-0 group-hover:opacity-100 transition-all mr-20">
-                            <p className="font-bold text-xs">ZOOM IN</p><kbd className="kbd">Ctrl</kbd><kbd className="kbd mr-20">+</kbd>
-                            <p className="font-bold text-xs">ZOOM OUT</p><kbd className="kbd">Ctrl</kbd><kbd className="kbd">-</kbd>
-                        </div>
-                    </div>
+                        </>
+                    }
                 </div>
             </div>
         );

@@ -1,4 +1,4 @@
-import { auth, firestore, firebase } from '../../../firebase-config';
+import { auth, firestore } from '../../../firebase-config';
 import { doc, onSnapshot, setDoc, getDoc, deleteDoc } from "firebase/firestore";
 import {
     createUserWithEmailAndPassword,
@@ -10,7 +10,13 @@ import {
     sendPasswordResetEmail,
     GoogleAuthProvider,
     signInWithPopup,
-    sendEmailVerification
+    sendEmailVerification,
+    GithubAuthProvider,
+    OAuthProvider,
+    EmailAuthProvider,
+    reauthenticateWithCredential,
+    linkWithCredential,
+    verifyBeforeUpdateEmail
 } from 'firebase/auth';
 
 class UserManager {
@@ -126,44 +132,27 @@ class UserManager {
         return auth;
     }
 
-// Delete user from Auth and Firestore
-async deleteUser() {
-    try {
-        if (!auth.currentUser) {
-            throw new Error("No authenticated user to delete.");
-        }
-
-        const uid = auth.currentUser.uid;
-
-        // Delete user document from Firestore
-        const userDocRef = doc(firestore, "users", uid);
-        await deleteDoc(userDocRef);
-
-        // Delete user from Firebase Authentication
-        await deleteUser(auth.currentUser);  // You must reauthenticate the user before deleting
-
-        //this.signOut()
-
-        console.log("User successfully deleted from Auth and Firestore");
-    } catch (error) {
-        console.error("Error deleting user:", error);
-        throw error;  // Re-throw the error to be handled by the caller
-    }
-}
-
-
-    // Change user password
-    async changePassword(user, newPassword) {
+    // Delete user from Auth and Firestore
+    async deleteUser() {
         try {
-            // Check if user has a password (i.e., not signed in with a provider like Google)
-            if (user.providerData.some(provider => provider.providerId === "password")) {
-                await updatePassword(auth.currentUser, newPassword);
-                console.log("Password successfully updated");
-            } else {
-                console.log("User signed in with a third-party provider. Cannot change password.");
+            if (!auth.currentUser) {
+                throw new Error("No authenticated user to delete.");
             }
+            const uid = auth.currentUser.uid;
+
+            // Delete user document from Firestore
+            const userDocRef = doc(firestore, "users", uid);
+            await deleteDoc(userDocRef);
+
+            // Delete user from Firebase Authentication
+            await deleteUser(auth.currentUser);  // You must reauthenticate the user before deleting
+
+            //this.signOut()
+
+            console.log("User successfully deleted from Auth and Firestore");
         } catch (error) {
-            console.error("Error changing password:", error);
+            console.error("Error deleting user:", error);
+            throw error;  // Re-throw the error to be handled by the caller
         }
     }
 
@@ -176,6 +165,7 @@ async deleteUser() {
             return result
         } catch (error) {
             console.error("Error linking Google account:", error);
+            return null
         }
     }
 
@@ -187,6 +177,57 @@ async deleteUser() {
             return result
         } catch (error) {
             console.error("Error unlinking Google account:", error);
+            return null
+        }
+    }
+
+    // Link GitHub Account
+    async linkGithubAccount() {
+        const provider = new GithubAuthProvider();
+        try {
+            let result = await linkWithPopup(auth.currentUser, provider);
+            console.log("GitHub account linked successfully");
+            return result;
+        } catch (error) {
+            console.error("Error linking GitHub account:", error);
+            return null
+        }
+    }
+
+    // Unlink GitHub Account
+    async unlinkGithubAccount() {
+        try {
+            let result = await unlink(auth.currentUser, GithubAuthProvider.PROVIDER_ID);
+            console.log("GitHub account unlinked successfully");
+            return result;
+        } catch (error) {
+            console.error("Error unlinking GitHub account:", error);
+            return null
+        }
+    }
+
+    // Link Microsoft Account
+    async linkMicrosoftAccount() {
+        const provider = new OAuthProvider('microsoft.com');
+        try {
+            let result = await linkWithPopup(auth.currentUser, provider);
+            console.log("Microsoft account linked successfully");
+            return result;
+        } catch (error) {
+            console.error("Error linking Microsoft account:", error);
+            return null
+        }
+    }
+
+    // Unlink Microsoft Account
+    async unlinkMicrosoftAccount() {
+        try {
+            let result = await unlink(auth.currentUser, 'microsoft.com');
+            console.log("Microsoft account unlinked successfully");
+            return result;
+        } catch (error) {
+            console.error("Error unlinking Microsoft account:", error);
+            return null
         }
     }
 
@@ -202,8 +243,8 @@ async deleteUser() {
         }
     }
 
-    async signInWithEmailAndPassword(user) {
-        return signInWithEmailAndPassword(user);
+    async signInWithEmailAndPassword(email, password) {
+        return signInWithEmailAndPassword(auth, email, password);
     };
 
     async sendEmailVerification(user) {
@@ -241,6 +282,33 @@ async deleteUser() {
         }
     }
 
+    // Sign in with GitHub
+    async signInWithGitHub() {
+        const provider = new GithubAuthProvider();
+        try {
+            const result = await signInWithPopup(auth, provider);
+            const user = result.user;
+            await this.createUserDocument(user);
+            return user;
+        } catch (error) {
+            console.error("Error signing in with GitHub:", error);
+        }
+    }
+
+    // Sign in with Microsoft
+    async signInWithMicrosoft() {
+        const provider = new OAuthProvider('microsoft.com');
+        try {
+            const result = await signInWithPopup(auth, provider);
+            const user = result.user;
+            await this.createUserDocument(user);
+            return user;
+        } catch (error) {
+            console.error("Error signing in with Microsoft:", error);
+        }
+    }
+
+
     // Reset user password
     async resetPassword(email) {
         try {
@@ -250,6 +318,69 @@ async deleteUser() {
             console.error("Error sending password reset email:", error);
         }
     }
+
+    async updateEmail(newEmail) {
+        try {
+            if (!auth.currentUser) {
+                throw new Error("No authenticated user to update email.");
+            }
+            await verifyBeforeUpdateEmail(auth.currentUser, newEmail);
+            console.log("Email updated and verification email sent.");
+        } catch (error) {
+            console.error("Error updating email:", error);
+            throw error;
+        }
+    }
+
+    async handlePasswordChange(userAuth, email, newPassword) {
+        // Check if the user has a password linked
+        const hasPassword = userAuth.providerData.some(provider => provider.providerId === "password");
+
+        if (hasPassword) {
+            // Update the existing password
+            await updatePassword(auth.currentUser, newPassword);
+        } else {
+            // Link a new password to the user's account
+            await updatePassword(auth.currentUser, newPassword);
+        }
+    }
+
+    // Link a password to the user's account
+    async linkPasswordToAccount(email, password) {
+        const credential = EmailAuthProvider.credential(email, password);
+        await linkWithCredential(auth.currentUser, credential);
+        console.log("Password linked to account successfully.");
+    }
+
+    async reauthenticate(currentPassword, providerId) {
+        const user = auth.currentUser;
+        if (!user) {
+            throw new Error("No authenticated user found.");
+        }
+    
+        try {
+            if (providerId === 'password') {
+                const credential = EmailAuthProvider.credential(user.email, currentPassword);
+                await reauthenticateWithCredential(user, credential);
+            } else if (providerId === 'google.com') {
+                const provider = new GoogleAuthProvider();
+                await signInWithPopup(auth, provider);
+            } else if (providerId === 'github.com') {
+                const provider = new GithubAuthProvider();
+                await signInWithPopup(auth, provider);
+            } else if (providerId === 'microsoft.com') {
+                const provider = new OAuthProvider('microsoft.com');
+                console.log("PROVIDER: ", provider)
+                console.log("AUTH: ", auth)
+                await signInWithPopup(auth, provider);
+            }
+        } catch (error) {
+            console.error("Reauthentication error:", error);
+            throw error; // Re-throw the error to be handled by the caller
+        }
+    }
+    
+
 }
 
 export default new UserManager();

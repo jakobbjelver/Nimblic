@@ -44,9 +44,9 @@ share/python-wheels/
 **/Dockerfile
 **/docker-compose*.yml
 .dockerignore
-.celery
-.flower
-.flask
+*.celery
+*.flower
+*.flask
 
 # Docker: Ignore temporary files and directories created by Docker
 *.tar

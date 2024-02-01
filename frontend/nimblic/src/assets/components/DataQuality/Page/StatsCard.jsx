@@ -81,10 +81,10 @@ const StatsComponent = ({ data }) => {
                 <div className="stat">
                     <div className="stat-title">Privacy Score</div>
                     <div className="flex flex-row items-stretch justify-stretch">
-                        <div className="stat-value bg-base-300 skeleton text-transparent h-6 w-24"></div>
+                        <div className="stat-value bg-base-300 skeleton text-transparent h-7 w-24 mt-1"></div>
                         <FontAwesomeIcon icon={faUserLock} className="ml-6 text-secondary stat-value" />
                     </div>
-                    <div className="stat-desc skeleton text-transparent h-3 w-32"></div>
+                    <div className="stat-desc skeleton text-transparent h-4 w-24"></div>
                 </div>
             }
 

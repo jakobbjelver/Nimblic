@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { PaperAirplaneIcon, ExclamationTriangleIcon, CheckCircleIcon } from '@heroicons/react/24/outline'
 import { Link } from 'react-router-dom';
+import FormSubmitButton from '../../general/FormSubmitButton';
 
 export default function ContactPage() {
     const [formData, setFormData] = useState({
@@ -13,13 +13,7 @@ export default function ContactPage() {
         message: ''
     });
     const [agreed, setAgreed] = useState(false);
-    const [sendSuccess, setSendSuccess] = useState(false);
-    const [sendError, setSendError] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
     const [validationError, setValidationError] = useState(false);
-
-    const endpoint = "https://us-central1-artilas-ecbb9.cloudfunctions.net/app";
-    //const endpoint = "http://localhost:3000";
 
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -34,70 +28,23 @@ export default function ContactPage() {
     };
 
     const validateForm = () => {
+        console.log("setting error!", !formData.email || !agreed)
+        setValidationError(!formData.email || !agreed);
         return formData.email && agreed;
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (!validateForm()) {
-            setValidationError(true);
-            return;
-        }
-        setValidationError(false);
-        setIsLoading(true);
-
-
-        try {
-            // Timestamp
-            const timestamp = new Date().toISOString();
-
-            // Language
-            const language = window.navigator.language;
-
-            // Screen Resolution
-            const screenResolution = `${window.screen.width}x${window.screen.height}`;
-
-            // Add more metadata as needed
-            const metadata = {
-                browserInfo: window.navigator.userAgent,
-                timestamp,
-                language,
-                screenResolution,
-            };
-
-            const response = await fetch(`${endpoint}/submit-feedback`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ ...formData, metadata })
+    const handleFormCleanup = (success, response) => {
+        if (success) {
+            setFormData({
+                firstName: '',
+                lastName: '',
+                company: '',
+                email: '',
+                phoneNumber: '',
+                countryCode: 'SE',
+                message: ''
             });
-
-            if (response.ok || response.status === 300) {
-                console.log('Form submitted successfully');
-                setSendSuccess(true);
-                setFormData({
-                    firstName: '',
-                    lastName: '',
-                    company: '',
-                    email: '',
-                    phoneNumber: '',
-                    countryCode: 'SE',
-                    message: ''
-                });
-                setAgreed(false);
-                setTimeout(() => setSendSuccess(false), 3000); // Reset success message
-            } else {
-                console.error('Error submitting form', response);
-                setSendError(true);
-                setTimeout(() => setSendError(false), 3000); // Reset error message
-            }
-        } catch (error) {
-            console.error('Network error:', error);
-            setSendError(true);
-            setTimeout(() => setSendError(false), 3000); // Reset error message
-        } finally {
-            setIsLoading(false);
+            setAgreed(false);
         }
     };
 
@@ -112,13 +59,13 @@ export default function ContactPage() {
                     Take the chance to chat about pricing, features, or provide some feedback about your latest use. Or just have a talk about how you like to do EDA!
                 </p>
             </div>
-            <form onSubmit={handleSubmit} className="mx-auto md:mt-16 mt-8 max-w-xl sm:mt-20">
+            <form className="mx-auto md:mt-16 mt-8 max-w-xl sm:mt-20">
                 <div className="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
                     <label className="form-control w-full max-w-xs">
                         <div className="label">
                             <span className="label-text font-semibold">First name</span>
                         </div>
-                        <input type="text" className="input input-bordered w-full max-w-xs bg-base-300"
+                        <input type="text" className="input input-bordered w-full max-w-xs bg-base-200 h-10"
                             onChange={handleInputChange}
                             name="firstName"
                             value={formData.firstName}
@@ -129,7 +76,7 @@ export default function ContactPage() {
                         <div className="label">
                             <span className="label-text font-semibold">Last name</span>
                         </div>
-                        <input type="text" className="input input-bordered w-full max-w-xs bg-base-300"
+                        <input type="text" className="input input-bordered w-full max-w-xs bg-base-200 h-10"
                             onChange={handleInputChange}
                             name="lastName"
                             value={formData.lastName}
@@ -139,7 +86,7 @@ export default function ContactPage() {
                         <div className="label">
                             <span className="label-text font-semibold">Company</span>
                         </div>
-                        <input type="text" className="input input-bordered w-full bg-base-300"
+                        <input type="text" className="input input-bordered w-full bg-base-200 h-10"
                             onChange={handleInputChange}
                             name="company"
                             value={formData.company}
@@ -149,7 +96,7 @@ export default function ContactPage() {
                         <div className="label">
                             <span className="label-text font-semibold">Email</span>
                         </div>
-                        <input type="text" className={`input input-bordered w-full bg-base-300 ${validationError && !formData.email ? 'border-error' : ''}`}
+                        <input type="text" className={`input input-bordered w-full bg-base-200 h-10 ${validationError && !formData.email ? 'border-error' : ''}`}
                             onChange={handleInputChange}
                             name="email"
                             value={formData.email} />
@@ -160,9 +107,9 @@ export default function ContactPage() {
                         <div className="label">
                             <span className="label-text font-semibold">Phone number</span>
                         </div>
-                        <div className="join w-full sm:col-span-2">
+                        <div className="join w-full sm:col-span-2 h-10">
                             <select
-                                className="select select-bordered join-item"
+                                className="select select-bordered select-sm join-item h-10"
                                 name="countryCode"
                                 value={formData.countryCode}
                                 onChange={handleInputChange}>
@@ -171,7 +118,7 @@ export default function ContactPage() {
                                 <option value="DK">DK</option>
                                 <option value="DE">DE</option>
                             </select>
-                            <input className="input input-bordered join-item w-full bg-base-300"
+                            <input className="input input-bordered join-item w-full bg-base-200 h-10"
                                 onChange={handleInputChange}
                                 name="phoneNumber"
                                 value={formData.phoneNumber}
@@ -182,11 +129,11 @@ export default function ContactPage() {
 
                     <label className="form-control sm:col-span-2">
                         <div className="label">
-                            <span className="label-text">Message</span>
+                            <span className="label-text font-semibold">Message</span>
                         </div>
                         <textarea
                             name="message"
-                            className="textarea textarea-bordered h-24 bg-base-300"
+                            className="textarea textarea-bordered h-24 bg-base-200"
                             onChange={handleInputChange}
                             value={formData.message}
                         ></textarea>
@@ -206,34 +153,12 @@ export default function ContactPage() {
                 </div >
                 <div className="mt-2 flex flex-col items-center text-error">
                     <p className={`h-10 text-sm transition-all duration-100 ${validationError ? 'opacity-100' : 'opacity-0'}`}>Please fill in the required fields</p>
-                    <button
-                        className={`btn font-bold w-full text-base-300 ${sendSuccess ? "btn-secondary" : sendError ? "btn-error" : "btn-primary"}`}
-                        type="submit">
-                        {!isLoading ? (
-                            sendSuccess ? (
-                                <>
-                                    <span>We will be in touch!</span>
-                                    <CheckCircleIcon className="h-4 w-4 text-base-300" aria-hidden="true" />
-                                </>
-                            ) : (
-                                sendError ? (
-                                    <>
-                                        <span>Error sending message</span>
-                                        <ExclamationTriangleIcon className="h-4 w-4 text-base-300" aria-hidden="true" />
-                                    </>
-                                ) : (
-                                    (
-                                        <>
-                                            <span>Let's talk</span>
-                                            <PaperAirplaneIcon className="h-4 w-4 text-base-300" aria-hidden="true" />
-                                        </>
-                                    )
-                                )
-                            )
-                        ) : (
-                            <div className="loading loading-spinner loading-sm"></div>
-                        )}
-                    </button>
+                    <FormSubmitButton
+                        formData={{ text: formData }}
+                        textStates={{ success: 'We will be in touch!', default: 'Let\'s talk', error: 'Error sending message' }}
+                        onBeforeSubmit={validateForm}
+                        onAfterSubmit={handleFormCleanup}
+                    />
                 </div>
             </form >
         </div >

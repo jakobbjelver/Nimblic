@@ -202,7 +202,7 @@ const ChangePointCard = ({ changePoints, isLoading }) => {
       <div className="card-body" ref={cardRef}>
         <div className="flex flex-row justify-between items-center">
           <h2 className="card-title">Change Points</h2>
-          <CardMenu cardId={"ep_cpd"} codeFile={"change_point_detection.py"} cardRef={cardRef}/>
+          <CardMenu cardId={"ep_cpd"} codeFile={"change_point_detection.py"} cardRef={cardRef} />
         </div>
         <div className="flex flex-row items-start justify-start  h-24">
           {selectedColumns.map((selectedColumn, index) => (
@@ -211,7 +211,6 @@ const ChangePointCard = ({ changePoints, isLoading }) => {
                 {changePoints || !isLoading ?
                   <Dropdown
                     key={index}
-                    ref={dropdownRef}
                     items={columns}
                     selectedItem={selectedColumn}
                     onChange={(column) => handleColumnChange(column, index)}
@@ -226,7 +225,7 @@ const ChangePointCard = ({ changePoints, isLoading }) => {
                 {index !== 0 && (
                   <button
                     key={index}
-                    className="btn btn-circle btn-sm bg-base-100 relative top-[-24px] invisible group-hover:visible"
+                    className="btn btn-circle btn-sm bg-base-100 relative top-[-7px] invisible group-hover:visible"
                     onClick={() => handleRemoveComparison(index)}
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" key={index} fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -252,7 +251,10 @@ const ChangePointCard = ({ changePoints, isLoading }) => {
               chartData ? (
                 <Line data={chartData} options={options} />
               ) : (
-                <h2>No data</h2>
+                <div className="flex flex-col items-center justify-center h-fit w-full gap-12">
+                  <img src="/svg/not_found.svg" alt="Data not found" width="100" />
+                  <p className="text-lg">Looks like we couldn't process any data for this analysis</p>
+                </div>
               )
             ) : (
               <div className="skeleton w-[450px] h-[220px] bg-base-300"></div>

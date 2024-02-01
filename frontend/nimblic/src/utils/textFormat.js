@@ -41,5 +41,7 @@ export function lineBreakText(text, maxNum = 20) {
       result += text.substring(i, Math.min(i + maxNum, text.length));
       if (i + maxNum < text.length) result += '\n'; // Add line break
     }
+
+    result = result.split('@')[0]
     return result;
 }

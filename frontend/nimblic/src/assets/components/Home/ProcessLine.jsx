@@ -54,7 +54,7 @@ const ProcessLine = ({ isLoading }) => {
         <ul className="steps flex flex-row my-4 w-4/6 transition-all">
             {state.map((value, index) => (
                 <li key={index} className={`step w-full text-sm relative transition-all
-                ${value.state === 1 ? 'step-step' : 
+                ${value.state === 1 ? 'step-neutral-focus' : 
                 value.state === 2 ? 'step-primary' : 
                 value.state === 3 ? 'step-primary' : ''}`}
                 data-content={`${value.state === 1 ? index + 1 : ''}`}>

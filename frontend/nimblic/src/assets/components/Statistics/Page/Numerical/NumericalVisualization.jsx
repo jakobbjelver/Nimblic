@@ -10,6 +10,9 @@ const NumericalVisualization = ({ numericalData }) => {
     const regressionData = numericalData.regression_analysis;
     const { theme } = useContext(ThemeContext); // Use the context
 
+    if(pcaData == 'None') return
+    if(regressionData == 'None') return
+
     const ApexCharts = React.lazy(() => import('react-apexcharts'))
     // Transform PCA data
     const transformedPCAData = pcaData.principal_components[0].map((val, index) => ({

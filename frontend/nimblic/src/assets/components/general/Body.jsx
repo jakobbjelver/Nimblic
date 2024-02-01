@@ -5,22 +5,27 @@ import Footer from './Footer';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDesktop } from '@fortawesome/free-solid-svg-icons';
 import { useLocation } from 'react-router-dom';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { XMarkIcon } from '@heroicons/react/20/solid'
+import { FileUploadContext } from './Upload/FileUploadContext';
 
 const Body = ({ children }) => {
     const location = useLocation();
-
-    const serviceRoutes = [
-        '/explore',
-        '/new-upload',
-        '/statistics',
-        '/view-data',
-        '/settings',
-        '/data-quality'
-    ]
-    const showSidebar = serviceRoutes.includes(location.pathname) ? true : false
+    const { uploadData, isUploading } = useContext(FileUploadContext);
 
     const [isNarrowScreen, setIsNarrowScreen] = useState(window.innerWidth < 1023); // 768px is a common breakpoint for mobile screens
+
+    const isInService = uploadData.length > 0 || isUploading
+
+    const serviceRoutes = [
+        'explore',
+        'new-upload',
+        'statistics',
+        'view-data',
+        isInService && !isNarrowScreen ? 'settings' : null,
+        'data-quality'
+    ]
+    const showSidebar = serviceRoutes.includes(location.pathname.split('/')[1])
 
     useEffect(() => {
         const handleResize = () => {
@@ -34,18 +39,19 @@ const Body = ({ children }) => {
     }, []);
 
     return (
-        isNarrowScreen && showSidebar ?
+        isNarrowScreen && showSidebar && location.pathname.split('/')[1] !== 'settings' ?
             <NarrowScreenOverlay />
             :
 
-            <div className="flex h-screen w-full overflow-y-visible overflow-x-clip items-stretch justify-between">
+            <div className="flex h-dvh w-screen overflow-y-visible overflow-x-clip items-stretch justify-between">
                 <div className={`flex flex-col ${showSidebar ? 'w-fit' : 'hidden'}`}>
                     {showSidebar && <Sidebar />}
                 </div>
-                <div className={`flex flex-col body justify-right items-end ${showSidebar ? 'lg:w-11/12 md:w-11/12 xl:w-5/6 2xl:w-5/6' : 'w-full'}`}>
+                <div className={`flex h-dvh flex-col body justify-right items-end ${showSidebar ? 'lg:w-11/12 md:w-11/12 xl:w-5/6 2xl:w-5/6' : 'w-full'}`}>
                     <Header isHome={!showSidebar} /> {/* Header is always rendered */}
                     <AlertSection />
-                    <main className="flex w-full items-center justify-center">{children}</main>
+                    <main className="flex w-full h-dvh items-center justify-center">{children}</main>
+                    <UpgradeBrowserToast />
                     <Footer /> {/* Footer is always rendered */}
                 </div>
             </div>
@@ -65,3 +71,24 @@ const NarrowScreenOverlay = () => (
         <div className="logo-sm"></div>
     </div>
 );
+
+
+const UpgradeBrowserToast = () => {
+    const [isDismissed, setDismissed] = useState(false)
+
+    return (
+        !isDismissed && <div className="toast toast-center z-10 bottom-0 [@supports(color:oklch(0_0_0))]:hidden">
+            <div className="alert alert-warning grid-cols-[auto] py-2 text-xs">
+                <span className="flex gap-2 items-center">
+                    <a className="link" rel="nofollow, noreferrer" target="_blank" href="https://www.wikihow.com/Update-Your-Browser">Please upgrade your browser</a>
+                    <div className="flex flex-1 justify-end">
+                        <button type="button" onClick={() => setDismissed(true)} className="-m-3 p-3 focus-visible:outline-offset-[-4px]">
+                            <span className="sr-only">Dismiss</span>
+                            <XMarkIcon className="h-5 w-5" aria-hidden="true" />
+                        </button>
+                    </div>
+                </span>
+            </div>
+        </div>
+    )
+}

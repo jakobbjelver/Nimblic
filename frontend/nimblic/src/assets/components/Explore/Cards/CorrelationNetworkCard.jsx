@@ -12,18 +12,18 @@ const CorrelationNetworkCard = ({ correlationNetworkJson, isLoading }) => {
 
   const { theme } = useContext(ThemeContext);
 
-// Use this effect to handle the update of the graph based on theme changes
-useEffect(() => {
-  // Make sure correlationNetwork data is available
-  if (correlationNetwork) {
-    updateGraph(correlationNetwork); // Re-run the updateGraph function when the theme changes
-  }
-}, [theme]); // Re-run this effect when the theme changes
+  // Use this effect to handle the update of the graph based on theme changes
+  useEffect(() => {
+    // Make sure correlationNetwork data is available
+    if (correlationNetwork) {
+      updateGraph(correlationNetwork); // Re-run the updateGraph function when the theme changes
+    }
+  }, [theme]); // Re-run this effect when the theme changes
 
   function updateGraph(correlationNetwork) {
     var { nodes, links } = correlationNetwork;
-    
-    if(!nodes) {
+
+    if (!nodes) {
       setCorrelationNetwork(null)
       return
     }
@@ -40,7 +40,7 @@ useEffect(() => {
 
     const degreeScale = d3.scaleQuantize()
       .domain(degreeExtent)
-      .range(['#7952f7', '#ac56a5', '#e65187', '#ff6757', '#f99417', ]);
+      .range(['#7952f7', '#ac56a5', '#e65187', '#ff6757', '#f99417',]);
 
     // Now you can use these extents to generate your legend values
     const influenceLegendValues = d3.scaleLinear().domain(influenceExtent).ticks(4);
@@ -49,11 +49,11 @@ useEffect(() => {
 
     const linkColor = d3.scaleQuantize()
       .domain(linkExtent)
-      .range(['#5e5da8', '#ac56a5', '#e65187', '#ff6757', '#f99417', ]);
+      .range(['#5e5da8', '#ac56a5', '#e65187', '#ff6757', '#f99417',]);
 
-      const weightScale = d3.scaleQuantize()
+    const weightScale = d3.scaleQuantize()
       .domain(weightExtent)
-      .range(['#5e5da8', '#ac56a5', '#e65187', '#ff6757', '#f99417', ]);
+      .range(['#5e5da8', '#ac56a5', '#e65187', '#ff6757', '#f99417',]);
 
     const svg = d3.select(svgRef.current)
       .attr("width", width)
@@ -131,14 +131,14 @@ useEffect(() => {
 
     // Influence Legend (Sizes)
     const influenceLegend = legend.append("g").attr("class", "influence-legend-group")
-    .attr("transform", "translate(0, 7)"); // Offset the group by 100 units down
+      .attr("transform", "translate(0, 7)"); // Offset the group by 100 units down
     influenceLegend.selectAll(".influence-legend")
       .data(influenceLegendValues)
       .enter().append("circle")
       .attr("class", "influence-legend")
       .attr("cy", (d, i) => i * 15 + 7)
       .attr("cx", 10)
-      .attr("r", d => influenceScale(d)*0.3)
+      .attr("r", d => influenceScale(d) * 0.3)
       .style("fill", "#ccc");
 
     influenceLegend.selectAll(".influence-label")
@@ -184,7 +184,7 @@ useEffect(() => {
       .text(d => `${d}`);
 
     weightLegend.append('text')
-    .style("font-family", "Open Sans, sans-serif")
+      .style("font-family", "Open Sans, sans-serif")
       .attr('x', 0) // X position of the title
       .attr('y', -20) // Y position of the title
       .text('Weight') // The title
@@ -216,7 +216,7 @@ useEffect(() => {
       .text(d => `${d}`);
 
     degreeLegend.append('text')
-    .style("font-family", "Open Sans, sans-serif")
+      .style("font-family", "Open Sans, sans-serif")
       .attr('x', 0) // X position of the title
       .attr('y', -15) // Y position of the title
       .text('Degree') // The title
@@ -271,7 +271,13 @@ useEffect(() => {
     if (correlationNetworkJson) {
       try {
         const data = JSON.parse(correlationNetworkJson);
-        setCorrelationNetwork(data);
+
+        if(data.links.length <= 0 && data.nodes.length <= 0) {
+          setCorrelationNetwork(null);
+        } else {
+          setCorrelationNetwork(data);
+        }
+        
       } catch (e) {
         setError('Failed to parse correlation network data');
       }
@@ -280,7 +286,7 @@ useEffect(() => {
     }
   }, [correlationNetworkJson]);
 
-  useEffect(() => {  
+  useEffect(() => {
     if (correlationNetwork) {
       updateGraph(correlationNetwork);
       console.log("Updating graph")
@@ -310,7 +316,10 @@ useEffect(() => {
         <div className="card-body">
           <h2 className="card-title">Correlation Network</h2>
           <div className="flex items-center justify-center w-full h-full">
-            <h3>No data</h3>
+            <div className="flex flex-col items-center justify-center h-fit w-full gap-12 mt-20">
+              <img src="/svg/not_found.svg" alt="Data not found" width="100" />
+              <p className="text-lg">Looks like we couldn't process any data for this analysis</p>
+            </div>
           </div>
         </div>
       </div>
@@ -320,14 +329,14 @@ useEffect(() => {
   return (
     <div className="card dark:bg-base-200 shadow-sm xl:w-1/2 md:w-full lg:w-1/2 h-full mx-auto">
       <div className="card-body">
-      <div className="flex flex-row justify-between items-center">
+        <div className="flex flex-row justify-between items-center">
           <h2 className="card-title">Correlation Network</h2>
-          <CardMenu cardId={"ep_cn"}/>
+          <CardMenu cardId={"ep_cn"} />
         </div>
         <Suspense fallback={
-            <div className="skeleton w-[490px] h-[326px] bg-base-300"></div>
-          }>
-        <svg ref={svgRef} className={`w-94 h-full color-primary`}></svg>
+          <div className="skeleton w-[490px] h-[326px] bg-base-300"></div>
+        }>
+          <svg ref={svgRef} className={`w-94 h-full color-primary`}></svg>
         </Suspense>
       </div>
     </div>

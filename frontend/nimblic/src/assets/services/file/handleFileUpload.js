@@ -116,8 +116,12 @@ function handleSpecificTasks(data, setUploadData, setNotifications) {
                     // Access the last element
                     let lastElement = { ...newData[newData.length - 1] };
 
-                    // Append changePointsResult to the last element
-                    lastElement.statistical_summary.object_analysis = result;
+                    if(result !== 'None') {
+                        // Append changePointsResult to the last element
+                        lastElement.statistical_summary.object_analysis = result;
+                    } else {
+                        lastElement.statistical_summary.object_analysis = {};
+                    }
 
                     // Update the last element with the modified object
                     newData[newData.length - 1] = lastElement;

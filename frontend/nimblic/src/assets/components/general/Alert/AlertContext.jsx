@@ -87,7 +87,7 @@ const AlertProvider = ({ children }) => {
             } else {
                 timeStr = 'unknown'
             }
-            setInfoMessage(`Your data is being analysed. Estimated time ${timeStr}.`)
+            setInfoMessage(`Your data is being analysed. Estimated time is ${timeStr}.`)
         }
         else {
             setInfoMessage(null)

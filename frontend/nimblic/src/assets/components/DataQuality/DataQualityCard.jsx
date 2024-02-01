@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import Dropdown from '../general/Dropdown';
 import CardMenu from '../general/CardMenu';
 import { formatBytes } from 'src/utils/fileUtil'; 
@@ -11,7 +11,6 @@ const DataQualityCard = ({ dataQuality, summary, isLoading }) => {
 
 
   const [selectedColumn, setSelectedColumn] = useState('');
-  const dropdownRef = useRef(null);
 
   useEffect(() => {
     if (summary && Object.keys(summary.column_types).length > 0) {
@@ -19,13 +18,6 @@ const DataQualityCard = ({ dataQuality, summary, isLoading }) => {
       setSelectedColumn(columnNames[0]);
     }
   }, [summary]);
-
-  const handleColumnChange = (column) => {
-    setSelectedColumn(column);
-    if (dropdownRef.current) {
-      dropdownRef.current.open = false;
-    }
-  };
 
   if (isLoading || !dataQuality || !summary) {
     return (
@@ -92,18 +84,14 @@ const DataQualityCard = ({ dataQuality, summary, isLoading }) => {
           </div>
           <CardMenu cardId={"ep_dqs"}/>
         </div>
-
-        {/* Dropdown for selecting columns */}
-        <div className="flex items-center h-fit w-fit">
-          <h3 className="text-xs mr-1 mb-4 font-bold">COLUMN</h3>
+        <div className="w-fit">
           <Dropdown
-            ref={dropdownRef}
+            label={"column"}
             items={Object.keys(summary.column_types)}
             selectedItem={selectedColumn}
-            onChange={handleColumnChange}
+            onChange={setSelectedColumn}
           />
         </div>
-        
         {/* Data Overview for selected column */}
         <div className="overflow-x-auto">
           <h3 className="text-lg font-semibold">Column Overview</h3>

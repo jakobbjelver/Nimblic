@@ -131,6 +131,16 @@ const FileUpload = forwardRef(({ extraClassName }, ref) => {
     const user = UserManager.getUserAuth();
 
     if (user) {
+      if(!user.emailVerified) {
+        setErrorMessage({
+          type: "error",
+          short: "Unverified email",
+          long: "Please verify you email address to continue.",
+          time: getCurrentTime(),
+        });
+        setLoading(false);
+        return;
+      }
       proceedWithFileUpload(file);
     } else {
       setModalActions(["Cancel", null])
@@ -138,6 +148,7 @@ const FileUpload = forwardRef(({ extraClassName }, ref) => {
       openModal(
         <Login onLoginSuccess={() => {
           proceedWithFileUpload(file);
+          closeModal();
         }} />
       );
     }
@@ -155,15 +166,15 @@ const FileUpload = forwardRef(({ extraClassName }, ref) => {
     <>
       {location.pathname !== '/' ?
         <>
-          <div className="grid grid-cols-3 py-0 mt-8 w-4/6 gap-5 h-fit">
+          <div className="grid grid-cols-3 py-0 mt-8 w-4/6 gap-5 h-fit px-2">
             <div className="flex flex-col items-center w-full">
-              <img src="/svg/upload.svg" alt="First Step" width="110" />
+              <img src="/svg/upload.svg" alt="First Step" width="60" />
             </div>
             <div className="flex flex-col items-center">
-              <img src="/svg/process.svg" alt="Second Step" width="110" />
+              <img src="/svg/process.svg" alt="Second Step" width="60" />
             </div>
             <div className="flex flex-col items-center">
-              <img src="/svg/discover.svg" alt="Third Step" width="110" />
+              <img src="/svg/discover.svg" alt="Third Step" width="60" />
             </div>
           </div>
           <ProcessLine isLoading={isLoading} />

@@ -88,8 +88,8 @@ const AlertSection = () => {
     };
 
     return (
-        <div className="md:flex flex-col top-0 hidden">
-            <div className={`alert alert-info w-fit min-w-[20%] shadow-lg absolute right-0 ${location.pathname === '/' ? 'left-0' : 'left-60'} mr-auto ml-auto top-5 transition ease-in-out duration-200 transition-property: opacity transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) ${infoMessage ? 'opacity-100 z-[999999]' : 'opacity-0 z-[9998]'}`}>
+        <div className="flex flex-col top-0">
+            <div className={`alert alert-info w-fit flex flex-row md:min-w-[20%] min-w-[85%] shadow-lg fixed ${location.pathname === '/' ? 'left-0' : 'md:left-60 left-0'} right-0 mr-auto ml-auto top-24 transition ease-in-out duration-200 transition-property: opacity transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) ${infoMessage ? 'opacity-100 z-[999999]' : 'opacity-0'} ${thisInfoMessage ? 'z-[9998]' : 'z-[-1]'}`}>
                 <FontAwesomeIcon icon={faUpload} size="lg" className="mr-2" />
                 <div>
                     <h3 className="font-bold">Processing data</h3>
@@ -97,27 +97,29 @@ const AlertSection = () => {
                 </div>
                 <span className="loading loading-dots loading-md"></span>
             </div>
-            <div className={`alert alert-error w-fit min-w-[20%] shadow-lg absolute ${location.pathname === '/' ? 'left-0' : 'left-60'} right-0 mr-auto ml-auto top-5 transition ease-in-out duration-200 transition-property: opacity transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) ${errorMessage ? 'opacity-100 z-[999999]' : 'opacity-0 z-[9998]'}`}>
+            <div className={`alert alert-error w-fit flex flex-row md:min-w-[20%] min-w-[85%] shadow-lg fixed ${location.pathname === '/' ? 'left-0' : 'md:left-60 left-0'} right-0 mr-auto ml-auto top-24 transition ease-in-out duration-200 transition-property: opacity transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) ${errorMessage ? 'opacity-100 z-[999999]' : 'opacity-0'} ${thisErrorMessage ? 'z-[9998]' : 'z-[-1]'}`}>
                 <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                <div>
+                <div className="text-start">
                     <h3 className="font-bold">Error</h3>
                     <div className="text-xs">{thisErrorMessage}</div>
                 </div>
+                <div className="flex-grow"/>
                 <button className="btn btn-sm btn-ghost cursor-pointer bg-gray-100/10" onClick={handleOpenNotifications}>See</button>
             </div>
-            <div className={`alert alert-success w-fit min-w-[20%] shadow-lg absolute ${location.pathname === '/' ? 'left-0' : 'left-60'} right-0 mr-auto ml-auto top-5 transition ease-in-out duration-200 transition-property: opacity transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) ${successMessage ? 'opacity-100 z-[999999]' : 'opacity-0 z-[9998]'}`}>
+            <div className={`alert alert-success w-fit flex flex-row md:min-w-[20%] min-w-[85%] fixed shadow-lg ${location.pathname === '/' ? 'left-0' : 'md:left-60 left-0'} right-0 mr-auto ml-auto top-24 transition ease-in-out duration-200 transition-property: opacity transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) ${successMessage ? 'opacity-100 z-[999999]' : 'opacity-0'} ${thisSuccessMessage ? 'z-[9998]' : 'z-[-1]'}`}>
                 <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                <div>
+                <div className="text-start">
                     <h3 className="font-bold">Success!</h3>
                     <div className="text-xs">{thisSuccessMessage}</div>
                 </div>
             </div>
-            <div className={`alert alert-warning w-fit min-w-[20%] shadow-lg absolute ${location.pathname === '/' ? 'left-0' : 'left-60'} right-0 mr-auto ml-auto top-5 transition ease-in-out duration-200 transition-property: opacity transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) ${warningMessage ? 'opacity-100 z-[999999]' : 'opacity-0 z-[9998]'}`}>
+            <div className={`alert alert-warning w-fit flex flex-row md:min-w-[20%] min-w-[85%] fixed shadow-lg ${location.pathname === '/' ? 'left-0' : 'md:left-60 left-0'} right-0 mr-auto ml-auto top-24 transition ease-in-out duration-200 transition-property: opacity transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) ${warningMessage ? 'opacity-100 z-[999999]' : 'opacity-0'} ${thisWarningMessage ? 'z-[9998]' : 'z-[-1]'}`}>
                 <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
-                <div>
+                <div className="text-start">
                     <h3 className="font-bold">Warning</h3>
                     <div className="text-xs">{thisWarningMessage}</div>
                 </div>
+                <div className="flex-grow"/>
                 <button className="btn btn-sm btn-ghost cursor-pointer bg-gray-100/10" onClick={handleOpenNotifications}>See</button>
             </div>
         </div>

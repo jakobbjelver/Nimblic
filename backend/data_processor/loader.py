@@ -82,31 +82,32 @@ def handle_json_file(file):
     """
     Handle loading a JSON file into a DataFrame, accommodating different structures.
     """
-    with open(file, 'r') as f:
-        data = json.load(f)
-
-    # Try direct loading
     try:
-        df = pd.read_json(file)
-        if df.shape[1] > 1 or len(df) > 0:
-            return df
-    except ValueError:
-        pass
+        with open(file, 'r', encoding='utf-8') as f:  # Specify UTF-8 encoding
+            data = json.load(f)
+        return handle_nested_json(data)
+    except UnicodeDecodeError:
+        try:
+            with open(file, 'r', encoding='latin-1') as f:  # Try with Latin-1 encoding
+                data = json.load(f)
+            return handle_nested_json(data)
+        except Exception as e:
+            raise ValueError(f"Error processing file: {e}")
 
-    # Handle nested JSON
-    return handle_nested_json(data)
 
-def handle_nested_json(data):
-    """
-    Attempt to handle nested JSON structures by looking for lists of records.
-    """
-    if isinstance(data, dict):
+def handle_nested_json(data, parent_key=''):
+    if isinstance(data, list):
+        # Process each item in the list
+        return pd.concat([handle_nested_json(item, parent_key) for item in data], ignore_index=True)
+    elif isinstance(data, dict):
+        items = []
         for key, value in data.items():
-            if isinstance(value, list) and all(isinstance(item, dict) for item in value):
-                return pd.json_normalize(value)
-        return pd.DataFrame([data])
-    elif isinstance(data, list):
-        return pd.json_normalize(data)
+            new_key = f"{parent_key}.{key}" if parent_key else key
+            if isinstance(value, (dict, list)):
+                items.append(handle_nested_json(value, new_key))
+            else:
+                items.append(pd.DataFrame({new_key: [value]}))
+        return pd.concat(items, axis=1)
     else:
-        raise ValueError("JSON structure not recognized")
+        return pd.DataFrame({parent_key: [data]})   
 

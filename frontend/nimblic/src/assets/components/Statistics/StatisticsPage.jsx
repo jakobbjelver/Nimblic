@@ -55,9 +55,9 @@ const StatisticsPage = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
     if (!uploadData || Object.keys(uploadData).length <= 0 && !isUploading) {
-        navigate('/')
+      navigate('/')
     }
-}, []);
+  }, []);
 
   useEffect(() => {
     if (!uploadData || Object.keys(uploadData).length <= 0 && !isUploading) {
@@ -82,28 +82,37 @@ const StatisticsPage = () => {
     <>
       <div className="w-full mt-20 overflow-x-hidden max-w-screen-2xl bg-base-100 px-12 py-4 flex flex-col items-center justify-center">
         <div className="flex w-full items-center justify-center">
-            <Tabs />
+          <Tabs />
         </div>
-        <div className="mt-10 grid grid-cols-4 justify-center mx-12 px-2 pt-2 relative rounded-xl shadow-sm bg-base-200">
-          {tabItems.map((tab, index) => (
-            <>
-              <div key={index}
-                ref={el => tabsRef.current[tab.name] = el}
-                disabled={isLoading || tab.isLoading}
-                className="tab font-nunito font-bold text-md cursor-pointer mb-1.5 hover:text-neutral-content/70 transition-all"
-                onClick={() => handleTabClick(tab)} >
-                {!tab.isLoading ?
-                  <FontAwesomeIcon icon={tab.icon} className="mr-2" />
-                  :
-                  <div className="loading loading-spinner loading-sm text-secondary mr-2"></div>
-                }
-                {tab.name}
-              </div>
-            </>
-          ))}
-          <span className="absolute bottom-0 h-1 bg-secondary transition-all duration-200 rounded-lg" style={underlineStyle} />
-        </div>
-        {activeTab.name === 'TEXT' && (
+        {currentData?.statistical_summary == 'None' &&
+          <div className="flex flex-col items-center justify-center h-fit w-full gap-12 my-40">
+            <img src="/svg/not_found.svg" alt="Data not found" width="100" />
+            <p className="text-lg">Looks like we couldn't process any data for this analysis</p>
+          </div>
+        }
+        {currentData?.statistical_summary !== 'None' &&
+          <div className="mt-10 grid grid-cols-4 justify-center mx-12 px-2 pt-2 relative rounded-xl shadow-sm bg-base-200">
+
+            {tabItems.map((tab, index) => (
+              <>
+                <div key={index}
+                  ref={el => tabsRef.current[tab.name] = el}
+                  disabled={isLoading || tab.isLoading}
+                  className="tab font-nunito font-bold text-md cursor-pointer mb-1.5 hover:text-neutral-content/70 transition-all"
+                  onClick={() => handleTabClick(tab)} >
+                  {!tab.isLoading ?
+                    <FontAwesomeIcon icon={tab.icon} className="mr-2" />
+                    :
+                    <div className="loading loading-spinner loading-sm text-secondary mr-2"></div>
+                  }
+                  {tab.name}
+                </div>
+              </>
+            ))}
+            <span className="absolute bottom-0 h-1 bg-secondary transition-all duration-200 rounded-lg" style={underlineStyle} />
+          </div>
+}
+        {activeTab.name === 'TEXT' && currentData?.statistical_summary !== 'None' && (
           <div className="w-full overflow-x-hidden py-6 gap-10">
 
             {!isLoading ?
@@ -121,7 +130,7 @@ const StatisticsPage = () => {
 
         )}
 
-        {activeTab.name === 'NUMERICAL' && (
+        {activeTab.name === 'NUMERICAL' && currentData?.statistical_summary !== 'None' && (
           <div className="overflow-x-hidden py-6 gap-10 w-full">
 
             {!isLoading ?
@@ -139,7 +148,7 @@ const StatisticsPage = () => {
 
         )}
 
-        {activeTab.name === 'CATEGORICAL' && (
+        {activeTab.name === 'CATEGORICAL' && currentData?.statistical_summary !== 'None' && (
           <div className="overflow-x-hidden py-6 gap-10">
 
             {!isLoading ?
@@ -156,7 +165,7 @@ const StatisticsPage = () => {
           </div>
         )}
 
-        {activeTab.name === 'CORRELATION' && (
+        {activeTab.name === 'CORRELATION' && currentData?.statistical_summary !== 'None' && (
           <div className="w-full overflow-x-hidden py-6 gap-10">
 
             {!isLoading ?

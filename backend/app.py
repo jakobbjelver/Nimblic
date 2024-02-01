@@ -6,26 +6,26 @@ from routes.routes import configure_routes
 from handlers.error_handler import configure_error_handlers
 import logging
 from handlers.security_handler import firebase_auth_middleware
+import os
+
 app = Flask(__name__)
 
-
-cors = CORS(app, resources={
-    r"/*": {
-        "origins": [
-            "https://www.nimblic.app",
-            "https://nimblic.app/",
-            "https://nimblic.web.app",
-            "https://www.nimblic.web.app",
-            "https://nimblic.web.app/",
-            "https://nimblic.app",
-            "https://www.nimblic.app/"
-        ]
-    }
-})
-
-"""
-CORS(app)  # This will enable CORS for all routes and methods
-"""
+# Conditional CORS configuration
+if os.environ.get('FLASK_ENV') == 'development':
+    # Allow all origins in development
+    CORS(app)
+else:
+    # Restrict origins in production
+    cors = CORS(app, resources={
+        r"/*": {
+            "origins": [
+                "https://www.nimblic.app",
+                "https://nimblic.app",
+                "https://nimblic.web.app",
+                "https://www.nimblic.web.app"
+            ]
+        }
+    })
 
 # Initialize the Firebase Auth Middleware
 firebase_auth_middleware(app)

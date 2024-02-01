@@ -2,7 +2,6 @@ Data Quality Summary
 
 > **NOTE** This is just a summary, head over to the Data Quality page to see the full analysis.
  
-&nbsp;  
 ### **What is Data Quality in Our App?**
 
 Data Quality in the app is like a health check for your data. It looks at your data and points out any issues like missing information, duplicates, or unusual values.

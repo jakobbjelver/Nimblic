@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import Dropdown from '../general/Dropdown';
 import CardMenu from '../general/CardMenu';
 import Profile from './Components/Profile';
@@ -22,13 +22,10 @@ const StatisticalSummaryCard = ({ statisticalSummary, isLoading }) => {
   const [categoricalData, setCategoricalData] = useState(null);
 
 
-  const dropdownRef = useRef(null);
-  
-
   // useEffect to monitor statisticalSummary changes
   useEffect(() => {
 
-    if (statisticalSummary && Object.keys(statisticalSummary).length > 0) {
+    if (statisticalSummary && statisticalSummary !== 'None' && Object.keys(statisticalSummary).length > 0) {
       // Automatically select the first column as default
       const firstColumnKey = Object.keys(statisticalSummary.spearman_correlation)[0];
       const columns = Object.keys(statisticalSummary.profile);
@@ -49,7 +46,7 @@ const StatisticalSummaryCard = ({ statisticalSummary, isLoading }) => {
     if (statisticalSummary && Object.keys(statisticalSummary).length > 0) {
       if (statisticalSummary.profile) {
         setProfileData(statisticalSummary.profile[selectedColumn])
-        if(statisticalSummary.profile[selectedColumn]) {
+        if (statisticalSummary.profile[selectedColumn]) {
           datatype = statisticalSummary.profile[selectedColumn]['Data Type']
         }
       }
@@ -73,14 +70,6 @@ const StatisticalSummaryCard = ({ statisticalSummary, isLoading }) => {
     }
   }, [selectedColumn, statisticalSummary]); // Dependency array with statisticalSummary
 
-
-  const handleColumnChange = (column) => {
-    setSelectedColumn(column);
-    // Manually close the 'details' element
-    if (dropdownRef.current) {
-      dropdownRef.current.open = false;
-    }
-  };
 
   const renderNormalityTestCard = () => {
 
@@ -189,6 +178,16 @@ const StatisticalSummaryCard = ({ statisticalSummary, isLoading }) => {
 
       </div>
     );
+  } else if (statisticalSummary == 'None') {
+    return (
+      <div className="container flex flex-col h-[500px] w-[640] items-center justify-center mx-auto p-4 shadow-sm rounded-xl dark:bg-base-200">
+        <h1 className="text-2xl font-bold mb-5 absolute top-10 left-10 ">Statistical Summary</h1>
+        <div className="flex flex-col items-center justify-center h-fit w-full gap-12">
+            <img src="/svg/not_found.svg" alt="Data not found" width="100" />
+          <p className="text-lg">Looks like we couldn't process any data for this analysis</p>
+        </div>
+      </div>
+    )
   } else {
     return (
       <div className="container flex flex-col h-2/5 items-center justify-center mx-auto p-4 shadow-sm rounded-xl dark:bg-base-200">
@@ -202,20 +201,16 @@ const StatisticalSummaryCard = ({ statisticalSummary, isLoading }) => {
             </Link>
           </div>
           <div className="flex flex-row items-center gap-2 mr-6">
-            <CardMenu cardId={"ep_ss"}/>
+            <CardMenu cardId={"ep_ss"} />
           </div>
         </div>
-        <div className="flex items-center h-fit w-fit">
-          <h3 className="text-xs mr-1 mb-4 font-bold">COLUMN</h3>
           <Dropdown
-            ref={dropdownRef}
+            label={"column"}
             items={columns}
             dataTypes={columnDataTypes}
             selectedItem={selectedColumn}
-            onChange={handleColumnChange} 
+            onChange={setSelectedColumn}
           />
-
-        </div>
         <div className="flex flex-row justify-between w-full items-stretch gap-3 pb-4">
           <div className="flex flex-row gap-3 w-full items-stretch justify-between">
             <Correlation spearmanData={statisticalSummary.spearman_correlation[selectedColumn]} pearsonData={statisticalSummary.pearson_correlation[selectedColumn]} />
