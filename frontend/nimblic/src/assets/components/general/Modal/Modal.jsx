@@ -75,7 +75,7 @@ const Modal = () => {
                       >
                         {modalActions[0]}
                       </button>
-                      <div className="flex w-full items-center justify-center">
+                      <div className="flex w-full items-start justify-start">
                           {modalActions[2]}
                       </div>
                     </Fragment>

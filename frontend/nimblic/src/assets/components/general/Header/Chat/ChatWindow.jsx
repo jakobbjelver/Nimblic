@@ -21,22 +21,16 @@ const ChatWindow = forwardRef(({ setSending, isSending, setShowTopicSelection, s
     const { activeIndex } = useContext(TabsContext);
     const [selectedTopic, setSelectedTopic] = useState(null);
     const { settings } = useContext(SettingsContext);
-    const currentData = uploadData[activeIndex];
+    const currentData = uploadData[activeIndex === -1 ? 0 : activeIndex]; // If in the uploads tab
 
     const topicDataMapping = {
-        "General": currentData.metadata,
-        "Statistics": currentData.statistical_summary,
-        "Data Quality": currentData.data_quality,
-        "Change Point Detection": currentData.change_points,
-        "Correlation Network": currentData.correlation_network,
-        "Graph Recommendations": currentData.graph_recommendations,
+        "General": currentData?.metadata,
+        "Statistics": currentData?.statistical_summary,
+        "Data Quality": currentData?.data_quality,
+        "Change Point Detection": currentData?.change_points,
+        "Correlation Network": currentData?.correlation_network,
+        "Graph Recommendations": currentData?.graph_recommendations,
     };
-
-    const [followUpQuestions, setFollowUpQuestions] = useState([
-        "What do I need to fix?",
-        "Best components for a PCA?",
-        "Explain the results of the CPA"
-    ]);
 
 
     const isValidValue = value => {
@@ -46,20 +40,11 @@ const ChatWindow = forwardRef(({ setSending, isSending, setShowTopicSelection, s
     const filteredTopics = Object.keys(topicDataMapping).filter(key => isValidValue(topicDataMapping[key]));
 
     // Use custom hook for chat messaging
-    const { messages, sendMessage, deleteMessages } = useChatMessaging(
+    const { messages, followUpQuestions, sendChat, deleteMessages } = useChatMessaging(
         setSending,
-        setSendingQuestions,
         setLoading,
         userAuth,
-        setFollowUpQuestions,
-        topicDataMapping,
         setSelectedTopic,
-        setShowTopicSelection,
-        isSending,
-        setText,
-        currentData.metadata,
-        settings,
-        selectedTopic
     );
 
     useEffect(() => {
@@ -80,8 +65,27 @@ const ChatWindow = forwardRef(({ setSending, isSending, setShowTopicSelection, s
         };
     }, []);
 
+    const sendUserChatMessage = async (text, topic) => {
+        console.log("Sending user chat message")
+        if (!text || !text.trim() || isSending) return;
+
+        setText(text);
+
+        if (!topic) {
+            console.log("Showing topic selection")
+            setShowTopicSelection(true); // Show topic selection
+            return;
+        }
+
+        console.log("Setting selected topic")
+        setSelectedTopic(topic);
+        setShowTopicSelection(false);
+
+        sendChat(text, topic)
+    }
+
     useImperativeHandle(ref, () => ({
-        sendMessage: (text) => sendMessage(text, selectedTopic, setShowTopicSelection),
+        sendMessage: (text) => sendUserChatMessage(text, selectedTopic),
     }));
 
 
@@ -101,9 +105,15 @@ const ChatWindow = forwardRef(({ setSending, isSending, setShowTopicSelection, s
     if (messages.length == 0) {
         return (
             <div className="">
+                <TopicSelection
+                    filteredTopics={filteredTopics}
+                    sendMessage={(text, topic) => sendUserChatMessage(text, topic)}
+                    text={text}
+                    showTopicSelection={showTopicSelection}
+                />
                 <FollowUpQuestionSection
                     followUpQuestions={followUpQuestions}
-                    sendMessage={(text) => sendMessage(text, selectedTopic, setShowTopicSelection)}
+                    sendMessage={(text) => sendUserChatMessage(text, selectedTopic)}
                     showTopicSelection={showTopicSelection}
                 />
                 <div className="flex flex-col items-center h-fit w-full gap-6 py-24">
@@ -111,11 +121,11 @@ const ChatWindow = forwardRef(({ setSending, isSending, setShowTopicSelection, s
                     <p className="text-2xl font-semibold text-base-content/80">Let AI answer complex questions about your data</p>
                 </div>
                 <div className="absolute bottom-0 w-full bg-base-100/50 backdrop-blur-lg rounded-b-lg">
-                <InfoSection
-                    userData={userData}
-                    settings={settings}
-                    currentData={currentData}
-                />
+                    <InfoSection
+                        userData={userData}
+                        settings={settings}
+                        currentData={currentData}
+                    />
                 </div>
             </div>
         )
@@ -126,24 +136,24 @@ const ChatWindow = forwardRef(({ setSending, isSending, setShowTopicSelection, s
         <>
             <TopicSelection
                 filteredTopics={filteredTopics}
-                sendMessage={(text, topic) => sendMessage(text, topic, setShowTopicSelection)}
+                sendMessage={(text, topic) => sendUserChatMessage(text, topic)}
                 text={text}
                 showTopicSelection={showTopicSelection}
             />
             <FollowUpQuestionSection
                 followUpQuestions={followUpQuestions}
-                sendMessage={(text) => sendMessage(text, selectedTopic, setShowTopicSelection)}
+                sendMessage={(text) => sendUserChatMessage(text, selectedTopic)}
                 showTopicSelection={showTopicSelection}
                 isSendingQuestions={isSendingQuestions}
             />
             <MessageList messages={messages} isSending={isSending} />
-            <div className={`${showTopicSelection ? 'rounded-b-lg bottom-0' : 'bottom-[72px]' } absolute w-full bg-base-100/50 backdrop-blur-lg`}>
+            <div className={`${showTopicSelection ? 'rounded-b-lg bottom-0' : 'bottom-[72px]'} absolute bg-base-100/50 backdrop-blur-lg w-full`}>
                 <InfoSection
                     userData={userData}
                     settings={settings}
                     currentData={currentData}
                 />
-                </div>
+            </div>
             <ActionSection
                 filteredTopics={filteredTopics}
                 selectedTopic={selectedTopic}

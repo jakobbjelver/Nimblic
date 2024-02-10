@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { createWorker } from '../../../../workers/createWorker';
+import { createWorker } from '../../../../../../workers/createWorker';
 import { proxy } from 'comlink';
-import { useModal } from '../Modal/ModalContext';
+import { useModal } from '../../../Modal/ModalContext';
 
 const SampleFile = ({ file, fileSizeLimit, onSampled }) => {
   const [progressValue, setProgressValue] = useState(0);

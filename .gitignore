@@ -75,9 +75,11 @@ firebase.json
 **/firebase-config*.js
 *.config.js
 
+
 # Misc
 /.pnp
 .pnp.js
+**/misc/
 
 
 frontend/nimblic/src/firebase-config.js

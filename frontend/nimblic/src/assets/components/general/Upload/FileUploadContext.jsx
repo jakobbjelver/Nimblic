@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react';
 import { getCurrentTime } from 'src/utils/textFormat';
-import { generateFileId, sanitizeForFirestore } from 'src/utils/fileUtil';
+import { generateFileId, parseToStorage, limitFloatPrecision } from 'src/utils/fileUtil';
 
 import { auth } from '../../../../firebase-config'
 
@@ -26,7 +26,9 @@ const FileUploadProvider = ({ children }) => {
   useEffect(() => {
     const savedData = localStorage.getItem('uploadData');
     if (savedData) {
-      setUploadData(JSON.parse(savedData));
+      // Ensure the parsed data is an array
+      const data = JSON.parse(savedData);
+      setUploadData(Array.isArray(data) ? data : []);
     }
   }, []);
 
@@ -35,45 +37,57 @@ const FileUploadProvider = ({ children }) => {
   useEffect(() => {
     try {
       localStorage.setItem('uploadData', JSON.stringify(uploadData));
-
-      console.log("Analysis data: ", uploadData)
-
     } catch {
       setUploadError({
         type: "warning",
         short: "Problem when storing data",
         long: "Your data is too large to save to your local storage. The app might not work as expected. If you leave the page your analysis will get lost. Please try uploading a smaller file or remove other analyses.",
-        time: getCurrentTime()
-      })
+        time: getCurrentTime(),
+      });
     }
     //Store analysis whenever the uploadDaat changes
     const storeAnalysisData = async () => {
       
       auth.authStateReady()
 
-      if (!auth.currentUser || !uploadData[0]) {
-        console.log("FAILED TO STORE DATA");
+      const user = auth.currentUser
+
+      if (!user || !uploadData[0]) {
         return;
       }
 
       try {
+        // Do not save shared-with analyses
+        if(uploadData[0].metadata?.author?.uid !== user.uid) return
+
         const analysisId = generateFileId(uploadData[0].metadata);
-        const analysisData = uploadData[0];
+
+        // Deep clone the currentData object to avoid mutating the original state
+        let currentData = JSON.parse(JSON.stringify(uploadData[0]));
+        const metadata = currentData.metadata
+        
+        // Safe delete of the metadata from the clone without affecting the original state
+        delete currentData.metadata
+        const analysisData = currentData
+
+        //Should be moved to backend instead
+        const optimizedData = limitFloatPrecision(analysisData)
 
         //Stringify to avoid getting an error because of nested arrays
-        const sanitizedData = sanitizeForFirestore(analysisData)
+        const parsedData = parseToStorage(optimizedData)
         // Call the Cloud Function
         const functions = getFunctions();
         const storeDataFunction = httpsCallable(functions, 'storeAnalysisData');
         const result = await storeDataFunction({
           analysisId, 
-          uploadData: sanitizedData // Wrap the string in an object
+          analysisData: parsedData, // Wrap the string in an object
+          metadata
         });
 
         console.log(result.data.message);
-        console.log("DATA STORED SUCCESSFULLY")
+        console.log("Data stored successfully.")
       } catch (error) {
-        console.error("Failed to call storeAnalysisData function.", error);
+        console.error("Failed to store full data.", error);
       }
     };
 

@@ -18,6 +18,8 @@ import { formatBytes } from '../../../utils/fileUtil';
  */
 export function handleFileUpload(file, onUploadStart, onUploadEnd, setUploadData, setIsUploading, setNotifications, onSample, setInitUploadMetadata) {
     return new Promise((resolve, reject) => {
+        const startTime = Date.now(); // Capture start processing time (for metadata)
+
         // Validate file type
         if (!validateFileType(file.type)) {
             setIsUploading(false);
@@ -40,11 +42,8 @@ export function handleFileUpload(file, onUploadStart, onUploadEnd, setUploadData
                 onSample(file, file.size, sizeLimit); // Trigger sampling option
                 return;
             }
-
-            console.log("CONTINUING!")
-
             // Extract file metadata
-            const metadata = extractMetadata(file);
+            let metadata = extractMetadata(file);
 
             setInitUploadMetadata(metadata)
 
@@ -52,10 +51,15 @@ export function handleFileUpload(file, onUploadStart, onUploadEnd, setUploadData
                 delete file.isSampled;
 
             // Compress and upload the file
-            compressAndUploadFile(file, metadata, onUploadStart, onUploadEnd, setUploadData, setIsUploading, setNotifications)
+            compressAndUploadFile(file, metadata, onUploadStart, onUploadEnd, setIsUploading)
                 .then(data => {
+                    
+                    const endTime = Date.now(); // Capture end time
+                    const processingTime = endTime - startTime; // Calculate processing time in milliseconds
+                    metadata = { ...metadata, processingTime }; // Append processingTime to metadata
+
                     // Append initial upload data
-                    setUploadData(prevData => [...prevData, { ...data, metadata }]);
+                    setUploadData(prevData => [...prevData, { ...data, metadata }] );
 
                     // Handle specific tasks like changePointsTask, objectAnalysisTask, etc.
                     handleSpecificTasks(data, setUploadData, setNotifications);

@@ -26,12 +26,12 @@ const Footer = () => {
           </div>
           <div>
             <p className="mb-4 font-nunito font-bold text-[1.15em]">LINKS</p>
-            <div className="flex flex-col md:flex-row lg:gap-4 gap-2">
-              <a href="/terms-of-service" className="link link-hover">Terms of Service</a>
+            <div className="flex flex-col md:flex-row lg:gap-0 gap-0 items-center md:mx-6 xl:mx-32">
+              <a href="/terms-of-service" className="link link-hover w-24 whitespace-nowrap md:text-start">Terms of Service</a>
               <div className="divider md:divider-horizontal my-0"></div>
-              <a href="/data-protection-policy" className="link link-hover">Data Protection Policy</a>
+              <a href="/data-protection-policy" className="link link-hover whitespace-nowrap">Data Protection Policy</a>
               <div className="divider md:divider-horizontal my-0"></div>
-              <a href="/contact" className="link link-hover">Contact</a>
+              <a href="/contact" className="link link-hover w-24 whitespace-nowrap md:text-start">Contact</a>
             </div>
           </div>
           <div className="flex flex-col gap-2 lg:text-right text-center">

@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
-import FileUpload from './FileUpload';
+import FileUpload from './Page/File/FileUpload';
 import Tabs from '../Tabs/Tabs';
 import { TabsContext } from '../Tabs/TabsContext';
 import { FileUploadContext } from './FileUploadContext';
 import { useNavigate } from 'react-router-dom';
+import AnalysesSection from './Page/Analyses/AnalysesSection';
 
 
 const UploadPage = () => {
@@ -27,7 +28,7 @@ const UploadPage = () => {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     if (!uploadData || Object.keys(uploadData).length <= 0 && !isUploading) {
-      navigate('/')
+      //navigate('/')
     }
   }, []);
 
@@ -47,8 +48,8 @@ const UploadPage = () => {
   return (
     <div className="flex mt-20 flex-col pb-10 h-max w-full items-center justify-top py-4 px-16 max-w-screen-2xl">
       <Tabs />
-
       <FileUpload setProcessing={setProcessing} />
+      <AnalysesSection/>
     </div>
   );
 };

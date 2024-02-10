@@ -58,11 +58,10 @@ const App = () => {
                 <TabsProvider>
                     <Routes>
                       <Route path="/" element={<Body><HomePage /></Body>} />
-                      <Route path="/explore" element={<Body><ExplorePage /></Body>} />
+                      <Route path="/explore/:id?" element={<Body><ExplorePage /></Body>} />
                       <Route path="/statistics" element={<Body><StatisticsPage /></Body>} />
                       <Route path="/data-quality" element={<Body><DataQualityPage /></Body>} />
-                      <Route path="/data-quality" element={<Body><DataQualityPage /></Body>} />
-                      <Route path="/new-upload" element={<Body><UploadPage /></Body>} />
+                      <Route path="/uploads" element={<Body><UploadPage /></Body>} />
                       <Route path="/settings" element={<Body><SettingsPage /></Body>} />
                       <Route path="/view-data" element={<Body><ViewDataPage /></Body>} />
                       <Route path="/contact" element={<Body><ContactPage /></Body>} />

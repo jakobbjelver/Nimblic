@@ -5,7 +5,7 @@ import DataQualityCard from '../DataQuality/DataQualityCard';
 import GraphRecommendationsCard from './Cards/GraphRecommendationsCard';
 import StatisticalSummaryCard from '../Statistics/StatisticalSummaryCard';
 import OverviewCard from './Cards/OverviewCard';
-import FileUpload from '../general/Upload/FileUpload';
+import FileUpload from '../general/Upload/Page/File/FileUpload';
 import DataQualityScore from './Score/DataQualityScore';
 import RowCount from './Score/RowCount';
 import ColumnCount from './Score/ColumnCount';
@@ -14,28 +14,47 @@ import SkeletonScore from './Score/SkeletonScore';
 import FileInfo from './Score/FileInfo';
 import { useNavigate } from 'react-router-dom';
 import Tabs from '../general/Tabs/Tabs';
-
+import { useParams } from 'react-router-dom';
 import { TabsContext } from '../general/Tabs/TabsContext';
 
 import { FileUploadContext } from '../general/Upload/FileUploadContext';
 
 const ExplorePage = () => {
-  // State to hold the data from the JSON file
+  const { id } = useParams(); // Obtain the optional parameter
   const [isLoading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { uploadData, isUploading, errorMessage } = useContext(FileUploadContext);
   const { activeIndex } = useContext(TabsContext);
   const [currentData, setCurrentData] = useState(uploadData[activeIndex]);
-  const [statisticalData, setStatisticalData] = useState(currentData?.statistical_summary);
+
+  // Process to run when ID is present
+  const processWithId = async () => {
+    if (id) {
+      setLoading(true);
+      // Check if user is authenticated
+      // Else, redirect to login page, make the onLoginSuccess navigate back here
+      // Load analysis from firebase
+      // Handle unauthorized access with an error message alert
+      // Load analysis (like in AnalysisSection) to uploadData
+      try {
+        await new Promise(resolve => setTimeout(resolve, 2000));
+      } catch (error) {
+        console.error('Failed to fetch data:', error);
+        // Handle errors, navigate back to home page and put on error message
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
+  useEffect(() => {
+    processWithId();
+  }, [id]); // Only run this effect if `id` changes
 
   useEffect(() => {
     if (!isUploading && uploadData) {
       const newData = uploadData[activeIndex];
       setCurrentData(newData);
-  
-      if (newData?.statistical_summary) {
-        setStatisticalData(newData.statistical_summary);
-      }
 
     } else if (!uploadData || Object.keys(uploadData).length <= 0 && !isUploading) {
       //navigate('/')
@@ -59,9 +78,6 @@ const ExplorePage = () => {
     else {
       if (currentData) {
         setLoading(false);
-        if(currentData.statistical_summary) {
-          setStatisticalData(currentData?.statistical_summary)
-        }
       } else {
         setLoading(true);
       }

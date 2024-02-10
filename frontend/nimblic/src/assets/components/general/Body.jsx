@@ -19,7 +19,7 @@ const Body = ({ children }) => {
 
     const serviceRoutes = [
         'explore',
-        'new-upload',
+        'uploads',
         'statistics',
         'view-data',
         isInService && !isNarrowScreen ? 'settings' : null,
@@ -49,7 +49,7 @@ const Body = ({ children }) => {
                 </div>
                 <div className={`flex h-dvh flex-col body justify-right items-end ${showSidebar ? 'lg:w-11/12 md:w-11/12 xl:w-5/6 2xl:w-5/6' : 'w-full'}`}>
                     <Header isHome={!showSidebar} /> {/* Header is always rendered */}
-                    <AlertSection />
+                    <AlertSection isService={showSidebar}/>
                     <main className="flex w-full h-dvh items-center justify-center">{children}</main>
                     <UpgradeBrowserToast />
                     <Footer /> {/* Footer is always rendered */}

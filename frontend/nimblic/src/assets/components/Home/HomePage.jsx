@@ -1,5 +1,5 @@
 import React, { useState, useRef, useContext, useEffect } from 'react';
-import FileUpload from '../general/Upload/FileUpload';
+import FileUpload from '../general/Upload/Page/File/FileUpload';
 import Banner from '../general/Banner';
 import Feature from './Page/Feature';
 import Stats from './Page/Stats';

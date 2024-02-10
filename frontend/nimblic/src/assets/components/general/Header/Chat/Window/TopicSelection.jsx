@@ -4,7 +4,7 @@ const TopicSelection = ({ filteredTopics, sendMessage, text, showTopicSelection 
     return (
         <div className="flex flex-col">
             {showTopicSelection && (
-                <div className="mb-4 mt-8">
+                <div className="mt-8 mb-[-50px]">
                     <p className="w-full text-center font-bold text-sm tracking-wider">SELECT A TOPIC</p>
                     <div className="flex flex-wrap gap-1.5 py-3 items-center justify-center">
                         {filteredTopics.map((topic, index) => (

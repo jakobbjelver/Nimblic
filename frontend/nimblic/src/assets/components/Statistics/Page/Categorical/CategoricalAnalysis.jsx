@@ -30,6 +30,8 @@ const CategoricalAnalysis = ({ categoricalData, profileData, isLoading }) => {
 
         const { 'Similar Categories': similarCategories } = categoricalData[selectedCategory];
 
+        if(!similarCategories) return
+
 
         if (Object.keys(similarCategories).length <= 0) return (
             <div className="flex items-center justify-center text-center w-full h-full">

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUpload, faCompass, faDatabase, faCog, faCircleQuestion, faChartSimple, faMedal } from '@fortawesome/free-solid-svg-icons';
+import { faUpload, faCompass, faDatabase, faCog, faCircleQuestion, faChartSimple, faMedal, faChartArea } from '@fortawesome/free-solid-svg-icons';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import ThemeToggle from './Theme/ThemeToggle';
 import { ChatBubbleOvalLeftEllipsisIcon } from '@heroicons/react/24/outline'
@@ -17,7 +17,7 @@ const Sidebar = () => {
   }, [location]);
 
   const menuItems = [
-    { name: 'New upload', icon: faUpload, href: '/new-upload' },
+    { name: 'Uploads', icon: faUpload, href: '/uploads' },
     { name: 'Explore', icon: faCompass, href: '/explore' },
     { name: 'Statistics', icon: faChartSimple, href: '/statistics' },
     { name: 'Data Quality', icon: faMedal, href: '/data-quality' },

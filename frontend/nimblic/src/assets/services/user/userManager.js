@@ -1,4 +1,5 @@
 import { auth, firestore } from '../../../firebase-config';
+import { getFunctions, httpsCallable } from 'firebase/functions';
 import { doc, onSnapshot, setDoc, getDoc, deleteDoc } from "firebase/firestore";
 import {
     createUserWithEmailAndPassword,
@@ -16,7 +17,8 @@ import {
     EmailAuthProvider,
     reauthenticateWithCredential,
     linkWithCredential,
-    verifyBeforeUpdateEmail
+    verifyBeforeUpdateEmail,
+    onAuthStateChanged
 } from 'firebase/auth';
 
 class UserManager {
@@ -29,17 +31,31 @@ class UserManager {
 
     userLoadedPromise = null;
     userLoadedResolve = null;
+    functions = null;
 
     constructor() {
+        this.functions = getFunctions();
+
+        this.searchCache = {};
+
         this.userLoadedPromise = new Promise((resolve, reject) => {
             this.userLoadedResolve = resolve;
         });
 
-        auth.onAuthStateChanged(user => {
+        onAuthStateChanged(auth, (user) => {
             this.userAuth = user;
             if (user) {
+                // User is signed in
                 this.subscribeToUserData(user.uid);
+                const updateUserOnLogin = httpsCallable(this.functions, 'updateUserOnLogin');
+                updateUserOnLogin().then((result) => {
+                    console.log(result.data.message);
+                }).catch((error) => {
+                    console.error('Error updating user data:', error);
+                });
             } else {
+                // User is signed out
+                console.log('User is signed out');
                 this.userData = null;
                 if (this.unsubscribeUserDataListener) {
                     this.unsubscribeUserDataListener();
@@ -82,22 +98,27 @@ class UserManager {
 
     // Subscribe to changes in user data
     subscribeToUserData(uid) {
-        if (this.unsubscribeUserDataListener) {
-            this.unsubscribeUserDataListener();
+        try {
+            if (this.unsubscribeUserDataListener) {
+                this.unsubscribeUserDataListener();
+            }
+
+            const userDocRef = doc(firestore, "users", uid);
+            this.unsubscribeUserDataListener = onSnapshot(userDocRef, (doc) => {
+                if (doc.exists()) {
+                    this.userData = doc.data();
+                    this.notifyUserDataSubscribers();
+                    this.userLoadedResolve();
+                } else {
+                    console.error("No user data found!");
+                }
+            }, error => {
+                console.error("Error subscribing to user data:", error);
+            });
+        } catch (error) {
+            console.error("Error subscribing to user data: ", error)
         }
 
-        const userDocRef = doc(firestore, "users", uid);
-        this.unsubscribeUserDataListener = onSnapshot(userDocRef, (doc) => {
-            if (doc.exists()) {
-                this.userData = doc.data();
-                this.notifyUserDataSubscribers();
-                this.userLoadedResolve();
-            } else {
-                console.error("No user data found!");
-            }
-        }, error => {
-            console.error("Error subscribing to user data:", error);
-        });
     }
 
     // Notify user data subscribers
@@ -279,6 +300,7 @@ class UserManager {
             return user;
         } catch (error) {
             console.error("Error signing in with Google:", error);
+            throw new Error(error)
         }
     }
 
@@ -292,6 +314,7 @@ class UserManager {
             return user;
         } catch (error) {
             console.error("Error signing in with GitHub:", error);
+            throw new Error(error)
         }
     }
 
@@ -305,6 +328,7 @@ class UserManager {
             return user;
         } catch (error) {
             console.error("Error signing in with Microsoft:", error);
+            throw new Error(error)
         }
     }
 
@@ -357,7 +381,7 @@ class UserManager {
         if (!user) {
             throw new Error("No authenticated user found.");
         }
-    
+
         try {
             if (providerId === 'password') {
                 const credential = EmailAuthProvider.credential(user.email, currentPassword);
@@ -379,7 +403,39 @@ class UserManager {
             throw error; // Re-throw the error to be handled by the caller
         }
     }
-    
+
+    // Generate a unique cache key based on searchQueries and searchType
+    _generateCacheKey(searchQueries, searchType) {
+        return `${searchType}:${searchQueries.join(',')}`;
+    }
+
+    async searchUsers(searchQueries, searchType) {
+        const searchUsersFunction = httpsCallable(this.functions, 'searchUsers');
+
+        // Generate a cache key for the current search
+        const cacheKey = this._generateCacheKey(searchQueries, searchType);
+
+        // Check if the result is cached and return the cached result if available
+        if (this.searchCache[cacheKey]) {
+            return this.searchCache[cacheKey];
+        }
+
+        try {
+            const result = await searchUsersFunction({ searchQueries, searchType });
+            // Cache the result before returning
+            this.searchCache[cacheKey] = result.data; // An array of user objects
+            return result.data;
+        } catch (error) {
+            console.error('Error searching users:', error);
+            throw error;
+        }
+    }
+
+    // Optional: Method to clear the cache, if needed
+    clearSearchCache() {
+        this.searchCache = {};
+    }
+
 
 }
 

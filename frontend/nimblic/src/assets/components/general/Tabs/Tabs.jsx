@@ -44,13 +44,13 @@ const Tabs = () => {
     };
 
     const handleNewUpload = () => {
-        navigate('/new-upload');
+        navigate('/uploads');
         setActiveIndex(-1);
     }
 
     useEffect(() => {
 
-        if (location.pathname === '/new-upload') {
+        if (location.pathname === '/uploads') {
             setActiveIndex(-1)
         } else if (activeIndex == -1) {
             setActiveIndex(lastActiveIndex)
@@ -64,7 +64,7 @@ const Tabs = () => {
         if (activeIndex !== -1) {
             setLastActiveIndex(activeIndex)
         }
-        if (location.pathname === '/new-upload') {
+        if (location.pathname === '/uploads') {
             navigate(-1)
         }
     }
@@ -73,8 +73,8 @@ const Tabs = () => {
         setModalActions(["Cancel", "Delete"])
         openModal(
             <>
-                <h3 className="font-bold text-lg mr-12">Delete analysis for {uploadData[index]?.metadata?.name}?</h3>
-                <p className="py-4">You are about to delete an analysis, this operation cannot be undone.</p>
+                <h3 className="font-bold text-lg mr-12">Close analysis for {uploadData[index]?.metadata?.name}?</h3>
+                <p className="py-4">You can always find it again on the Uploads page.</p>
             </>,
             () => handleRemoveData(index)
         );
@@ -128,12 +128,12 @@ const Tabs = () => {
 
     return (
         <div className="flex flex-col gap-2 items-center">
-            {uploadData[activeIndex] ? uploadData[activeIndex].metadata.isSampled ?
+            {uploadData[activeIndex] && uploadData[activeIndex].metadata?.status?.isSampled ?
                 <div role="alert" className="alert bg-warning/50 h-8 py-1.5">
                     <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-4 w-4" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
                     <span className="my-0 text-sm"><strong>Warning:</strong> Data is sampled, the results may vary</span>
                 </div>
-                : '' : ''}
+                : ''}
             <div role="tablist" className="tabs tabs-md rounded-s-3xl ps-0 tabs-boxed bg-base-300 w-fit flex items-center justify-center">
                 <div className="flex flex-row overflow-x-auto overflow-y-hidden items-center justify-center">
                     {tabs.length > 0 ? tabs : <div className="skeleton w-40 ml-1 rounded-full bg-base-200 h-10"></div>}

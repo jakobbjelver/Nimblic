@@ -4,17 +4,17 @@ import { useDropzone } from 'react-dropzone';
 import { Transition } from '@headlessui/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUpload, faArrowPointer } from '@fortawesome/free-solid-svg-icons';
-import { handleFileUpload } from '../../../services/file/handleFileUpload';
-import { FileUploadContext } from './FileUploadContext';
-import { AlertContext } from '../Alert/AlertContext';
-import { useModal } from '../Modal/ModalContext';
-import Login from '../../Auth/Login'
+import { handleFileUpload } from '../../../../../services/file/handleFileUpload';
+import { FileUploadContext } from '../../FileUploadContext';
+import { AlertContext } from '../../../Alert/AlertContext';
+import { useModal } from '../../../Modal/ModalContext';
+import Login from '../../../../Auth/Login'
 import { useLocation } from 'react-router-dom';
-import UserManager from '../../../services/user/userManager';
+import UserManager from '../../../../../services/user/userManager';
 import { formatBytes } from 'src/utils/fileUtil';
 import { getCurrentTime } from 'src/utils/textFormat';
 
-import ProcessLine from '../../Home/ProcessLine'
+import ProcessLine from '../../../../Home/ProcessLine'
 
 import { faScrewdriverWrench, faEye } from '@fortawesome/free-solid-svg-icons';
 
@@ -193,7 +193,7 @@ const FileUpload = forwardRef(({ extraClassName }, ref) => {
         : ''}
       <div ref={ref} {...getRootProps()}
         className={`flex flex-col space-y-4 p-4  fadeInUp
-          ${location.pathname !== '/' ? 'w-full h-96 mt-0' : 'mt-28 w-96 h-48 my-8 items-center justify-center'}`}>
+          ${location.pathname !== '/' ? 'w-full h-60 mt-0 mb-10' : 'mt-28 w-96 h-48 my-8 items-center justify-center'}`}>
         <input {...getInputProps()} />
         <Transition
           show={true}
@@ -206,7 +206,7 @@ const FileUpload = forwardRef(({ extraClassName }, ref) => {
         >
           <div ref={ref}
             className={`flex flex-col items-center justify-center border-2 border-dashed rounded-3xl text-center cursor-pointer backdrop-blur-sm bg-neutral/5 
-          ${location.pathname !== '/' ? 'w-full h-80 text-neutral-content/70' : 'w-96 h-48 text-zinc-200'} 
+          ${location.pathname !== '/' ? 'w-full h-48 text-neutral-content/70' : 'w-96 h-48 text-zinc-200'} 
           ${isDragActive ? 'border-grey-300' : 'border-drop'} ${extraClassName}`}>
             {isLoading ?
               <span className="loading text-accent loading-spinner loading-lg"></span>

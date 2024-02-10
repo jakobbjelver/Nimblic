@@ -4,6 +4,8 @@ import { FileUploadContext } from '../Upload/FileUploadContext';
 export const AlertContext = createContext({
     infoMessage: null,
     setInfoMessage: () => { },
+    uploadMessage: null,
+    setUploadMessage: () => { },
     errorMessage: false,
     setErrorMessage: () => { },
     successMessage: null,
@@ -18,6 +20,7 @@ export const AlertContext = createContext({
 
 const AlertProvider = ({ children }) => {
     const [infoMessage, setInfoMessage] = useState(null);
+    const [uploadMessage, setUploadMessage] = useState(null);
     const [errorMessage, setErrorMessage] = useState(null);
     const [warningMessage, setWarningMessage] = useState(null);
     const [successMessage, setSuccessMessage] = useState(null);
@@ -57,8 +60,9 @@ const AlertProvider = ({ children }) => {
         }
     }, [errorMessage]);
 
-    // Info/Processing message handling
+    // Upload message handling
     useEffect(() => {
+        console.log("Alert context is uploading? ", isUploading)
         if (isUploading && uploadData.length == 0) {
 
             const size = initUploadMetaData.size / 1024 / 1024
@@ -66,33 +70,48 @@ const AlertProvider = ({ children }) => {
 
             if (size < 1) {
                 timeStr = '5 seconds'
-            } else if(size >= 1 && size <= 3) {
+            } else if (size >= 1 && size <= 3) {
                 timeStr = '5 seconds'
-            } else if(size > 3 && size <= 5) {
+            } else if (size > 3 && size <= 5) {
                 timeStr = '10 seconds'
-            } else if(size > 5 && size <= 7) {
+            } else if (size > 5 && size <= 7) {
                 timeStr = '20 seconds'
-            } else if(size > 7 && size <= 10) {
+            } else if (size > 7 && size <= 10) {
                 timeStr = '30 seconds'
-            } else if(size > 10 && size <= 15) {
+            } else if (size > 10 && size <= 15) {
                 timeStr = '45 seconds'
-            } else if(size > 15 && size <= 30) {
+            } else if (size > 15 && size <= 30) {
                 timeStr = '1 to 2 minutes'
-            } else if(size > 30 && size <= 60) {
+            } else if (size > 30 && size <= 60) {
                 timeStr = '2 to 5 minutes'
-            } else if(size > 60 && size <= 100) {
+            } else if (size > 60 && size <= 100) {
                 timeStr = '5 to 10 minutes'
-            } else if(size > 100 && size <= 150) {
+            } else if (size > 100 && size <= 150) {
                 timeStr = '10 to 15 minutes. Warning! Analysis may time out'
             } else {
                 timeStr = 'unknown'
             }
-            setInfoMessage(`Your data is being analysed. Estimated time is ${timeStr}.`)
+            setUploadMessage(`Your data is being analysed. Estimated time is ${timeStr}.`)
         }
         else {
-            setInfoMessage(null)
+            setUploadMessage(null)
         }
     }, [isUploading]);
+
+    // Info message handling
+    useEffect(() => {
+        if (infoMessage) {
+            setNotifications(
+                prev => [
+                    ...prev, infoMessage]
+            );
+            const timer = setTimeout(() => {
+                setInfoMessage(null);
+            }, 5000);
+
+            return () => clearTimeout(timer);
+        }
+    }, [infoMessage]);
 
     // Upload error message handling
     useEffect(() => {
@@ -138,7 +157,22 @@ const AlertProvider = ({ children }) => {
     }, [warningMessage]);
 
     return (
-        <AlertContext.Provider value={{ infoMessage, setInfoMessage, warningMessage, setWarningMessage, errorMessage, setErrorMessage, successMessage, setSuccessMessage, notifications, setNotifications, initUploadMetaData, setInitUploadMetadata }}>
+        <AlertContext.Provider value={{
+            infoMessage,
+            setInfoMessage,
+            uploadMessage,
+            setUploadMessage,
+            warningMessage,
+            setWarningMessage,
+            errorMessage,
+            setErrorMessage,
+            successMessage,
+            setSuccessMessage,
+            notifications,
+            setNotifications,
+            initUploadMetaData,
+            setInitUploadMetadata
+        }}>
             {children}
         </AlertContext.Provider>
     );

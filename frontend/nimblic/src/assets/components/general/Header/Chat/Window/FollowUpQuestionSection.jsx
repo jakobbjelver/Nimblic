@@ -38,7 +38,7 @@ export default function FollowUpQuestionSection({ followUpQuestions, sendMessage
                                     <Disclosure.Button
                                         key={index}
                                         onClick={() => sendMessage(text)}
-                                        className="badge badge-primary rounded-2xl badge-outline text-neutral-content badge-md text-center h-fit w-fit cursor-pointer py-1.5 px-2 hover:bg-base-100/70 hover:shadow-sm"
+                                        className="badge badge-primary rounded-2xl badge-outline text-neutral-content badge-md text-center h-fit w-fit cursor-pointer py-1.5 px-4 hover:bg-base-100/70 hover:shadow-sm"
                                     >
                                         {text}
                                     </Disclosure.Button>

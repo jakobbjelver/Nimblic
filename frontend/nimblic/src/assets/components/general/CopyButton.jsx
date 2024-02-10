@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCopy, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { DocumentDuplicateIcon, CheckIcon } from '@heroicons/react/24/outline'
 
-const CopyButton = ({ copyText, color}) => {
+const CopyButton = ({ copyText, color, labelText, icon}) => {
     const [copySuccess, setCopySuccess] = useState(false);
     const [copySuccessDelay, setCopySuccessDelay] = useState(false);
 
@@ -24,9 +24,9 @@ const CopyButton = ({ copyText, color}) => {
         <div className={`tooltip ${color ? '' : 'tooltip-primary'} ${copySuccess ? "tooltip-open" : ""}`} data-tip={`${copySuccessDelay ? "Copied!" : "Copy"}`}>
 
             <button
-                className={`btn ${color ? 'btn-neutral text-neutral-content/80' : 'btn-primary'} join-item`}
+                className={`btn w-fit ${color ? 'btn-neutral text-neutral-content/80' : 'btn-primary'} join-item`}
                 onClick={copyToClipboard} // Updated event handler
-            >
+            >             
                 <label className="swap swap-rotate">
                     <input
                         type="checkbox"
@@ -34,9 +34,10 @@ const CopyButton = ({ copyText, color}) => {
                         checked={copySuccess}
                         readOnly
                     />
-                    <FontAwesomeIcon icon={faCopy} className="swap-off" />
-                    <FontAwesomeIcon icon={faCheck} className="swap-on" />
+                    {icon || <DocumentDuplicateIcon className="h-5 w-5 swap-off" aria-hidden="true" />}
+                    <CheckIcon className="h-5 w-5 swap-on" aria-hidden="true" />
                 </label>
+                {labelText}
             </button>
         </div>
     )

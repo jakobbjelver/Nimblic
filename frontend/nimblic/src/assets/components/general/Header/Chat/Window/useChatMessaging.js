@@ -1,164 +1,243 @@
-// useChatMessaging.js
-import { topicPathMapping } from 'src/utils/chatUtil'
+import { useEffect, useState, useContext } from 'react';
+import { getFirestore, collection, onSnapshot, query, getDocs, deleteDoc } from 'firebase/firestore';
 import { generateFileId } from 'src/utils/fileUtil';
-import { useState, useEffect } from 'react';
-import {
-    subscribeToMessages,
-    deleteAllMessages,
-    sendMainResponseToFirebase,
-    sendFollowUpQuestionsToFirebase,
-    createMessageObject
-} from '../../../../../services/chatbot/chatbotService';
+import { FileUploadContext } from '../../../Upload/FileUploadContext';
+import { SettingsContext } from '../../../../Settings/SettingsContext';
+import { TabsContext } from '../../../Tabs/TabsContext'
+import { topicPathMapping, getTopicFromPath } from 'src/utils/chatUtil'
+import { getFunctions, connectFunctionsEmulator, httpsCallable } from 'firebase/functions';
 
 const useChatMessaging = (
     setSending,
-    setQuestionsSending,
     setLoading,
     userAuth,
-    setFollowUpQuestions,
-    topicDataMapping,
     setSelectedTopic,
-    setShowTopicSelection,
-    isSending,
-    setText,
-    metadata,
-    settings,
-    selectedTopic
 ) => {
-
     const [messages, setMessages] = useState([]);
-    const [username, setUserName] = useState(null);
+    const { uploadData } = useContext(FileUploadContext);
+    const { activeIndex } = useContext(TabsContext);
+    const { settings } = useContext(SettingsContext);
+    const currentData = uploadData[activeIndex === -1 ? 0 : activeIndex];
+    const db = getFirestore()
+    const functions = getFunctions();
 
-    const defaultQuestions = [
-        "What do I need to fix?",
-        "Best components for a PCA?",
-        "Explain the results of the CPA"
-    ]
+    const [followUpQuestions, setFollowUpQuestions] = useState([
+        "What do I need to fix before I start using my data?",
+        "Are there any interesting aspects of my data?",
+        "Explain the results of the analysis and what it could depend on"
+    ]);
+
+    //connectFunctionsEmulator(functions, "127.0.0.1", 5001);
 
     useEffect(() => {
+        setLoading(true)
+        setMessages([])
         if (!userAuth) {
             return;
         }
+        const discussionId = generateFileId(currentData?.metadata)
+        const unsubscribe = onSnapshot(collection(db, `users/${userAuth.uid}/discussions/${discussionId}/messages`), (snapshot) => {
+            const loadedMessages = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-        setLoading(true);
+            // Sort messages by timestamp
+            const sortedMessages = loadedMessages.sort((a, b) => (a.timestamp?.seconds ?? 0) - (b.timestamp?.seconds ?? 0));
 
-        const discussionId = generateFileId(metadata);
-        const unsubscribe = subscribeToMessages(
-            userAuth,
-            discussionId,
-            setMessages,
-            setFollowUpQuestions,
-            setLoading,
-            setQuestionsSending
-        );
+            // Process each message individually
+            let processedMessages = []
 
-        return () => {
-            unsubscribe();
-        };
+            sortedMessages.forEach(message => {
+                let messages = processMessage(message);
+                processedMessages.push(...messages)
+            });
+
+            setMessages(processedMessages);
+
+            const lastTopic = processedMessages[processedMessages.length - 1]?.topic
+
+            setSelectedTopic(getTopicFromPath(lastTopic))
+
+            const lastFollowUpQuestions = sortedMessages[sortedMessages.length - 1]?.followUpQuestions ?? []
+
+            const newFollowUpQuestions = []
+            lastFollowUpQuestions.forEach(prop => {
+                newFollowUpQuestions.push(prop.question)
+            })
+
+            if (newFollowUpQuestions.length > 0) {
+                setFollowUpQuestions(newFollowUpQuestions)
+            }
+
+            setLoading(false)
+
+        });
+
+        return () => unsubscribe();
     }, [userAuth]);
 
-    useEffect(() => {
-        if (messages.length > 0) {
-            let lastMessage = messages[messages.length - 1]
 
-          //  console.log("MESSAGES: ", messages)
-          //  console.log("TOPIC: ", lastMessage.topic)
-          //  console.log("STATE: ", lastMessage.state)
+    const processMessage = (data) => {
 
-            if (lastMessage.topic) {
-                setSelectedTopic(lastMessage.topic)
+        if (data.length <= 0) {
+            return
+        }
+
+        const messages = [];
+
+        if (data.prompt) {
+            let userMessage = createMessageObject('user', data.prompt, data.topic, data.timestamp); //No sending state, always PROCESSED
+            messages.push(userMessage)
+        }
+
+        if (data.status && data.status.state) {
+            let errorText;
+            if (data.response.length >= 0 && data.status.error) {
+                errorText = mapErrorToMessage(data.status.error.code)
+                console.log("CHATBOT ERROR: ", errorText)
             }
 
-            setSending(lastMessage.state == "PROCESSING")
+            let responseArr = data.response
+            let responseStr = responseArr && responseArr.join("")
 
+            let metadata;
+            if (responseStr) {
+                metadata = {
+                    glossary: data.glossary,
+                    actionableSteps: data.actionableSteps,
+                    resources: data.resources,
+                };
+            }
+
+
+            let botMessage = createMessageObject('ai', responseStr || errorText, data.topic, data.timestamp, data.status.state, metadata);
+            messages.push(botMessage)
         } else {
-        //    console.log("NO MESSAGES")
-            setFollowUpQuestions(defaultQuestions)
-            setSending(false)
+            console.log("MESSAGE DOES NOT EXIST YET")
         }
-    }, [messages]);
 
-    useEffect(() => {
-        if(!isSending) {
-            const send = async () => {
-                await sendFollowUpQuestions(selectedTopic);
-            }
-            send();
+        if (messages.length <= 0) return
+
+        return messages
+    };
+
+    const createMessageObject = (role, text, topic, time, state = 'DONE', metadata) => {
+
+        let dateString;
+        if (time) {
+            const date = new Date(time.seconds * 1000 + (time.nanoseconds || 0) / 1000000);
+            dateString = date.toLocaleDateString("en-US", {
+                hour: '2-digit',
+                minute: '2-digit',
+            });
+        } else {
+            dateString = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         }
-    }, [isSending]);
 
-    const deleteMessages = async () => {
-        setLoading(true)
-        const discussionId = generateFileId(metadata);
-        await deleteAllMessages(userAuth, discussionId, setMessages);
-        setSelectedTopic(null)
-        setMessages([])
-        setLoading(false)
-    };
-
-    const addMessage = (type, text, topic, state = "COMPLETED") => {
-        const newMessage = createMessageObject(type, text, userAuth, topic, state);
-        setMessages(prevMessages => [...prevMessages, newMessage]);
-    };
-
-    const sendMainResponse = async (text, topic) => {
-
-        console.log("SENDING MAIN WITH TOPIC: ", topic)
-        console.log("SENDING MAIN WITH PATH: ", topicPathMapping[topic])
-        const analysisId = generateFileId(metadata);
-        const mainPrompt = {
-            userText: text,
-            skillLevel: settings.skillLevel,
-            analysisId,
-            requestType: 'mainResponse',
-            topic: topicPathMapping[topic]
+        let aiAvatar = '/svg/robot.svg'
+        let userAvatar;
+        try {
+            userAvatar = userAuth?.photoURL || userAuth?.displayName[0].toUpperCase()
+        } catch (error) {
+            userAvatar = userAuth?.email[0].toUpperCase()
+        }
+        return {
+            role,
+            text,
+            avatar: role === 'user' ? userAvatar : aiAvatar,
+            name: role === 'user' ? 'You' : 'AI Chatbot',
+            time: dateString,
+            topic,
+            state,
+            metadata
         };
-
-        await sendMainResponseToFirebase(analysisId, mainPrompt);
     };
 
-    const sendFollowUpQuestions = async (topic) => {
-
-        console.log("SENDING FUQ WITH TOPIC: ", topic)
-        console.log("SENDING FUQ WITH PATH: ", topicPathMapping[topic])
-        const analysisId = generateFileId(metadata);
-        let userPromptString = "Please provide three follow-up questions, based on the previous request, directly and solely in JSON. The question's should be short, under 15 words, and should be from the user's perspective. Remember that the questions need to be based on your previous answer as valid follow-up questions that the user can ask."
-        const followUpPrompt = {
-            userText: userPromptString,
-            skillLevel: settings.skillLevel,
-            analysisId,
-            requestType: 'followUpQuestions',
-            topic: topicPathMapping[topic]
-        };
-
-        // await sendFollowUpQuestionsToFirebase(analysisId, followUpPrompt);
+    const addMessage = (role, text, topic, state) => {
+        let newMessage = createMessageObject(role, text, topic, null, state);
+        if(state == 'ERROR') {
+            setMessages(prevMessages => {
+                let updatedMessages = [...prevMessages];
+                // Ensure there's at least one message to replace
+                if (updatedMessages.length > 0) {
+                    updatedMessages[updatedMessages.length - 1] = newMessage; // Replace the last message
+                }
+                return updatedMessages;
+            });
+            return;
+        }        
+        setMessages(prevMessages => [...prevMessages, newMessage])
     };
 
-    const sendMessage = async (text, topic) => {
-        if (!text || !text.trim() || isSending) return;
-
-        setText(text);
+    const sendChat = async (text, topic) => {
 
         // Prevent the message of appearing twice if the function is reiterated upon topic selection
         if (messages.length === 0 || messages[messages.length - 1]?.text !== text) {
-            addMessage('user', text, topic);
+            addMessage('user', text, topic, 'SENDING');
         }
 
-        if (!topic) {
-            setShowTopicSelection(true); // Show topic selection
-            return;
+        addMessage('ai', ' ', topic, 'SENDING');
+
+        const sendChat = httpsCallable(functions, 'sendChat');
+
+        const analysisId = generateFileId(currentData?.metadata)
+
+        console.log("currentData", currentData)
+        console.log("currentData?.metadata", currentData?.metadata)
+
+        const prompt = {
+            userText: text,
+            skillLevel: settings.skillLevel,
+            analysisId,
+            topic: topicPathMapping[topic]
+        };
+
+        console.log("SENDING PROMPT: ", prompt)
+
+        try {
+            setSending(true)
+            await sendChat(prompt);
+            setSending(false)
+        } catch (error) {
+            setSending(false)
+            // Adjust error handling based on the structure of errors returned by your backend
+            const errorCode = error.code || error.message; // Adjust based on actual error structure
+            const userFriendlyMessage = mapErrorToMessage(errorCode);
+            addMessage('ai', userFriendlyMessage, topic, "ERROR");
         }
-
-        addMessage('ai', "Thinking...", topic, "PROCESSING");
-
-        setSelectedTopic(topic);
-        setShowTopicSelection(false);
-
-        await sendMainResponse(text, topic);
     };
 
+    const mapErrorToMessage = (errorCode) => {
+        // Adjust based on actual error structure and codes
+        switch (errorCode) {
+            case 'invalid-argument':
+                return "There was a problem with your request. Please try again.";
+            case 'resource-exhausted':
+                return "We've reached our quota limit. Please try again later.";
+            case 'internal':
+                return "Your conversation has reached the max limit. Please delete this one or change topic."
+            case 'unauthenticated':
+                return "No chat credits left. Please upgrade your account."
+            default:
+                return "An unexpected error occurred. Please try again.";
+        }
+    };
 
-    return { messages, sendMessage, deleteMessages };
+    const deleteMessages = async () => {
+        setLoading(true);
+        const discussionId = generateFileId(currentData?.metadata);
+
+        const q = query(collection(db, `users/${userAuth.uid}/discussions/${discussionId}/messages`));
+        const querySnapshot = await getDocs(q);
+        const deletionPromises = querySnapshot.docs.map(doc => deleteDoc(doc.ref));
+
+        // Wait for all deletions to complete
+        await Promise.all(deletionPromises);
+
+        setSelectedTopic(null);
+        setMessages([]);
+        setLoading(false);
+    };
+
+    return { messages, followUpQuestions, sendChat, deleteMessages };
 };
 
 export default useChatMessaging;

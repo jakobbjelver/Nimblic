@@ -24,7 +24,7 @@ const getToken = async () => {
     }
 }
 
-export function compressAndUploadFile(file, metadata, onUploadStart, onUploadEnd, setUploadData, setIsUploading, setNotifications) {
+export function compressAndUploadFile(file, metadata, onUploadStart, onUploadEnd, setIsUploading) {
     return new Promise((resolve, reject) => {
         const zip = new JSZip();
         const reader = new FileReader();

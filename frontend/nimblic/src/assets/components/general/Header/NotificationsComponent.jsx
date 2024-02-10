@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 //import { AlertContext } from '../Alert/AlertContext';
-import { PaperAirplaneIcon, ExclamationTriangleIcon, CheckCircleIcon, ClockIcon, ExclamationCircleIcon, InformationCircleIcon } from '@heroicons/react/24/outline'
+import { ExclamationTriangleIcon, CheckCircleIcon, ClockIcon, ExclamationCircleIcon, InformationCircleIcon } from '@heroicons/react/24/outline'
 import { AlertContext } from '../Alert/AlertContext';
 import FormSubmitButton from '../FormSubmitButton';
 

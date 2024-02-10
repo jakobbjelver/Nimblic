@@ -9,7 +9,7 @@ const GraphRecommendationsCard = ({ graphRecommendations, isLoading }) => {
     const [currentSlide, setCurrentSlide] = useState(0);
     const [itemWidths, setItemWidths] = useState([]);
     const [totalSlides, setTotalSlides] = useState([]);
-    
+
 
     const nextSlide = () => {
         setCurrentSlide((prevIndex) => (prevIndex + 1) % totalSlides);
@@ -26,87 +26,96 @@ const GraphRecommendationsCard = ({ graphRecommendations, isLoading }) => {
         // Dynamically import Chart.js
         import('chart.js/auto').then(({ default: Chart }) => {
 
-        const totalSlides = Object.keys(graphRecommendations).length;
-        setTotalSlides(totalSlides);
+            const totalSlides = Object.keys(graphRecommendations).length;
+            setTotalSlides(totalSlides);
 
-        Object.keys(graphRecommendations).forEach((key, index) => {
-            const canvasRef = chartRefs.current.get(key);
-            if (canvasRef && canvasRef.getContext) {
-                if (chartInstances.current.has(key)) {
-                    chartInstances.current.get(key).destroy();
+            Object.keys(graphRecommendations).forEach((key, index) => {
+                const canvasRef = chartRefs.current.get(key);
+                try {
+                    if (canvasRef && canvasRef.getContext) {
+                        if (chartInstances.current.has(key)) {
+                            chartInstances.current.get(key).destroy();
+                        }
+
+                        const ctx = canvasRef.getContext('2d');
+                        const graphData = graphRecommendations[key];
+                        const chartType = graphData.type;
+                        let datasets;
+                        const truncatedLabels = graphData.data.labels?.map(label => truncateLabel(label, 24));
+
+                        if (chartType === 'bubble') {
+                            datasets = [{
+                                label: key,
+                                data: graphData.data.data,
+                                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                                borderColor: 'rgba(255, 99, 132, 1)',
+                                borderWidth: 1
+                            }];
+                        } else {
+                            datasets = [{
+                                label: key,
+                                data: graphData.data.data,
+                                backgroundColor: [
+                                    'rgba(255, 99, 132, 0.2)',
+                                    'rgba(54, 162, 235, 0.2)',
+                                    'rgba(255, 206, 86, 0.2)',
+                                    'rgba(75, 192, 192, 0.2)',
+                                    'rgba(153, 102, 255, 0.2)',
+                                    'rgba(255, 159, 64, 0.2)'
+                                ],
+                                borderColor: [
+                                    'rgba(255, 99, 132, 1)',
+                                    'rgba(54, 162, 235, 1)',
+                                    'rgba(255, 206, 86, 1)',
+                                    'rgba(75, 192, 192, 1)',
+                                    'rgba(153, 102, 255, 1)',
+                                    'rgba(255, 159, 64, 1)'
+                                ],
+                                borderWidth: 1
+                            }];
+                        }
+
+                        const chartInstance = new Chart(ctx, {
+                            type: chartType,
+                            data: {
+                                labels: truncatedLabels,
+                                datasets: datasets
+                            },
+                            options: getChartOptions(chartType)
+
+
+                        });
+
+                        canvasRef.removeAttribute('style');
+                        chartInstances.current.set(key, chartInstance);
+                    }
+                } catch (error) {
+                    console.error(error)
                 }
-
-                const ctx = canvasRef.getContext('2d');
-                const graphData = graphRecommendations[key];
-                const chartType = graphData.type;
-                let datasets;
-                const truncatedLabels = graphData.data.labels?.map(label => truncateLabel(label, 24));
-
-                if (chartType === 'bubble') {
-                    datasets = [{
-                        label: key,
-                        data: graphData.data.data,
-                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                        borderColor: 'rgba(255, 99, 132, 1)',
-                        borderWidth: 1
-                    }];
-                } else {
-                    datasets = [{
-                        label: key,
-                        data: graphData.data.data,
-                        backgroundColor: [
-                            'rgba(255, 99, 132, 0.2)',
-                            'rgba(54, 162, 235, 0.2)',
-                            'rgba(255, 206, 86, 0.2)',
-                            'rgba(75, 192, 192, 0.2)',
-                            'rgba(153, 102, 255, 0.2)',
-                            'rgba(255, 159, 64, 0.2)'
-                        ],
-                        borderColor: [
-                            'rgba(255, 99, 132, 1)',
-                            'rgba(54, 162, 235, 1)',
-                            'rgba(255, 206, 86, 1)',
-                            'rgba(75, 192, 192, 1)',
-                            'rgba(153, 102, 255, 1)',
-                            'rgba(255, 159, 64, 1)'
-                        ],
-                        borderWidth: 1
-                    }];
-                }
-
-                const chartInstance = new Chart(ctx, {
-                    type: chartType,
-                    data: {
-                        labels: truncatedLabels,
-                        datasets: datasets
-                    },
-                    options: getChartOptions(chartType)
-
-
-                });
-
-                canvasRef.removeAttribute('style');
-                chartInstances.current.set(key, chartInstance);
-            }
-        });
-
-        const updateItemWidths = () => {
-            const widths = Object.keys(graphRecommendations).map((key) => {
-                const el = chartRefs.current.get(key);
-                return el ? el.offsetWidth : 0;
             });
-            setItemWidths(widths);
-        };
 
-        updateItemWidths();
-        window.addEventListener('resize', updateItemWidths);
+            const updateItemWidths = () => {
+                const widths = Object.keys(graphRecommendations).map((key) => {
+                    const el = chartRefs.current.get(key);
+                    return el ? el.offsetWidth : 0;
+                });
+                setItemWidths(widths);
+            };
 
-        return () => {
-            chartInstances.current.forEach(chart => chart.destroy());
-            window.removeEventListener('resize', updateItemWidths);
-        };
+            updateItemWidths();
+            window.addEventListener('resize', updateItemWidths);
 
-    });
+            return () => {
+                // Cleanup: destroy all charts
+                window.removeEventListener('resize', updateItemWidths);
+                chartInstances.current.forEach((chartInstance, key) => {
+                    chartInstance.destroy();
+                    console.log(`Destroyed chart instance for key: ${key}`);
+                });
+                chartInstances.current.clear(); // Clear the map after destroying all instances
+            };
+
+        });
     }, [graphRecommendations, isLoading]);
 
     const totalTranslateX = itemWidths.slice(0, currentSlide).reduce((acc, width) => acc + width, 0);

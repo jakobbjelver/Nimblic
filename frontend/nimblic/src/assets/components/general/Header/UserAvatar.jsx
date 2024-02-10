@@ -77,7 +77,6 @@ const UserAvatar = () => {
     }
 
     useEffect(() => {
-        console.log("userAuth", userAuth)
         async function checkUserStatus() {
             await UserManager.waitForUserLoad();
             setLoading(false);
