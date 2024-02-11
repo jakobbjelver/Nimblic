@@ -12,6 +12,7 @@ import { FileUploadContext } from '../general/Upload/FileUploadContext';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFileCsv, faFileExcel, faFileCode, faFile, faArrowDown } from '@fortawesome/free-solid-svg-icons';
+import Tools from './Page/Tools';
 
 
 const HomePage = () => {
@@ -170,6 +171,7 @@ const HomePage = () => {
           </ParallaxProvider>
         </div>
         <Feature />
+        <Tools/>
         <Description />
         <Stats />
         <Pricing />

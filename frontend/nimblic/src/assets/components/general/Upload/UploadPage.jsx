@@ -40,9 +40,11 @@ const UploadPage = () => {
 
 
   return (
-    <div className="flex mt-20 flex-col pb-10 h-max w-full items-center justify-top py-4 px-16 max-w-screen-2xl">
+    <div className="flex mt-20 flex-col pb-10 h-max w-full items-center justify-top py-4 md:px-16 px-0 max-w-screen-2xl">
       {(Object.keys(uploadData).length > 0 || isUploading) && <Tabs />}
+      <div className="md:flex md:flex-col items-center w-full hidden">
       <FileUpload/>
+      </div>
       <AnalysesSection/>
     </div>
   );

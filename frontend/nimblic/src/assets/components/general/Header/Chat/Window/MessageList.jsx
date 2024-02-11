@@ -85,7 +85,7 @@ const MessageList = ({ messages, isSending }) => {
     };
 
     return (
-        <div ref={messageListRef} className="overflow-y-auto overflow-x-hidden max-h-[550px]">
+        <div ref={messageListRef} className="overflow-y-auto overflow-x-hidden max-h-[920px]">
             <div className="chat-window bg-base-200 py-4 px-8 mt-14 mb-12">
                 <div className="messages flex gap-2 flex-col-reverse">
                     {messages.map((message, index) => (

@@ -95,7 +95,7 @@ const AnalysisRow = ({ userAuth, analysis, selectedAnalyses, onSelectAnalysis, o
                     <span className="whitespace-nowrap">Share <FontAwesomeIcon icon={faShareFromSquare} /></span>
                 </button>}
                 {isShared && <div className="w-16 ml-2" />}
-                {!isCurrentAnalysis(analysis) ? <button disabled={loadingStates[analysis.id] || !analysis.status.isAvailable} className="btn btn-sm w-16 whitespace-nowrap mx-1" onClick={() => onView(analysis)}>
+                {!isCurrentAnalysis(analysis) ? <button disabled={loadingStates[analysis.id] || !analysis.status.isAvailable} className="btn btn-sm w-16 whitespace-nowrap mx-1 md:block hidden" onClick={() => onView(analysis)}>
                     {!loadingStates[analysis.id] ? 'View' : <span className="loading loading-sm loading-spinner" />}
                 </button>
                     : <button disabled className="btn btn-sm w-16 disabled:text-neutral-content/80 mx-1">Current</button>}

@@ -7,12 +7,10 @@
 
 [data-theme='light'] body {
   overflow-x: hidden;
-  scrollbar-color: lightgray darkgray;
 }
 
 [data-theme='dark'] body {
   overflow-x: hidden;
-  scrollbar-color: rgb(47, 47, 53) rgb(18, 18, 18);
 }
 
 .banner {
@@ -134,42 +132,16 @@ details[disabled] summary,
   fill: #374151; /* Dark color for light theme */
 }
 
-/* Light theme scrollbar styles */
-[data-theme="light"] * {
-  scrollbar-width: thin;
-  scrollbar-color: darkgray lightgray; /* thumb and track color */
-}
-
-[data-theme="light"] *::-webkit-scrollbar {
+*::-webkit-scrollbar {
   width: 5px; /* width of the entire scrollbar */
   height: 5px;
 }
 
-[data-theme="light"] *::-webkit-scrollbar-track {
+*::-webkit-scrollbar-track {
   background: transparent; /* color of the tracking area */
 }
 
-[data-theme="light"] *::-webkit-scrollbar-thumb {
-  background-color: darkgray; /* color of the scroll thumb */
-  border-radius: 20px; /* roundness of the scroll thumb */
-}
-
-/* Dark theme scrollbar styles */
-[data-theme="dark"] * {
-  scrollbar-width: thin;
-  scrollbar-color: lightgray darkgray ; /* thumb and track color */
-}
-
-[data-theme="dark"] *::-webkit-scrollbar {
-  width: 5px; /* width of the entire scrollbar */
-  height: 5px;
-}
-
-[data-theme="dark"] *::-webkit-scrollbar-track {
-  background: transparent; /* color of the tracking area */
-}
-
-[data-theme="dark"] *::-webkit-scrollbar-thumb {
+*::-webkit-scrollbar-thumb {
   background-color: darkgray; /* color of the scroll thumb */
   border-radius: 20px; /* roundness of the scroll thumb */
 }
@@ -181,16 +153,6 @@ details[disabled] summary,
 
 [data-theme="light"] *::-webkit-scrollbar-track {
   background: #ededed; /* color of the tracking area */
-  border-radius: 18px; /* roundness of the scroll thumb */
-}
-
-[data-theme="dark"] *::-webkit-scrollbar-track {
-  background: #151924; /* color of the tracking area */
-  border-radius: 18px; /* roundness of the scroll thumb */
-}
-
-[data-theme="dark"] *::-webkit-scrollbar-thumb:hover {
-  background-color: rgb(207, 207, 207); /* color of the scroll thumb */
   border-radius: 18px; /* roundness of the scroll thumb */
 }
 

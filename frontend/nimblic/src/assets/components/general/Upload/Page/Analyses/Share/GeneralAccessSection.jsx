@@ -49,7 +49,7 @@ const GeneralAccessSection = ({ analysis }) => {
             <div className="flex flex-grow" />
             <p className="font-semibold w-full text-start">General access</p>
             <div className="flex flex-row items-center justify-between -mt-3 w-full">
-                <span className="flex flex-row gap-3 items-center">
+                <span className="flex flex-row gap-3 items-center w-1/2 md:w-auto">
                     {isLoading ? <div className="loading loading-spinner h-6 w-6"/>
                     : selectedAccessLevel == items[0] ? (
                         <>

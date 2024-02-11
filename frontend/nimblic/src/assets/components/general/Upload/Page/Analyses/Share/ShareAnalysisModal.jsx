@@ -135,7 +135,7 @@ const ShareAnalysisModal = ({ analysis, userAuth, recommendedIds }) => {
     //Better user search in backend
 
     return (
-        <div className="w-full flex flex-col items-start px-12 h-[550px]">
+        <div className="w-full flex flex-col items-start md:px-12 px-4 h-[550px]">
             <h3 className="font-semibold text-2xl mr-12">Share analysis '{analysis.name}'</h3>
             <div className="my-6 w-full flex flex-col items-center gap-4 h-full">
                 <UserSearchBar 

@@ -252,15 +252,15 @@ const AnalysesSection = () => {
 
         return (
             <div className="overflow-x-auto w-full h-full pt-5">
-                <div className="w-full flex flex-row justify-end">
+                <div className="w-full flex flex-row justify-end md:relative absolute right-3">
                     <button className="btn btn-primary btn-sm w-16 text-gray-200" onClick={handleNewButtonClick}>New</button>
                     <button className="btn btn-error btn-sm ml-2 w-16 text-gray-200" onClick={handleDeleteSelected} disabled={selectedAnalyses.length === 0 || loadingStates["delete"]}>
                         {!loadingStates["delete"] ? 'Delete' : <span className="loading loading-spinner loading-sm" />}
                     </button>
                 </div>
-                <table className="table w-full fadeInUp">
+                <table className="table w-full fadeInUp bg-base-200 md:mt-6 mt-12 rounded-lg">
                     <thead>
-                        <tr>
+                        <tr className="bg-base-100 rounded-md">
                             <th>
                                 <label>
                                     <input type="checkbox" className="checkbox checkbox-primary border-neutral-content/50 [--chkfg:theme(colors.neutral)]"
@@ -312,14 +312,14 @@ const AnalysesSection = () => {
 
     const renderSharedAnalysesContent = () => {
         return (
-            <div className="overflow-x-auto w-full h-full pt-5">
-                <div className="w-full flex flex-row justify-end">
+            <div className="w-full h-full pt-5 overflow-x-auto">
+                <div className="w-full flex flex-row justify-end md:relative absolute right-3">
                     <button className="btn btn-error btn-sm ml-2 w-16 text-gray-200" onClick={handleRemoveSelectedShared} disabled={selectedSharedAnalyses.length === 0 || loadingStates["remove"]}>
                         {!loadingStates["remove"] ? 'Remove' : <span className="loading loading-spinner loading-sm" />}
                     </button>
                 </div>
-                <table className="table w-full fadeInUp">
-                    <thead>
+                <table className="table w-full fadeInUp bg-base-200 rounded-lg md:mt-6 mt-12">
+                    <thead className="bg-base-100">
                         <tr>
                             <th>
                                 <label>
@@ -388,15 +388,15 @@ const AnalysesSection = () => {
     }
 
     return (
-        <div className="w-full overflow-x-hidden bg-base-100 py-4 fadeInUp flex flex-col items-start justify-start">
+        <div className="w-full overflow-x-hidden bg-base-100 py-4 fadeInUp flex flex-col md:items-start items-center justify-start">
             <Tab.Group selectedIndex={selectedTabIndex} onChange={setSelectedTabIndex}>
-                <Tab.List className="w-2/5 md:w-1/2 flex space-x-1 rounded-xl bg-base-200 p-1 ">
+                <Tab.List className="w-11/12 md:w-2/5 lg:w-1/2 flex space-x-1 rounded-xl bg-base-200 p-1 px-1">
                     {Object.keys(sections).map((section) => (
                         <Tab
                             key={section}
                             className={({ selected }) =>
                                 classNames(
-                                    'w-full rounded-lg py-3 text-xl font-semibold font-nunito leading-5',
+                                    'w-full rounded-lg py-3 md:text-xl text-md font-semibold font-nunito leading-5',
                                     'ring-neutral/60 text-neutral-content/80 ring-offset-2 ring-offset-primary/50 focus:outline-none focus:ring-2',
                                     selected
                                         ? 'bg-base-300/95 text-primary/90 shadow'

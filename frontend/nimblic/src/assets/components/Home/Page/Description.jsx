@@ -1,4 +1,4 @@
-import { ShieldCheckIcon, ChatBubbleOvalLeftEllipsisIcon, CursorArrowRaysIcon, SparklesIcon } from '@heroicons/react/24/outline'
+import { ShieldCheckIcon, AdjustmentsHorizontalIcon, CursorArrowRaysIcon, SparklesIcon } from '@heroicons/react/24/outline'
 
 const features = [
   {
@@ -8,10 +8,10 @@ const features = [
     icon: ShieldCheckIcon,
   },
   {
-    name: 'AI Chat Assistant',
+    name: 'Full control',
     description:
-      'Got questions? Our AI chat assistant is here to provide in-depth answers and assist with complex data queries, making your analysis journey smoother.',
-    icon: ChatBubbleOvalLeftEllipsisIcon,
+      'Great analyses need great management. Nimblic offers the ability to fully manage your analyes - access, share and get a complete overview of your data analysis.',
+    icon: AdjustmentsHorizontalIcon,
   },
   {
     name: 'Sleek, Modern, User-Friendly',
@@ -22,14 +22,14 @@ const features = [
   {
     name: 'Data Compatibility',
     description:
-      'From CSV to JSON, our platform supports a wide range of common file types and data formats, meaning you can focus on analyzing your data, without worrying about compatibility.',
+      'Nimblic utilizes underlying decision making technology for a wide variety of data formats, meaning you can focus on analyzing your data, without worrying about compatibility.',
     icon: SparklesIcon,
   },
 ]
 
 function Description() {
   return (
-    <div className="py-16 sm:py-24" id="description" >
+    <div className="py-0 md:mb-28 mb-20 bg-base-100 md:pt-20" id="description">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto w-fit max-w-4xl lg:text-center">
           <h2 className="text-base font-semibold leading-7 text-secondary">Use without worries</h2>

@@ -54,8 +54,7 @@ const Body = ({ children }) => {
         isNarrowScreen && showSidebar && location.pathname.split('/')[1] !== 'settings' ?
             <NarrowScreenOverlay />
             :
-
-            <div className="flex h-dvh w-screen overflow-y-visible overflow-x-clip items-stretch justify-between">
+            <div className="flex h-dvh w-screen overflow-y-visible overflow-x-clip items-stretch justify-between scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar scrollbar-thumb-slate-700 scrollbar-track-slate-300">
                 <div className={`flex flex-col ${showSidebar ? 'w-fit' : 'hidden'}`}>
                     {showSidebar && <Sidebar />}
                 </div>

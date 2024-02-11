@@ -52,11 +52,7 @@ export default function Banner() {
         <div className="flex flex-1 justify-end">
           <button type="button" onClick={
             () => {
-              setDismissed(false);
-              if (true) { // You can change the condition to control when the error is thrown
-                console.log("Throwing error")
-                throw new Error('This is a test error');
-              }
+              setDismissed(true);
             }
           } className="-m-3 p-3 focus-visible:outline-offset-[-4px]">
             <span className="sr-only">Dismiss</span>
