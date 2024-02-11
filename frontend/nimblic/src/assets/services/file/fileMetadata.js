@@ -16,7 +16,7 @@ export function extractMetadata(file) {
         size: file.size,
         type: file.type,
         lastModified: new Date(file.lastModified).toLocaleString(),
-        status: {isSampled: file.isSampled, isAvailable: true},
+        status: {isSampled: file.isSampled, isAvailable: true, isPublic: false},
         author: { uid: auth.currentUser.uid, name: auth.currentUser.displayName || auth.currentUser.email},
         sharedWith: [],
         //processingTime //Appended in handleFileUpload service

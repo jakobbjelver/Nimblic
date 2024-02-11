@@ -134,7 +134,7 @@ const Tabs = () => {
                     <span className="my-0 text-sm"><strong>Warning:</strong> Data is sampled, the results may vary</span>
                 </div>
                 : ''}
-            <div role="tablist" className="tabs tabs-md rounded-s-3xl ps-0 tabs-boxed bg-base-300 w-fit flex items-center justify-center">
+            <div role="tablist" className="tabs tabs-md rounded-s-3xl ps-0 tabs-boxed bg-base-300 w-fit max-w-5xl flex items-center justify-center">
                 <div className="flex flex-row overflow-x-auto overflow-y-hidden items-center justify-center">
                     {tabs.length > 0 ? tabs : <div className="skeleton w-40 ml-1 rounded-full bg-base-200 h-10"></div>}
                 </div>

@@ -4,6 +4,8 @@ import React, { useState, useEffect, useRef } from 'react';
 const includedFeatures = [
   'File size limit: 50 MB (Free: 10 MB)',
   'Daily upload limit: 100 (Free: 5)',
+  'Chat credits: 100/day (Free: 10)',
+  'Unlimited analysis storage (Free: 10)',
   'Full support from the team',
   'Opportunity to influence the development of the app',
 ]

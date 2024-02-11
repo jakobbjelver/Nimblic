@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect, useRef } from 'react';
 import { getCurrentTime } from 'src/utils/textFormat';
 import { generateFileId, parseToStorage, limitFloatPrecision } from 'src/utils/fileUtil';
 
@@ -14,6 +14,7 @@ export const FileUploadContext = createContext({
   setIsUploading: () => { },
   uploadError: null,
   setUploadError: () => { },
+  triggerFileInput: () => {}, // Add this method
 });
 
 const FileUploadProvider = ({ children }) => {
@@ -21,6 +22,15 @@ const FileUploadProvider = ({ children }) => {
   const [uploadData, setUploadData] = useState(initialUploadData);
   const [uploadError, setUploadError] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
+
+  const fileInputRef = useRef(null); // Create a ref for the file input
+
+  // Method to trigger click
+  const triggerFileInputClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
 
   // Load uploadData from local storage when the component mounts
   useEffect(() => {
@@ -97,7 +107,7 @@ const FileUploadProvider = ({ children }) => {
 
 
   return (
-    <FileUploadContext.Provider value={{ uploadData, setUploadData, isUploading, setIsUploading, uploadError, setUploadError }}>
+    <FileUploadContext.Provider value={{ uploadData, setUploadData, isUploading, setIsUploading, uploadError, setUploadError, triggerFileInputClick, fileInputRef }}>
       {children}
     </FileUploadContext.Provider>
   );

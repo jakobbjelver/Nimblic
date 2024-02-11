@@ -77,7 +77,7 @@ const ChatWindow = forwardRef(({ setSending, isSending, setShowTopicSelection, s
             return;
         }
 
-        console.log("Setting selected topic")
+        console.log("Setting selected topic: ", topic)
         setSelectedTopic(topic);
         setShowTopicSelection(false);
 

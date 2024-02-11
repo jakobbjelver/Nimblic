@@ -131,7 +131,7 @@ const MessageList = ({ messages, isSending }) => {
                                             <div id="tab-content-2" role="tabpanel" className={`mr-[70px] ${tabState[message.time] === 'tab2' ? 'block' : 'hidden'} p-4`}>
                                                 <div className="flex flex-col gap-2">
                                                     {message.metadata.actionableSteps.map((action, index) => (
-                                                        <p key={index}>• {action.step}</p>
+                                                        <p key={index}>• {action.step || action}</p>
                                                     ))}
                                                 </div>
                                             </div>
@@ -159,8 +159,10 @@ const MarkdownContent = ({ content, glossary }) => {
 
         let processedContent = content;
         glossary.forEach(({ term }) => {
+            let str = term.term || term
+            console.log("str", str)
             // Escape special characters in term for regex use
-            const escapedTerm = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const escapedTerm = str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
             const regex = new RegExp(`\\b(${escapedTerm})\\b`, 'g');
             processedContent = processedContent.replace(regex, '<span className="text-info font-bold">$1</span>');
         });

@@ -10,18 +10,12 @@ import AnalysesSection from './Page/Analyses/AnalysesSection';
 const UploadPage = () => {
   const { uploadData, isUploading } = useContext(FileUploadContext);
   const { activeIndex } = useContext(TabsContext);
-
-  const [isLoading, setLoading] = useState(true);
-  const [isProcessing, setProcessing] = useState(false);
-
-  const navigate = useNavigate();
-
   const currentData = uploadData[activeIndex];
 
   useEffect(() => {
     if (!isUploading && currentData) {
       // Data is ready to be used
-      setLoading(false);
+      //setLoading(false);
     }
   }, [uploadData, isUploading]);
 
@@ -37,9 +31,9 @@ const UploadPage = () => {
     if (activeIndex === -1) return
     else {
       if (currentData && Object.keys(currentData).length > 0) {
-        setLoading(false);
+       // setLoading(false);
       } else {
-        setLoading(true);
+       // setLoading(true);
       }
     }
   }, [currentData, activeIndex]); // Depend on currentData
@@ -47,8 +41,8 @@ const UploadPage = () => {
 
   return (
     <div className="flex mt-20 flex-col pb-10 h-max w-full items-center justify-top py-4 px-16 max-w-screen-2xl">
-      <Tabs />
-      <FileUpload setProcessing={setProcessing} />
+      {(Object.keys(uploadData).length > 0 || isUploading) && <Tabs />}
+      <FileUpload/>
       <AnalysesSection/>
     </div>
   );

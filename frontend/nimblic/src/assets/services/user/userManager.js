@@ -47,15 +47,8 @@ class UserManager {
             if (user) {
                 // User is signed in
                 this.subscribeToUserData(user.uid);
-                const updateUserOnLogin = httpsCallable(this.functions, 'updateUserOnLogin');
-                updateUserOnLogin().then((result) => {
-                    console.log(result.data.message);
-                }).catch((error) => {
-                    console.error('Error updating user data:', error);
-                });
             } else {
                 // User is signed out
-                console.log('User is signed out');
                 this.userData = null;
                 if (this.unsubscribeUserDataListener) {
                     this.unsubscribeUserDataListener();
@@ -109,6 +102,16 @@ class UserManager {
                     this.userData = doc.data();
                     this.notifyUserDataSubscribers();
                     this.userLoadedResolve();
+
+                    if ((!this.userData.email || !this.userData.displayName) || !this.userData.photoURL) {
+                        console.log("Updating user data", doc.data())
+                        const updateUserOnLogin = httpsCallable(this.functions, 'updateUserOnLogin');
+                        updateUserOnLogin().then((result) => {
+                            console.log(result.data.message);
+                        }).catch((error) => {
+                            console.error('Error updating user data:', error);
+                        });
+                    }
                 } else {
                     console.error("No user data found!");
                 }
@@ -300,7 +303,7 @@ class UserManager {
             return user;
         } catch (error) {
             console.error("Error signing in with Google:", error);
-            throw new Error(error)
+            throw new error
         }
     }
 
@@ -314,7 +317,7 @@ class UserManager {
             return user;
         } catch (error) {
             console.error("Error signing in with GitHub:", error);
-            throw new Error(error)
+            throw error
         }
     }
 
@@ -328,7 +331,7 @@ class UserManager {
             return user;
         } catch (error) {
             console.error("Error signing in with Microsoft:", error);
-            throw new Error(error)
+            throw error
         }
     }
 

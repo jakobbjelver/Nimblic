@@ -5,21 +5,20 @@ import Footer from './Footer';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDesktop } from '@fortawesome/free-solid-svg-icons';
 import { useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import React, { useState, useEffect, useContext } from 'react';
 import { XMarkIcon } from '@heroicons/react/20/solid'
 import { FileUploadContext } from './Upload/FileUploadContext';
-
+import userManager from '../../services/user/userManager';
 const Body = ({ children }) => {
     const location = useLocation();
+    const navigate = useNavigate();
     const { uploadData, isUploading } = useContext(FileUploadContext);
-
     const [isNarrowScreen, setIsNarrowScreen] = useState(window.innerWidth < 1023); // 768px is a common breakpoint for mobile screens
-
     const isInService = uploadData.length > 0 || isUploading
-
     const serviceRoutes = [
         'explore',
-        'uploads',
+        isInService && !isNarrowScreen ? 'uploads' : null,
         'statistics',
         'view-data',
         isInService && !isNarrowScreen ? 'settings' : null,
@@ -36,6 +35,19 @@ const Body = ({ children }) => {
 
         // Cleanup
         return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    useEffect(() => {
+        async function checkUserStatus() {
+            await userManager.waitForUserLoad();
+            if(!userManager.getUserAuth() && showSidebar) {
+                console.log("Navigating to login, user signed out")
+                navigate('/login', { state: { from: location.pathname } });
+            }
+        }
+
+        checkUserStatus();
+    
     }, []);
 
     return (

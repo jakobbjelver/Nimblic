@@ -6,6 +6,7 @@ import { SettingsContext } from '../../../../Settings/SettingsContext';
 import { TabsContext } from '../../../Tabs/TabsContext'
 import { topicPathMapping, getTopicFromPath } from 'src/utils/chatUtil'
 import { getFunctions, connectFunctionsEmulator, httpsCallable } from 'firebase/functions';
+import { getFirebaseErrorMessage } from 'src/utils/errorUtil';
 
 const useChatMessaging = (
     setSending,
@@ -54,16 +55,20 @@ const useChatMessaging = (
 
             const lastTopic = processedMessages[processedMessages.length - 1]?.topic
 
-            setSelectedTopic(getTopicFromPath(lastTopic))
+            if (lastTopic) {
+                setSelectedTopic(getTopicFromPath(lastTopic))
+            }
 
             const lastFollowUpQuestions = sortedMessages[sortedMessages.length - 1]?.followUpQuestions ?? []
+            
 
             const newFollowUpQuestions = []
             lastFollowUpQuestions.forEach(prop => {
-                newFollowUpQuestions.push(prop.question)
+                newFollowUpQuestions.push(prop.question || prop)
             })
 
             if (newFollowUpQuestions.length > 0) {
+                console.log("SETTING NEW FUQ: ", newFollowUpQuestions)
                 setFollowUpQuestions(newFollowUpQuestions)
             }
 
@@ -91,7 +96,7 @@ const useChatMessaging = (
         if (data.status && data.status.state) {
             let errorText;
             if (data.response.length >= 0 && data.status.error) {
-                errorText = mapErrorToMessage(data.status.error.code)
+                errorText = getFirebaseErrorMessage(data.status.error)
                 console.log("CHATBOT ERROR: ", errorText)
             }
 
@@ -124,9 +129,10 @@ const useChatMessaging = (
         let dateString;
         if (time) {
             const date = new Date(time.seconds * 1000 + (time.nanoseconds || 0) / 1000000);
-            dateString = date.toLocaleDateString("en-US", {
+            dateString = date.toLocaleTimeString("en-US", {
                 hour: '2-digit',
                 minute: '2-digit',
+                hour12: true // Ensures AM/PM format
             });
         } else {
             dateString = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
@@ -153,7 +159,7 @@ const useChatMessaging = (
 
     const addMessage = (role, text, topic, state) => {
         let newMessage = createMessageObject(role, text, topic, null, state);
-        if(state == 'ERROR') {
+        if (state == 'ERROR') {
             setMessages(prevMessages => {
                 let updatedMessages = [...prevMessages];
                 // Ensure there's at least one message to replace
@@ -163,7 +169,7 @@ const useChatMessaging = (
                 return updatedMessages;
             });
             return;
-        }        
+        }
         setMessages(prevMessages => [...prevMessages, newMessage])
     };
 
@@ -176,7 +182,7 @@ const useChatMessaging = (
 
         addMessage('ai', ' ', topic, 'SENDING');
 
-        const sendChat = httpsCallable(functions, 'sendChat');
+        const sendChatFn = httpsCallable(functions, 'sendChat');
 
         const analysisId = generateFileId(currentData?.metadata)
 
@@ -187,37 +193,21 @@ const useChatMessaging = (
             userText: text,
             skillLevel: settings.skillLevel,
             analysisId,
-            topic: topicPathMapping[topic]
+            topic: topicPathMapping[topic],
+            ownerId: currentData?.metadata?.author?.uid || userAuth.uid
         };
 
         console.log("SENDING PROMPT: ", prompt)
 
         try {
             setSending(true)
-            await sendChat(prompt);
+            await sendChatFn(prompt);
             setSending(false)
         } catch (error) {
             setSending(false)
             // Adjust error handling based on the structure of errors returned by your backend
-            const errorCode = error.code || error.message; // Adjust based on actual error structure
-            const userFriendlyMessage = mapErrorToMessage(errorCode);
+            const userFriendlyMessage = getFirebaseErrorMessage(error);
             addMessage('ai', userFriendlyMessage, topic, "ERROR");
-        }
-    };
-
-    const mapErrorToMessage = (errorCode) => {
-        // Adjust based on actual error structure and codes
-        switch (errorCode) {
-            case 'invalid-argument':
-                return "There was a problem with your request. Please try again.";
-            case 'resource-exhausted':
-                return "We've reached our quota limit. Please try again later.";
-            case 'internal':
-                return "Your conversation has reached the max limit. Please delete this one or change topic."
-            case 'unauthenticated':
-                return "No chat credits left. Please upgrade your account."
-            default:
-                return "An unexpected error occurred. Please try again.";
         }
     };
 

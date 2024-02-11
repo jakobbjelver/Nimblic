@@ -103,9 +103,46 @@ class AnalysisManager {
       return analysisDataSnap.data();
     } catch (error) {
       console.error("Error fetching analysis data:", error);
-      throw new Error(error);
+      throw error;
     }
   }
+
+  async fetchAnalysis(analysisId, ownerId = this.userId) {
+    // Reference to the analysis document for metadata
+    const analysisDocRef = doc(db, `users/${ownerId}/analyses/${analysisId}`);
+    // Reference to the main data document
+    const analysisDataDocRef = doc(db, `users/${ownerId}/analyses/${analysisId}/data/main`);
+
+    try {
+      // Fetch the metadata
+      const analysisSnap = await getDoc(analysisDocRef);
+      if (!analysisSnap.exists()) {
+        console.error('No analysis metadata found for analysisId:', analysisId);
+        return {};
+      }
+      const metadata = analysisSnap.data();
+
+      // Fetch the main data
+      const analysisDataSnap = await getDoc(analysisDataDocRef);
+      if (!analysisDataSnap.exists()) {
+        console.error('No analysis data found for analysisId:', analysisId);
+        return {}; // Return only metadata if main data doesn't exist
+      }
+      const analysisData = analysisDataSnap.data();
+
+      // Merge metadata into analysisData
+      const combinedData = {
+        ...analysisData.analysisData, // Spread the main analysis data
+        metadata: metadata // Insert the metadata under a 'metadata' key or merge directly as needed
+      };
+
+      return combinedData;
+    } catch (error) {
+      console.error("Error fetching analysis data and metadata:", error);
+      throw error;
+    }
+  }
+
 
 
   // Method to share an analysis with another user
@@ -131,18 +168,48 @@ class AnalysisManager {
 
 
   // Method to unshare an analysis
-async unshareAnalysis(analysisId, userIdToUnshare) {
-  const sharedAnalysisQuery = query(collection(db, 'sharedAnalyses'), where('analysisId', '==', analysisId), where('ownerId', '==', this.userId));
-  const querySnapshot = await getDocs(sharedAnalysisQuery);
+  async unshareAnalysis(analysisId, userIdToUnshare, ownerId = this.userId) {
+    console.log(`Unsharing analysis, id: ${analysisId}, userId: ${userIdToUnshare}, ownerId: ${ownerId}`)
+    const sharedAnalysisQuery = query(collection(db, 'sharedAnalyses'), where('analysisId', '==', analysisId), where('ownerId', '==', ownerId), where('sharedWith', 'array-contains', userIdToUnshare));
+    const querySnapshot = await getDocs(sharedAnalysisQuery);
 
-  if (!querySnapshot.empty) {
-    // Shared document exists
-    const docRef = querySnapshot.docs[0].ref;
-    await updateDoc(docRef, {
-      sharedWith: arrayRemove(userIdToUnshare) // Firestore arrayRemove to remove the user
-    });
+    if (!querySnapshot.empty) {
+      // Shared document exists
+      const docRef = querySnapshot.docs[0].ref;
+      try {
+        await updateDoc(docRef, {
+          sharedWith: arrayRemove(userIdToUnshare) // Firestore arrayRemove to remove the user
+        });
+      } catch (error) {
+        console.error(error)
+        throw error
+      }
+    }
   }
-}
+
+  // Method to unshare multiple analyses
+  async unshareSelectedAnalyses(selectedAnalyses) {
+    try {
+      const unsharePromises = selectedAnalyses.map((sa) => this.unshareAnalysis(sa.id, this.userId, sa.ownerId));
+      await Promise.all(unsharePromises);
+    } catch (error) {
+      console.error(error)
+      throw error
+    }
+  }
+
+
+  async updateAccessLevel(analysisId, isPublic) {
+    try {
+      const analysisDocRef = doc(db, this.analysesPath, analysisId);
+      await updateDoc(analysisDocRef, {
+        "status.isPublic": isPublic
+      });
+    } catch (error) {
+      console.error("Error updating access level:", error);
+      throw error;
+    }
+  }
 
 }
 

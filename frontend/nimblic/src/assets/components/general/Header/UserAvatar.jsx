@@ -2,7 +2,7 @@ import React, { Fragment, useEffect, useState, useContext } from 'react';
 import UserManager from '../../../services/user/userManager';
 import { Popover, Transition } from '@headlessui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faRightToBracket, faRightFromBracket, faGear } from '@fortawesome/free-solid-svg-icons';
+import { faRightToBracket, faRightFromBracket, faGear, faChartSimple } from '@fortawesome/free-solid-svg-icons';
 import ReactDOM from 'react-dom';
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 
@@ -160,14 +160,20 @@ const UserAvatar = () => {
                                             <span className="">{formatDate(userAuth.metadata.lastSignInTime)}</span>
                                         </div>
                                         <div className="card-actions">
-                                            <button className="btn btn-block btn-sm mt-2 h-10" onClick={() => { close(); navigate('/settings#account'); }}>
-                                                Settings
-                                                <FontAwesomeIcon icon={faGear} />
+                                            <button className="btn w-full btn-sm mt-2 h-10 btn-neutral" onClick={() => { close(); navigate('/uploads'); }}>
+                                                My analyses
+                                                <FontAwesomeIcon icon={faChartSimple} />
                                             </button>
-                                            <button className="btn btn-primary text-base-300 btn-block btn-sm mt-2 h-10" onClick={() => { close(); signOut(); }}>
-                                                Log out
-                                                <FontAwesomeIcon icon={faRightFromBracket} />
-                                            </button>
+                                            <div className="flex flex-row w-full gap-2 mr-2">
+                                                <button className="btn btn-sm mt-2 h-10 w-1/2" onClick={() => { close(); navigate('/settings#account'); }}>
+                                                    Settings
+                                                    <FontAwesomeIcon icon={faGear} />
+                                                </button>
+                                                <button className="btn btn-primary text-base-300 btn-sm mt-2 h-10 w-1/2" onClick={() => { close(); signOut(); }}>
+                                                    Log out
+                                                    <FontAwesomeIcon icon={faRightFromBracket} />
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

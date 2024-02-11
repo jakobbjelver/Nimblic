@@ -17,7 +17,7 @@ const ShareAnalysisModal = ({ analysis, userAuth, recommendedIds }) => {
     const [isSearchingUsers, setSearchingUsers] = useState(false);
     const [isLoadingAccessUsers, setLoadingAccessUsers] = useState(false);
     const [sharingStatus, setSharingStatus] = useState({});
-    const { setErrorMessage, setInfoMessage } = useContext(AlertContext);
+    const { setErrorMessage } = useContext(AlertContext);
     const [query, setQuery] = useState('')
 
     const currentUsers = recommendedUsers.length !== 0 ? recommendedUsers : searchedUsers
@@ -41,7 +41,7 @@ const ShareAnalysisModal = ({ analysis, userAuth, recommendedIds }) => {
             setLoadingAccessUsers(true)
 
             try {
-                const users = await userManager.searchUsers(recommendedIds, 'id')
+                const users = recommendedIds.length > 0 ? await userManager.searchUsers(recommendedIds, 'id') : []
 
                 const sharedWithIds = new Set(analysis.sharedWith);
                 const accessUsers = users.filter(user => sharedWithIds.has(user.id));
@@ -134,11 +134,6 @@ const ShareAnalysisModal = ({ analysis, userAuth, recommendedIds }) => {
 
     //Better user search in backend
 
-    //General access
-    //Copy link address
-    //Switch from "Limited" to "Everyone with the link" (see English Google Drive language)
-    //Create logic that makes it possible
-
     return (
         <div className="w-full flex flex-col items-start px-12 h-[550px]">
             <h3 className="font-semibold text-2xl mr-12">Share analysis '{analysis.name}'</h3>
@@ -155,7 +150,9 @@ const ShareAnalysisModal = ({ analysis, userAuth, recommendedIds }) => {
                     userAuth={userAuth} sharingStatus={sharingStatus}
                     isLoadingAccessUsers={isLoadingAccessUsers}
                     handleUnshare={handleUnshare} />
-                <GeneralAccessSection />
+                <GeneralAccessSection 
+                    analysis={analysis}
+                />
             </div>
         </div>
     )

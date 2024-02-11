@@ -33,7 +33,7 @@ const UserSearchBar = ({ handleShare, query, setQuery, isSearchingUsers, filtere
                     leaveTo="opacity-0"
                     afterLeave={() => setQuery('')}
                 >
-                    <Combobox.Options className="absolute z-[10] mt-1 max-h-60 w-full overflow-auto rounded-md bg-base-100 py-1 text-base shadow-lg ring-0 focus:outline-none sm:text-sm">
+                    <Combobox.Options className="absolute z-[10] mt-1 max-h-60 w-full overflow-auto rounded-md bg-base-200 py-1 text-base shadow-lg ring-0 focus:outline-none sm:text-sm">
                         {isSearchingUsers ? (
                             <Combobox.Option value={'loading'} key={'loading'}>
                                 <div className="relative select-none px-4 py-2 text-neutral-content/80 cursor-pointer flex items-center justify-center w-full">
@@ -44,7 +44,7 @@ const UserSearchBar = ({ handleShare, query, setQuery, isSearchingUsers, filtere
                             :
                             filteredUsers.length === 0 && query !== '' ? (
                                 <Combobox.Option value={query} key={query}>
-                                    <div className="relative select-none px-4 py-2 text-neutral-content/80 cursor-pointer">
+                                    <div className="relative select-none px-4 text-lg py-2 text-neutral-content/80 cursor-pointer">
                                         No users found.
                                     </div>
                                 </Combobox.Option>
@@ -54,7 +54,7 @@ const UserSearchBar = ({ handleShare, query, setQuery, isSearchingUsers, filtere
                                         key={user.id}
                                         disabled={usersWithAccess.some(u => u.id === user.id)}
                                         className={({ active }) =>
-                                            `relative ${usersWithAccess.some(u => u.id === user.id) ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'} opacity-50 cursor-not-allowed select-none py-2 pl-10 pr-4 ${active ? 'bg-secondary/50 text-base-100' : 'text-neutral-content'
+                                            `relative ${usersWithAccess.some(u => u.id === user.id) ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'} opacity-100 cursor-not-allowed select-none py-2 pl-10 pr-4 ${active ? 'bg-secondary/80 text-white/80' : 'text-neutral-content'
                                             }`
                                         }
                                         value={user}

@@ -20,6 +20,7 @@ import ContactPage from './assets/components/Home/Page/ContactPage'
 import MarkdownPage from './assets/components/general/MarkdownPage'
 import ErrorBoundary from './assets/components/general/Error/ErrorBoundary';
 import ErrorPage from './assets/components/general/Error/ErrorPage';
+import LoginPage from './assets/components/Auth/LoginPage';
 
 const App = () => {
   const [globalError, setGlobalError] = useState(null);
@@ -58,6 +59,7 @@ const App = () => {
                 <TabsProvider>
                     <Routes>
                       <Route path="/" element={<Body><HomePage /></Body>} />
+                      <Route path="/login" element={<Body><LoginPage /></Body>} />
                       <Route path="/explore/:id?" element={<Body><ExplorePage /></Body>} />
                       <Route path="/statistics" element={<Body><StatisticsPage /></Body>} />
                       <Route path="/data-quality" element={<Body><DataQualityPage /></Body>} />
@@ -68,8 +70,8 @@ const App = () => {
                       <Route path="/data-protection-policy" element={<Body><MarkdownPage markdownUrl="https://raw.githubusercontent.com/jakobbjelver/Nimblic/main/policies/data_protection_policy.md" /></Body>} />
                       <Route path="/terms-of-service" element={<Body><MarkdownPage markdownUrl="https://raw.githubusercontent.com/jakobbjelver/Nimblic/main/policies/terms_of_service.md" /></Body>} />
                       <Route path="/blog" element={<Body><MarkdownPage markdownUrl="https://raw.githubusercontent.com/jakobbjelver/Nimblic/main/blog/blog.md" /></Body>} />
-                      <Route path="*" element={<Body><NotFoundPage /></Body>} />
                       <Route path="/error" element={<Body><ErrorPage /></Body>} />
+                      <Route path="*" element={<Body><NotFoundPage /></Body>} />
                     </Routes>
                 </TabsProvider>
                 <Modal />

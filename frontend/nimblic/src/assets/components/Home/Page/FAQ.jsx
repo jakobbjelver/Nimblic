@@ -9,7 +9,7 @@ const faqs = [
     },
     {
         question: 'My file contains sensitive data. How can I be assured that it is safe?',
-        answer: 'Nimblic will never store your data at rest. Data is only temporarily stored while processing the analysis. Not even the analysis is stored anywhere, except on your own device. For more information, please head over to our privacy section.'
+        answer: 'Nimblic will never store your data at rest. Data is only temporarily stored while processing the analysis. The produced analysis is completely in your control and can only be seen by you if you decide not to share it. For more information, please head over to our privacy section.'
     },
     {
         question: 'The app does not include the features I want, who can I contact?',
@@ -18,9 +18,9 @@ const faqs = [
     {
         question: 'How does Nimblic differ from OpenAI\'s GPT or Google\'s Gemini?',
         answer: `Nimblic stands out with its user-friendly interface designed for a broad audience, from beginners to experts, making it highly accessible for those without extensive technical skills. 
-        \nIt specializes in Exploratory Data Analysis (EDA), offering tailored tools for effective data exploration, unlike the more general-purpose approach of OpenAI's Advanced Data Analysis. 
-        \nAdditionally, Nimblic emphasizes data security and privacy, ensuring user data is protected and confidential, a crucial aspect for users who prioritize data safety. 
-        \nIn the end, this means a more straightforward experience that everyone can use, and might even be cheaper. Nimblic does not serve to compete with existing AI tools, but instead offers a higher level and tailored use than with general AI, and is determined to incorporate it into the app in future versions.`
+        \nIt specializes in Exploratory Data Analysis (EDA), offering tailored tools for effective data exploration, unlike the more general-purpose approach of, for example, OpenAI's Advanced Data Analysis. 
+        \nAdditionally, Nimblic has it's own AI chatbot that is tuned specifically for EDA, and trained with your data in real time. It leverages a custom state-of-the-art AI model that can answer your questions depending on the context of your use. Actually, Nimblic's chatbot is built upon an already great AI model, making it even better for this case.
+        \nIn the end, this means a more straightforward experience that everyone can use. Nimblic does not serve to compete with existing AI tools, but instead offers a higher level and tailored use than with general AI, with it's built-in AI that is specialized in assisting what matters to you - wihout the need for you to explain your analysis in beforehand..`
     }
     
 ];

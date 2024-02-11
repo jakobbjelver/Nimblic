@@ -10,7 +10,6 @@ import ReactDOM from 'react-dom';
 
 import { ShieldCheckIcon, QuestionMarkCircleIcon, CurrencyDollarIcon, BoltIcon } from '@heroicons/react/24/outline'
 
-
 const solutions = [
   { name: 'Features', description: "Get to know the app and its benefits", link: '/#features', icon: BoltIcon, isHash: true },
   { name: 'Privacy Policy', description: 'Your data will be safe and secure', link: '/data-protection-policy', icon: ShieldCheckIcon, isHash: false },

@@ -38,30 +38,33 @@ const generativeModel = vertexAI.preview.getGenerativeModel({
 });
 
 exports.sendChat = functions.https.onCall(async (data, context) => {
+  const userId = context.auth.uid;
+
   console.log(`Project ID: ${project}, Location: ${location}`);
 
   // Fetch recent chat history
-  const recentChats = await fetchRecentChats(data.analysisId);
+  const recentChats = await fetchRecentChats(data.analysisId, userId);
   const history = [
     {
       role: 'user',
-      parts: [{ text: `System prompt: ${_context}` }], // Static instruction
+      parts: `System prompt: ${_context}`, // Ensure _context is a string
     },
     {
       role: 'model',
-      parts: [{ text: 'Understood' }], // Static instruction
+      parts: 'Understood',
     },
     ...recentChats.flatMap(chat => [
       {
         role: 'user',
-        parts: [{ text: chat.prompt }],
+        parts: chat.prompt, // Ensure chat.prompt is a string
       },
       {
         role: 'model',
-        parts: [{ text: chat.response }],
+        // Join chat.response if it's an array; otherwise, directly use chat.response
+        parts: Array.isArray(chat.response) ? chat.response.join(" ") : chat.response,
       }
     ])
-  ];
+  ];  
 
   console.log("SETTING HISTORY: ", JSON.stringify(history))
 
@@ -76,10 +79,9 @@ exports.sendChat = functions.https.onCall(async (data, context) => {
     }
   );
 
-  const { userText, skillLevel, analysisId, topic } = data;
-  const userId = context.auth.uid;
+  const { userText, skillLevel, analysisId, topic, ownerId } = data;
 
-  const analysisData = await fetchAnalysisData(userId, analysisId, topic);
+  const analysisData = await fetchAnalysisData(ownerId, analysisId, topic);
   const rawAnalysisString = JSON.stringify(analysisData)
   const analysisString = rawAnalysisString.replace(/"/g, '');
 
@@ -148,7 +150,7 @@ exports.sendChat = functions.https.onCall(async (data, context) => {
 
       console.log("META TEXT: ", metaText)
 
-      const jsonResponse = JSON.parse(metaText.replace(/`/g, ''));
+      const jsonResponse = JSON.parse(metaText.replace(/`/g, '').replace(/^json/, '')); // Remove ```json from beginning and ``` from end, because of response's md format
       // Extract information from jsonResponse
       const { glossary, actionableSteps, resources, followUpQuestions } = jsonResponse;
 
@@ -213,17 +215,17 @@ async function countTokens(request) {
 }
 
 // Function to fetch analysis data
-async function fetchAnalysisData(userId, analysisId, topic) {
-  console.log(`Fetching analysis data for userId: ${userId}, analysisId: ${analysisId}, topic: ${topic}`);
+async function fetchAnalysisData(ownerId, analysisId, topic) {
+  console.log(`Fetching analysis data for ownerId: ${ownerId}, analysisId: ${analysisId}, topic: ${topic}`);
 
-  if (!userId || !analysisId || !topic) {
+  if (!ownerId || !analysisId || !topic) {
     console.error("One of the required parameters is null!");
     return {};
   }
 
   if (topic == 'metadata') {
     // Reference to the metadata document
-    const metadataDocRef = db.collection(`users/${userId}/analyses`).doc(analysisId);
+    const metadataDocRef = db.collection(`users/${ownerId}/analyses`).doc(analysisId);
     const metadataSnap = await metadataDocRef.get();
     if (!metadataSnap.exists) {
       console.error('No metadatadata found for analysisId:', analysisId);
@@ -231,10 +233,10 @@ async function fetchAnalysisData(userId, analysisId, topic) {
     }
     const metadata = metadataSnap.data();
     console.log(`Metadata fetched successfully for analysisId: ${analysisId}.`);
-    return metadata || {}; // Adjust this based on your data structure
+    return metadata || {}; 
   } else {
     // Reference to the analysis document for storing metadata
-    const analysisDocRef = db.collection(`users/${userId}/analyses`).doc(analysisId);
+    const analysisDocRef = db.collection(`users/${ownerId}/analyses`).doc(analysisId);
     // Reference to the analysisData subcollection's document
     // Assuming the use of a static ID like "main" for simplicity
     const analysisDataDocRef = analysisDocRef.collection('data').doc('main');
@@ -243,21 +245,21 @@ async function fetchAnalysisData(userId, analysisId, topic) {
       console.error('No analysis data found for analysisId:', analysisId);
       return {};
     }
-    const analysisData = analysisDataSnap.data();
+    const data = analysisDataSnap.data();
     console.log(`Analysis data fetched successfully for analysisId: ${analysisId}.`);
-    return analysisData[topic] || {}; // Adjust this based on your data structure
+    return data.analysisData[topic] || {};
   }
 }
 
 // Function to fetch recent chats for a given analysisId
-async function fetchRecentChats(analysisId) {
+async function fetchRecentChats(analysisId, userId) {
   if (!analysisId) {
     console.error("Invalid or missing analysisId");
     throw new functions.https.HttpsError('not-found', `Analysis with ID: ${analysisId} not found.`);
   }
 
-  const discussionRef = db.collection('discussions').doc(analysisId).collection('messages');
-  const snapshot = await discussionRef.orderBy('timestamp', 'desc').limit(10).get(); // Adjust limit as needed
+  const discussionRef = db.collection(`users/${userId}/discussions`).doc(analysisId).collection('messages');
+  const snapshot = await discussionRef.orderBy('timestamp', 'desc').limit(5).get(); // Adjust limit as needed
   return snapshot.docs.map(doc => doc.data());
 }
 
@@ -327,10 +329,7 @@ exports.searchUsers = functions.https.onCall(async (data, context) => {
   }
 
   const { searchQueries, searchType } = data;
-  if(searchQueries.length === 0) {
-    return [];
-  }
-  if (!searchQueries || !Array.isArray(searchQueries)) {
+  if (!searchQueries || !Array.isArray(searchQueries) || searchQueries.length === 0) {
     throw new functions.https.HttpsError('invalid-argument', 'The function must be called with a non-empty array "searchQueries".');
   }
   if (!searchType || !['query', 'id'].includes(searchType)) {
@@ -341,48 +340,37 @@ exports.searchUsers = functions.https.onCall(async (data, context) => {
     const usersRef = db.collection('users');
     let users = [];
 
-    for (const query of searchQueries) {
-      let querySnapshot;
-      if (searchType === 'id') {
-        // If searchType is 'id', directly use the query as the document ID
+    if (searchType === 'id') {
+      // Handle search by ID (no limit applies here)
+      for (const query of searchQueries) {
         const docSnapshot = await usersRef.doc(query).get();
         if (docSnapshot.exists) {
-          const userData = docSnapshot.data();
-          users.push({
-            id: docSnapshot.id,
-            displayName: userData.displayName,
-            email: userData.email,
-            photoURL: userData.photoURL
-          });
+          users.push({ id: docSnapshot.id, ...docSnapshot.data() });
         }
-      } else {
-        // For query search type, search by either displayName or email
-        querySnapshot = await usersRef.where('displayName', '==', query).get();
-        querySnapshot.forEach(doc => {
-          const userData = doc.data();
-          if (!users.some(user => user.id === doc.id)) {
-            users.push({
-              id: doc.id,
-              displayName: userData.displayName,
-              email: userData.email,
-              photoURL: userData.photoURL
-            });
-          }
-        });
-        // Also search by email
-        querySnapshot = await usersRef.where('email', '==', query).get();
-        querySnapshot.forEach(doc => {
-          const userData = doc.data();
-          if (!users.some(user => user.id === doc.id)) {
-            users.push({
-              id: doc.id,
-              displayName: userData.displayName,
-              email: userData.email,
-              photoURL: userData.photoURL
-            });
-          }
-        });
       }
+    } else {
+      // Handle search by displayName and email with a limit of 15 users
+      for (const query of searchQueries) {
+        const queryEnd = query + '\uf8ff';
+        for (const field of ['displayName', 'email']) {
+          let querySnapshot = await usersRef
+              .where(field, '>=', query)
+              .where(field, '<=', queryEnd)
+              .limit(15)
+              .get();
+          querySnapshot.forEach(doc => {
+            if (!users.some(user => user.id === doc.id)) {
+              users.push({ id: doc.id, ...doc.data() });
+            }
+          });
+          // If we've reached or exceeded the limit, break from the loop
+          if (users.length >= 15) break;
+        }
+        // If we've reached or exceeded the limit after checking both fields, stop processing further queries
+        if (users.length >= 15) break;
+      }
+      // Ensure we return at most 15 users
+      users = users.slice(0, 15);
     }
 
     return users;
@@ -390,8 +378,6 @@ exports.searchUsers = functions.https.onCall(async (data, context) => {
     throw new functions.https.HttpsError('unknown', error.message, error);
   }
 });
-
-
 
 exports.updateUserOnLogin = functions.https.onCall(async (data, context) => {
   // Ensure the user is authenticated
@@ -405,9 +391,9 @@ exports.updateUserOnLogin = functions.https.onCall(async (data, context) => {
 
     // Update the user document in Firestore
     await db.doc(`users/${context.auth.uid}`).set({
-      displayName,
-      email,
-      photoURL
+      displayName: displayName,
+      email: email,
+      photoURL: photoURL
     }, { merge: true });
 
     return { message: 'User data updated successfully.' };
@@ -420,30 +406,41 @@ exports.updateUserOnLogin = functions.https.onCall(async (data, context) => {
 exports.syncShared = functions.firestore
     .document('sharedAnalyses/{docId}')
     .onWrite(async (change, context) => {
-      console.log("Share sync triggered")
+        console.log("Share sync triggered")
         const analysisId = change.after.exists ? change.after.data().analysisId : change.before.data().analysisId;
         const ownerId = change.after.exists ? change.after.data().ownerId : change.before.data().ownerId;
         console.log("Syncing for owner: ", ownerId)
         console.log("Syncing for analysis: ", analysisId)
+
         // Reference to the analysis document
         const analysisDocRef = db.doc(`users/${ownerId}/analyses/${analysisId}`);
 
-        // If the document is being deleted, we don't have a 'data' to work with
+        // If the document is being deleted, handle logic accordingly
         if (!change.after.exists) {
-          console.log("Share doc deleted")
-            // Handle deletion logic if necessary, for example, removing a user from sharedWith
-            // This is more complex because you'd need to identify which user was removed
-            // You may need a separate logic or function to handle deletions properly
+            console.log("Share doc deleted")
+            // Additional deletion logic if necessary
             return;
         }
 
         // Directly use the sharedWith array from the sharedAnalyses document
         const sharedWith = change.after.data().sharedWith;
+        // Assume status.isPublic is also part of sharedAnalyses document to be synced
+        const isPublic = change.after.data().status?.isPublic;
 
         console.log("Shared with: ", sharedWith)
 
-        // Update the analysis document's sharedWith array to match
-        await analysisDocRef.update({ sharedWith }).catch(error => {
+        // Prepare the update object
+        const updateData = {
+            sharedWith
+        };
+
+        // Optionally update status.isPublic if it exists in the sharedAnalyses doc
+        if (isPublic !== undefined) {
+            updateData['status.isPublic'] = isPublic;
+        }
+
+        // Update the analysis document with both sharedWith array and status.isPublic
+        await analysisDocRef.update(updateData).catch(error => {
             console.error("Error updating analysis document:", error);
         });
     });

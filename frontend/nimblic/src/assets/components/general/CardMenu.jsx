@@ -63,7 +63,7 @@ const CardMenu = ({ cardId, codeFile, cardRef }) => {
         :
         <>
           <div className="absolute right-12 top-20 z-[10]">
-            <CopyButton copyText={JSON.stringify(modalContent)} color={'neutral'} />
+            <CopyButton copyText={content} color={'neutral'} />
           </div>
           <div className="text-sm bg-transparent">
             <SyntaxHighlighter wrapLongLines={true} language="python" style={theme === 'dark' ? darkTheme : lightTheme}>{content}</SyntaxHighlighter>

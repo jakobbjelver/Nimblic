@@ -5,15 +5,21 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
+[data-theme='light'] body {
   overflow-x: hidden;
+  scrollbar-color: lightgray darkgray;
+}
+
+[data-theme='dark'] body {
+  overflow-x: hidden;
+  scrollbar-color: rgb(47, 47, 53) rgb(18, 18, 18);
 }
 
 .banner {
   height: 100dvh;
 }
 
-html {
+ html {
   @apply font-sans;
   scrollbar-gutter: stable;
 }
@@ -151,7 +157,7 @@ details[disabled] summary,
 /* Dark theme scrollbar styles */
 [data-theme="dark"] * {
   scrollbar-width: thin;
-  scrollbar-color: darkgray lightgray; /* thumb and track color */
+  scrollbar-color: lightgray darkgray ; /* thumb and track color */
 }
 
 [data-theme="dark"] *::-webkit-scrollbar {
@@ -328,28 +334,24 @@ blockquote p {
 
 .markdown-content h3 {
   font-size: 1.5em;
-  color: #2e2e2e;
   margin-top: 0.75em;
   margin-bottom: 0.25em;
 }
 
 .markdown-content h4 {
   font-size: 1.25em;
-  color: #2e2e2e;
   margin-top: 0.5em;
   margin-bottom: 0.15em;
 }
 
 .markdown-content h5 {
   font-size: 1.1em;
-  color: #2e2e2e;
   margin-top: 0.2em;
   margin-bottom: 0.1em;
 }
 
 .markdown-content h6 {
   font-size: 1em;
-  color: #2e2e2e;
   margin-top: 0.2em;
   margin-bottom: 0.1em;
 }
@@ -361,7 +363,6 @@ blockquote p {
 
 /* Link Style */
 .markdown-content a {
-  color: #808080a8;
   text-decoration: underline;
 }
 

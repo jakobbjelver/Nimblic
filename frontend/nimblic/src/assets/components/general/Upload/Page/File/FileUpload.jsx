@@ -24,7 +24,7 @@ const FileUpload = forwardRef(({ extraClassName }, ref) => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { uploadData, setUploadData, isUploading, setIsUploading } = useContext(FileUploadContext);
+  const { uploadData, setUploadData, isUploading, setIsUploading, triggerFileInputClick, fileInputRef } = useContext(FileUploadContext);
   const { setErrorMessage, setInfoMessage, setWarningMessage, setSuccessMessage, setNotifications, setInitUploadMetadata } = useContext(AlertContext);
 
   const [isLoading, setLoading] = useState(false);
@@ -194,7 +194,7 @@ const FileUpload = forwardRef(({ extraClassName }, ref) => {
       <div ref={ref} {...getRootProps()}
         className={`flex flex-col space-y-4 p-4  fadeInUp
           ${location.pathname !== '/' ? 'w-full h-60 mt-0 mb-10' : 'mt-28 w-96 h-48 my-8 items-center justify-center'}`}>
-        <input {...getInputProps()} />
+        <input {...getInputProps()} ref={fileInputRef}/>
         <Transition
           show={true}
           enter="transition-opacity duration-75"

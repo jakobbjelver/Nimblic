@@ -16,14 +16,21 @@ import { useNavigate } from 'react-router-dom';
 import Tabs from '../general/Tabs/Tabs';
 import { useParams } from 'react-router-dom';
 import { TabsContext } from '../general/Tabs/TabsContext';
-
+import userManager from '../../services/user/userManager';
+import AnalysisManager from '../../services/analyses/analysisManager'
+import { decode } from 'src/utils/shareUtil';
 import { FileUploadContext } from '../general/Upload/FileUploadContext';
+import { AlertContext } from '../general/Alert/AlertContext';
+import { parseFromStorage } from 'src/utils/fileUtil';
+import { getFirebaseErrorMessage } from 'src/utils/errorUtil';
+import { getCurrentTime } from '../../../utils/textFormat';
 
 const ExplorePage = () => {
   const { id } = useParams(); // Obtain the optional parameter
   const [isLoading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const { uploadData, isUploading, errorMessage } = useContext(FileUploadContext);
+  const { uploadData, isUploading, setUploadData } = useContext(FileUploadContext);
+  const { setErrorMessage, setInfoMessage } = useContext(AlertContext);
   const { activeIndex } = useContext(TabsContext);
   const [currentData, setCurrentData] = useState(uploadData[activeIndex]);
 
@@ -31,42 +38,79 @@ const ExplorePage = () => {
   const processWithId = async () => {
     if (id) {
       setLoading(true);
-      // Check if user is authenticated
-      // Else, redirect to login page, make the onLoginSuccess navigate back here
-      // Load analysis from firebase
-      // Handle unauthorized access with an error message alert
-      // Load analysis (like in AnalysisSection) to uploadData
+      await userManager.waitForUserLoad()
+
+      if(!userManager.getUserAuth()) return 
+
+      const manager = new AnalysisManager(null)
+
+      console.log("PARAM: ", id)
+
+      const { userId, analysisId } = decode(id)
+
+      console.log("USER ID: ", userId)
+      console.log("ANALYSIS ID: ", analysisId)
+
       try {
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        navigate('/explore');
+        const rawData = await manager.fetchAnalysis(analysisId, userId)
+
+        if (!rawData) {
+          setErrorMessage({
+            type: "error",
+            short: `Failed to view analysis '${analysisId}'`,
+            long: "Something went wrong when downloading the analysis. It seems like you have access, but the analysis data might be deleted or moved.",
+            details: error,
+            time: getCurrentTime()
+          });
+          return;
+        }
+
+        let analysisData = parseFromStorage(rawData)
+        console.log("DOWNLOADED ANALYSIS: ", analysisData)
+        setUploadData(prevData => [...prevData, analysisData])
+        console.log("NEW UPLOAD DATA: ", uploadData)
+        navigate('/explore');
+        setInfoMessage({
+          type: "info",
+          short: `Analysis '${analysisData.metadata.name}' downloaded`,
+          time: getCurrentTime()
+        });
+
       } catch (error) {
-        console.error('Failed to fetch data:', error);
-        // Handle errors, navigate back to home page and put on error message
-      } finally {
-        setLoading(false);
+        let errorMessage;
+        if(error.code == "permission-denied") {
+          errorMessage = `Missing permission to access analysis`
+        }
+        setErrorMessage({
+          type: "error",
+          short: errorMessage || `Failed to download analysis '${analysisId}'`,
+          long: `${getFirebaseErrorMessage(error)} Analysis: ${analysisId}`,
+          details: error,
+          time: getCurrentTime()
+        });
+
       }
     }
   };
 
+  // Check if user is authenticated
+  // Else, redirect to login page, make the onLoginSuccess navigate back here
+  // Load analysis from firebase
+  // Handle unauthorized access with an error message alert
+  // Load analysis (like in AnalysisSection) to uploadData
   useEffect(() => {
     processWithId();
-  }, [id]); // Only run this effect if `id` changes
-
-  useEffect(() => {
-    if (!isUploading && uploadData) {
-      const newData = uploadData[activeIndex];
-      setCurrentData(newData);
-
-    } else if (!uploadData || Object.keys(uploadData).length <= 0 && !isUploading) {
-      //navigate('/')
-    }
-  }, [uploadData, isUploading, activeIndex]);
+  }, []);
 
   useEffect(() => {
     if (!uploadData || Object.keys(uploadData).length <= 0 && !isUploading) {
-      //navigate('/')
+      navigate('/')
+    } else {
+      const newData = uploadData[activeIndex];
+      setCurrentData(newData);
     }
-  }, []);
-
+  }, [uploadData, isUploading, activeIndex]);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });

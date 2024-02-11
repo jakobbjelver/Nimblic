@@ -62,7 +62,6 @@ const AlertProvider = ({ children }) => {
 
     // Upload message handling
     useEffect(() => {
-        console.log("Alert context is uploading? ", isUploading)
         if (isUploading && uploadData.length == 0) {
 
             const size = initUploadMetaData.size / 1024 / 1024
