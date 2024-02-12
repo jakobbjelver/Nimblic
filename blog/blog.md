@@ -6,9 +6,10 @@ Welcome to the official blog, where we share updates, insights, and stories abou
 
 # News updates
 
-#### Upcoming AI integrations
-*February 5, 2024*
-The developers are working hard on integrating our awaited AI chat assistant. This will add an entirely new perspective and use for Nimblic, which we are exited to shortly launch. Stay tuned!
+#### The AI Integration & Analysis management update is here!
+*February 12, 2024*
+We are proud to announce that the AI Chatbot is now in release and available to all users! The AI Chatbot is a powerful tool that is specifically fine-tuned to answer to complex queries about your data. We sincerely believe that this will revolutionize the way our users can conduct their data analysis.
+We have also improved the analysis management, now providing functionality to view extented details about every analysis and share them with other users or with a public link.
 
 #### Improved account management
 *January 14, 2024*
