@@ -8,7 +8,7 @@ Welcome to the official blog, where we share updates, insights, and stories abou
 
 #### The AI Integration & Analysis Management update is here!
 *February 12, 2024*
-We are excited to announce that our AI Chatbot is now officially launched and available to all users! This AI Chatbot is a sophisticated tool, meticulously optimized to respond to complex queries related to your data. We firmly believe it will transform how our users engage in data analysis.
+We are excited to announce that our AI Chatbot is now officially launched and available to all users! This AI Chatbot is a powerful tool, fine-tuned to respond to complex queries related to your analysis data. We firmly believe it will transform how our users engage in data analysis.
 
 Furthermore, we've enhanced our analysis management features, now offering the capability to view extended details about each analysis and share them with other users or via a public link.
 
