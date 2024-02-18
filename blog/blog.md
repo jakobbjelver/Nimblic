@@ -5,7 +5,7 @@
 Welcome to the official blog, where we share updates, insights, and stories about our journey in transforming Exploratory Data Analysis (EDA). Our mission is to make data analysis accessible to everyone, from beginners to seasoned data scientists. Nimblic is your straightforward, transparent and user friendly data analysis companion.
 
 > [!NOTE]
-> Service Down Due to Low Activity and Insufficient Funding
+> ### Service Down Due to Low Activity and Insufficient Funding
 > We regret to inform you that Nimblic is currently down due to low activity and insufficient funding. We are actively seeking solutions and welcome any support or inquiries. Please [contact us](/contact) if you wish to discuss potential options for restarting the service.
 
 # News updates
